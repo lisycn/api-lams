@@ -1,10 +1,13 @@
 package com.lams.api.domain.master;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 
 @MappedSuperclass
 public class Auditor implements Serializable {
@@ -16,13 +19,15 @@ public class Auditor implements Serializable {
 
 	@Column(name="created_by")
 	private Long createdBy;
-	
+
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="created_date")
 	private Date createdDate;
 	
 	@Column(name="modified_by")
 	private Long modifiedBy;
 	
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="modified_date")
 	private Date modifiedDate;
 	

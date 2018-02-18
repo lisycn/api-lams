@@ -3,6 +3,9 @@ package com.lams.model.bo;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UserBO extends AuditorBO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -38,6 +41,8 @@ public class UserBO extends AuditorBO implements Serializable {
 	private Long userType;
 
 	private BankBO bank;
+	
+	private String password;
 
 	public Long getId() {
 		return id;
@@ -166,4 +171,14 @@ public class UserBO extends AuditorBO implements Serializable {
 	public void setBank(BankBO bank) {
 		this.bank = bank;
 	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
+	
 }
