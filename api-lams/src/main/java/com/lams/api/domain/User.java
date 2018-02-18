@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.lams.api.domain.master.AddressMstr;
@@ -32,6 +33,8 @@ public class User extends Auditor implements Serializable{
 	 
 	 private String mobile;
 	 
+	 private String password;
+	 
 	 @Column(name = "is_accept_term_condition")
 	 private Boolean isAcceptTermCondition;
 	 
@@ -44,7 +47,6 @@ public class User extends Auditor implements Serializable{
 	 @Column(name = "middle_name")
 	 private String middleName;
 	 
-	 @ManyToOne
 	 @Column(name = "address")
 	 private AddressMstr address;
 	 
@@ -52,9 +54,6 @@ public class User extends Auditor implements Serializable{
 	 private Date birthDate;
 	 
 	 private Long gender;
-	 
-	 @Column(name = "is_active")
-	 private Boolean isActive;
 	 
 	 @Column(name = "is_otp_verified")
 	 private Boolean isOtpVerified;
@@ -156,13 +155,6 @@ public class User extends Auditor implements Serializable{
 		this.gender = gender;
 	}
 
-	public Boolean getIsActive() {
-		return isActive;
-	}
-
-	public void setIsActive(Boolean isActive) {
-		this.isActive = isActive;
-	}
 
 	public Boolean getIsOtpVerified() {
 		return isOtpVerified;
@@ -195,4 +187,14 @@ public class User extends Auditor implements Serializable{
 	public void setBank(BankMstr bank) {
 		this.bank = bank;
 	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
+	
 }

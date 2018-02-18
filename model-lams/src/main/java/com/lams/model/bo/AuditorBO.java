@@ -1,7 +1,7 @@
 package com.lams.model.bo;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

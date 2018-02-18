@@ -14,5 +14,6 @@ public class LamsMain {
 
 	public static void main(String[] args) throws Exception {
 		SpringApplication.run(LamsMain.class, args);
+		
 	}
 }
