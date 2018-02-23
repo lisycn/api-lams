@@ -65,7 +65,13 @@ public class UserMstrServiceImpl implements UserMstrService{
 	
 	@Override
 	public List<UserBO> getUsersByUserType(Long userType) {
-		List<User> userList = userMstrRepository.findByUserTypeAndIsActive(userType, true);
+		List<User> userList = null;
+		if(!CommonUtils.isObjectNullOrEmpty(userType)) {
+			userList = userMstrRepository.findByUserType(userType);	
+		}else {
+			userList = userMstrRepository.findAll();
+		}
+		
 		List<UserBO> userBOList = new ArrayList<>(userList.size());
 		UserBO userBo = null;
 		for(User user : userList) {
