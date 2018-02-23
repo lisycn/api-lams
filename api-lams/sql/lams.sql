@@ -78,3 +78,6 @@ CREATE TABLE `lams`.`user` (
 
 
 
+
+
+INSERT INTO `lams`.`user` (`name`, `email`, `mobile`, `password`,  `is_active`) VALUES ('admin', 'admin@gmail.com', '8975849586', 'e8e99ce7fa9c15f522e21e2fb2cc752c', 1);
