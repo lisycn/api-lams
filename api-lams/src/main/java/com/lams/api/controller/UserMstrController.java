@@ -59,7 +59,7 @@ public class UserMstrController {
 	
 	
 	@RequestMapping(value = "/getUsersByType/{userType}", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<LamsResponse> getUsersByType(@PathVariable("userType") Long userType){
+	public ResponseEntity<LamsResponse> getUsersByType(@PathVariable(value="userType",required=false) Long userType){
 		logger.info("Enter in get users by user type");
 		try {
 			List<UserBO> userList = userMstrService.getUsersByUserType(userType);
