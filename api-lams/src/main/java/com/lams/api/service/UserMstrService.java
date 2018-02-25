@@ -7,7 +7,7 @@ import com.lams.model.bo.UserBO;
 
 public interface UserMstrService {
 
-	public LamsResponse registration(UserBO userBO);
+	public LamsResponse registration(UserBO userBO,Long userId);
 	
 	public List<UserBO> getUsersByUserType(Long userType);
 	
