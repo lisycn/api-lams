@@ -67,7 +67,7 @@ public class User extends Auditor implements Serializable{
 	 private Long userType;
 	 
 	 @ManyToOne
-	 @JoinColumn(name = "banks")
+	 @JoinColumn(name = "bank")
 	 private BankMstr bank;
 
 	public Long getId() {
