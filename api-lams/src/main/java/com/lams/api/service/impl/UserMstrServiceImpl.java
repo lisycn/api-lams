@@ -35,23 +35,52 @@ public class UserMstrServiceImpl implements UserMstrService {
 	private BankMstrRepository bankMstrRepository;
 
 	@Override
-	public LamsResponse registration(UserBO userBO) {
+	public LamsResponse registration(UserBO userBO, Long userId) {
 
-		// CHECK IF EMAIL IS EXIST
-		if (userMstrRepository.checkEmail(userBO.getEmail()) > 0) {
-			logger.info("Email is already exist ------------------------->" + userBO.getEmail());
-			return new LamsResponse(HttpStatus.BAD_REQUEST.value(), "Email is Already Exist");
+		User user = null;
+		if(!CommonUtils.isObjectNullOrEmpty(userBO.getId())) {
+			user = userMstrRepository.findOne(userBO.getId());			
 		}
+		if(CommonUtils.isObjectNullOrEmpty(user)) {
+			// CHECK IF EMAIL IS EXIST
+			if (userMstrRepository.checkEmail(userBO.getEmail()) > 0) {
+				logger.info("Email is already exist ------------------------->" + userBO.getEmail());
+				return new LamsResponse(HttpStatus.BAD_REQUEST.value(), "Email is Already Exist");
+			}
 
-		// CHECK IF MOBILE IS EXIST
-		if (userMstrRepository.checkMobile(userBO.getMobile()) > 0) {
-			logger.info("Mobile is already exist ------------------------->" + userBO.getMobile());
-			return new LamsResponse(HttpStatus.BAD_REQUEST.value(), "Mobile is Already Exist");
+			// CHECK IF MOBILE IS EXIST
+			if (userMstrRepository.checkMobile(userBO.getMobile()) > 0) {
+				logger.info("Mobile is already exist ------------------------->" + userBO.getMobile());
+				return new LamsResponse(HttpStatus.BAD_REQUEST.value(), "Mobile is Already Exist");
+			}
+			user = new User();
+			user.setCreatedDate(new Date());
+			user.setCreatedBy(userId);
+			user.setIsActive(true);
+		} else {
+			if(!user.getIsActive()) {
+				logger.info("Current User is Inactive ------------------------->" + userBO.getMobile());
+				return new LamsResponse(HttpStatus.BAD_REQUEST.value(), "User is inactive");
+			}
+			// CHECK IF EMAIL IS EXIST
+			if (userMstrRepository.checkEmailById(userBO.getEmail(), user.getId()) > 0) {
+				logger.info("Email is already exist ------------------------->" + userBO.getEmail());
+				return new LamsResponse(HttpStatus.BAD_REQUEST.value(), "Email is Already Exist");
+			}
+
+			// CHECK IF MOBILE IS EXIST
+			if (userMstrRepository.checkMobileById(userBO.getMobile(),user.getId()) > 0) {
+				logger.info("Mobile is already exist ------------------------->" + userBO.getMobile());
+				return new LamsResponse(HttpStatus.BAD_REQUEST.value(), "Mobile is Already Exist");
+			}
+			user.setModifiedDate(new Date());
+			user.setModifiedBy(userId);
 		}
-		User user = new User();
-		BeanUtils.copyProperties(userBO, user, "id");
-		user.setIsActive(true);
-		user.setCreatedDate(new Date());
+		BeanUtils.copyProperties(userBO, user, "id","isActive","createdDate","createdBy");
+		user.setIsAcceptTermCondition(true);
+		user.setIsEmailVerified(!CommonUtils.isObjectNullOrEmpty(userBO.getIsEmailVerified()) ? userBO.getIsEmailVerified() : false);
+		user.setIsOtpVerified(!CommonUtils.isObjectNullOrEmpty(userBO.getIsOtpVerified()) ? userBO.getIsOtpVerified() : false);
+		
 		if (!CommonUtils.isObjectNullOrEmpty(userBO.getUserType())) {
 			UserType userType = CommonUtils.UserType.getType(userBO.getUserType().intValue());
 			if (CommonUtils.isObjectNullOrEmptyOrDash(userType) && userType.equals(CommonUtils.UserType.LENDER)) {
@@ -60,9 +89,6 @@ public class UserMstrServiceImpl implements UserMstrService {
 				}
 			}
 		}
-		user.setIsAcceptTermCondition(true);
-		user.setIsEmailVerified(false);
-		user.setIsOtpVerified(false);
 		user.setPassword(DigestUtils.md5DigestAsHex(userBO.getPassword().getBytes()).toString());
 		userMstrRepository.save(user);
 		logger.info(
