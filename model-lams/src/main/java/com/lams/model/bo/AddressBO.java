@@ -18,7 +18,7 @@ public class AddressBO extends AuditorBO implements Serializable {
 
 	private String landMark;
 
-	private Double pincode;
+	private String pincode;
 
 	private CountryBO country;
 
@@ -50,11 +50,11 @@ public class AddressBO extends AuditorBO implements Serializable {
 		this.landMark = landMark;
 	}
 
-	public Double getPincode() {
+	public String getPincode() {
 		return pincode;
 	}
 
-	public void setPincode(Double pincode) {
+	public void setPincode(String pincode) {
 		this.pincode = pincode;
 	}
 

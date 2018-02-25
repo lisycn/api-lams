@@ -186,3 +186,28 @@ ADD CONSTRAINT `fk_city_mstr_1`
   ON UPDATE NO ACTION;
 
 
+CREATE TABLE `lams`.`salutation_mstr` (
+  `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_salutation_mstr_1`
+    FOREIGN KEY (`id`)
+    REFERENCES `lams`.`mstr_base` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+    
+ALTER TABLE `lams`.`user` 
+ADD COLUMN `salutation` BIGINT(20) UNSIGNED NULL AFTER `is_active`;
+INSERT INTO `lams`.`mstr_base` (`id`, `name`, `code`, `is_active`, `created_by`, `created_date`, `modified_by`, `modified_date`) VALUES ('1', 'Mr.', 'Mr.', 1, 1, NOW(), '1', NOW());
+INSERT INTO `lams`.`salutation_mstr` (`id`) VALUES ('1');
+
+ALTER TABLE `lams`.`address_mstr` 
+ADD COLUMN `user_id` BIGINT(20) UNSIGNED NOT NULL AFTER `is_active`;
+
+
+ALTER TABLE `lams`.`address_mstr` 
+CHANGE COLUMN `pincode` `pincode` VARCHAR(45) NOT NULL ,
+CHANGE COLUMN `country_id` `country_id` BIGINT(20) UNSIGNED NOT NULL ,
+CHANGE COLUMN `state_id` `state_id` BIGINT(20) UNSIGNED NOT NULL ,
+CHANGE COLUMN `city_id` `city_id` BIGINT(20) UNSIGNED NOT NULL ,
+CHANGE COLUMN `created_by` `created_by` BIGINT(20) UNSIGNED NOT NULL ,
+CHANGE COLUMN `is_active` `is_active` BIT(1) NOT NULL DEFAULT true ;

@@ -12,6 +12,8 @@ public class UserBO extends AuditorBO implements Serializable {
 
 	private Long id;
 
+	private Long salutation;
+
 	private String name;
 
 	private String email;
@@ -41,7 +43,7 @@ public class UserBO extends AuditorBO implements Serializable {
 	private Long userType;
 
 	private BankBO bank;
-	
+
 	private String password;
 
 	public Long getId() {
@@ -180,16 +182,21 @@ public class UserBO extends AuditorBO implements Serializable {
 		this.password = password;
 	}
 
+	public Long getSalutation() {
+		return salutation;
+	}
+
+	public void setSalutation(Long salutation) {
+		this.salutation = salutation;
+	}
+
 	@Override
 	public String toString() {
-		return "UserBO [id=" + id + ", name=" + name + ", email=" + email + ", mobile=" + mobile
-				+ ", isAcceptTermCondition=" + isAcceptTermCondition + ", firstName=" + firstName + ", lastName="
-				+ lastName + ", middleName=" + middleName + ", address=" + address + ", birthDate=" + birthDate
-				+ ", gender=" + gender + ", isActive=" + isActive + ", isOtpVerified=" + isOtpVerified
+		return "UserBO [id=" + id + ", salutation=" + salutation + ", name=" + name + ", email=" + email + ", mobile="
+				+ mobile + ", isAcceptTermCondition=" + isAcceptTermCondition + ", firstName=" + firstName
+				+ ", lastName=" + lastName + ", middleName=" + middleName + ", address=" + address + ", birthDate="
+				+ birthDate + ", gender=" + gender + ", isActive=" + isActive + ", isOtpVerified=" + isOtpVerified
 				+ ", isEmailVerified=" + isEmailVerified + ", userType=" + userType + ", bank=" + bank + ", password="
 				+ password + "]";
 	}
-	
-	
-	
 }

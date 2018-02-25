@@ -18,57 +18,59 @@ import com.lams.api.domain.master.AddressMstr;
 import com.lams.api.domain.master.Auditor;
 import com.lams.api.domain.master.BankMstr;
 
-
 @Entity
-@Table(name="user")
-public class User extends Auditor implements Serializable{
+@Table(name = "user")
+public class User extends Auditor implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
-	 @Id
-	 @GeneratedValue(strategy=GenerationType.IDENTITY)
-	 private Long id;
-	 
-	 private String name;
-	 
-	 private String email;
-	 
-	 private String mobile;
-	 
-	 private String password;
-	 
-	 @Column(name = "is_accept_term_condition")
-	 private Boolean isAcceptTermCondition;
-	 
-	 @Column(name = "first_name")
-	 private String firstName;
-	 
-	 @Column(name = "last_name")
-	 private String lastName;
-	 
-	 @Column(name = "middle_name")
-	 private String middleName;
-	 
-	 @Column(name = "address")
-	 private AddressMstr address;
-	 
-	 @Column(name = "birth_date")
-	 private Date birthDate;
-	 
-	 private Long gender;
-	 
-	 @Column(name = "is_otp_verified")
-	 private Boolean isOtpVerified;
-	 
-	 @Column(name = "is_email_verified")
-	 private Boolean isEmailVerified;
-	 
-	 @Column(name = "user_type")
-	 private Long userType;
-	 
-	 @ManyToOne
-	 @JoinColumn(name = "bank")
-	 private BankMstr bank;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
+	private String name;
+
+	private String email;
+
+	private String mobile;
+
+	private String password;
+
+	@Column(name = "is_accept_term_condition")
+	private Boolean isAcceptTermCondition;
+
+	@Column(name = "first_name")
+	private String firstName;
+
+	@Column(name = "last_name")
+	private String lastName;
+
+	@Column(name = "middle_name")
+	private String middleName;
+
+	@Column(name = "address")
+	private AddressMstr address;
+
+	@Column(name = "birth_date")
+	private Date birthDate;
+
+	private Long gender;
+
+	@Column(name = "is_otp_verified")
+	private Boolean isOtpVerified;
+
+	@Column(name = "is_email_verified")
+	private Boolean isEmailVerified;
+
+	@Column(name = "user_type")
+	private Long userType;
+
+	@Column(name = "salutation")
+	private Long salutation;
+
+	@ManyToOne
+	@JoinColumn(name = "bank")
+	private BankMstr bank;
 
 	public Long getId() {
 		return id;
@@ -158,7 +160,6 @@ public class User extends Auditor implements Serializable{
 		this.gender = gender;
 	}
 
-
 	public Boolean getIsOtpVerified() {
 		return isOtpVerified;
 	}
@@ -198,6 +199,22 @@ public class User extends Auditor implements Serializable{
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
-	
+
+	public Long getSalutation() {
+		return salutation;
+	}
+
+	public void setSalutation(Long salutation) {
+		this.salutation = salutation;
+	}
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", name=" + name + ", email=" + email + ", mobile=" + mobile + ", password="
+				+ password + ", isAcceptTermCondition=" + isAcceptTermCondition + ", firstName=" + firstName
+				+ ", lastName=" + lastName + ", middleName=" + middleName + ", address=" + address + ", birthDate="
+				+ birthDate + ", gender=" + gender + ", isOtpVerified=" + isOtpVerified + ", isEmailVerified="
+				+ isEmailVerified + ", userType=" + userType + ", salutation=" + salutation + ", bank=" + bank + "]";
+	}
+
 }

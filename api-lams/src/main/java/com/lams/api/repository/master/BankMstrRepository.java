@@ -1,4 +1,4 @@
-package com.lams.api.repository;
+package com.lams.api.repository.master;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

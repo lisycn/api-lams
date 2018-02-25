@@ -13,6 +13,7 @@ public class CommonUtils {
 	public static final String USER_ID = "userId";
 	public static final String USER_TYPE = "userType";
 	public static final String SOMETHING_WENT_WRONG = "Something Went Wrong !";
+	public static final String INVALID_REQUEST = "Invalid Request !";
 
 	static {
 		lamsUrls = new ArrayList<String>();

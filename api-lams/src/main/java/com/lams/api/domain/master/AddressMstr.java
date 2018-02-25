@@ -7,7 +7,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.lams.api.domain.User;
 
 @Entity
 @Table(name = "address_mstr")
@@ -25,7 +29,7 @@ public class AddressMstr extends Auditor implements Serializable {
 	@Column(name = "land_mark")
 	private String landMark;
 
-	private Double pincode;
+	private String pincode;
 
 	@Column(name = "country_id")
 	private Long countryId;
@@ -35,6 +39,10 @@ public class AddressMstr extends Auditor implements Serializable {
 
 	@Column(name = "city_id")
 	private Long cityId;
+
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private User user;
 
 	public Long getId() {
 		return id;
@@ -58,14 +66,6 @@ public class AddressMstr extends Auditor implements Serializable {
 
 	public void setLandMark(String landMark) {
 		this.landMark = landMark;
-	}
-
-	public Double getPincode() {
-		return pincode;
-	}
-
-	public void setPincode(Double pincode) {
-		this.pincode = pincode;
 	}
 
 	public Long getCountryId() {
@@ -92,4 +92,26 @@ public class AddressMstr extends Auditor implements Serializable {
 		this.cityId = cityId;
 	}
 
+	public String getPincode() {
+		return pincode;
+	}
+
+	public void setPincode(String pincode) {
+		this.pincode = pincode;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	@Override
+	public String toString() {
+		return "AddressMstr [id=" + id + ", streetName=" + streetName + ", landMark=" + landMark + ", pincode="
+				+ pincode + ", countryId=" + countryId + ", stateId=" + stateId + ", cityId=" + cityId + ", user="
+				+ user + "]";
+	}
 }
