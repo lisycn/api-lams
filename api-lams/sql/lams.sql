@@ -147,3 +147,42 @@ CREATE TABLE `lams`.`country_mstr` (
     ON UPDATE NO ACTION);
 
   
+ALTER TABLE `lams`.`bank_mstr` 
+ADD COLUMN `code` VARCHAR(45) NULL AFTER `is_active`;
+
+
+ALTER TABLE `lams`.`country_mstr` 
+DROP FOREIGN KEY `fk_country_mstr_1`;
+ALTER TABLE `lams`.`country_mstr` 
+CHANGE COLUMN `mstr_base_id` `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT ;
+ALTER TABLE `lams`.`country_mstr` 
+ADD CONSTRAINT `fk_country_mstr_1`
+  FOREIGN KEY (`id`)
+  REFERENCES `lams`.`mstr_base` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+  
+  
+  ALTER TABLE `lams`.`state_mstr` 
+DROP FOREIGN KEY `fk_state_mstr_1`;
+ALTER TABLE `lams`.`state_mstr` 
+CHANGE COLUMN `mstr_base_id` `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT ;
+ALTER TABLE `lams`.`state_mstr` 
+ADD CONSTRAINT `fk_state_mstr_1`
+  FOREIGN KEY (`id`)
+  REFERENCES `lams`.`mstr_base` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+  
+  ALTER TABLE `lams`.`city_mstr` 
+DROP FOREIGN KEY `fk_city_mstr_1`;
+ALTER TABLE `lams`.`city_mstr` 
+CHANGE COLUMN `mstr_base_id` `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT ;
+ALTER TABLE `lams`.`city_mstr` 
+ADD CONSTRAINT `fk_city_mstr_1`
+  FOREIGN KEY (`id`)
+  REFERENCES `lams`.`mstr_base` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+
