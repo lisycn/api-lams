@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -53,19 +55,19 @@ public class AOPConfig {
 		String token = request.getHeader("token");
 		if(CommonUtils.isObjectNullOrEmpty(token)) {
 			logger.info("Token can't found from http request");
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			throw new BadRequestException("Bad Request, Token null or Empty !!",HttpStatus.BAD_REQUEST.value());
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED, HttpStatus.UNAUTHORIZED.name() + " , Token null or Empty !!");
 		}
 		LoginAuditTrail loginAuditTrail = auditTrailRepository.findByTokenAndIsActive(token, true);
 		if(CommonUtils.isObjectNullOrEmpty(loginAuditTrail)) {
 			logger.info("Token is not valid -----------------------> " + token);
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			throw new BadRequestException("Token is not valid !!",HttpStatus.UNAUTHORIZED.value());
+			throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED, "Token is not valid !!");
 		}
 		if(CommonUtils.findDiffBetTwoDate(loginAuditTrail.getLoginDate()) > 0) {
 			logger.info("Token is expire -----------------------> " + token);
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);	
-			throw new BadRequestException("Token is Expire !!",HttpStatus.UNAUTHORIZED.value());
+			throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED, "Token is Expire !!");
 		}
 		request.setAttribute(CommonUtils.USER_ID, loginAuditTrail.getUserId());
 		request.setAttribute(CommonUtils.USER_TYPE, loginAuditTrail.getUserType());
