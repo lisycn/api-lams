@@ -14,8 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 
 import com.lams.api.domain.User;
-import com.lams.api.repository.BankMstrRepository;
 import com.lams.api.repository.UserMstrRepository;
+import com.lams.api.repository.master.BankMstrRepository;
 import com.lams.api.service.UserMstrService;
 import com.lams.model.bo.LamsResponse;
 import com.lams.model.bo.UserBO;
