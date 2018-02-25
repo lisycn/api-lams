@@ -10,4 +10,9 @@ public interface UserMstrService {
 	public LamsResponse registration(UserBO userBO);
 	
 	public List<UserBO> getUsersByUserType(Long userType);
+	
+	public UserBO getUserById(Long id);
+	
+	public LamsResponse updateUserDetails(UserBO userBO);
 }
+

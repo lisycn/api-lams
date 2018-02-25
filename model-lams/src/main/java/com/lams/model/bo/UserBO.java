@@ -179,6 +179,17 @@ public class UserBO extends AuditorBO implements Serializable {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+
+	@Override
+	public String toString() {
+		return "UserBO [id=" + id + ", name=" + name + ", email=" + email + ", mobile=" + mobile
+				+ ", isAcceptTermCondition=" + isAcceptTermCondition + ", firstName=" + firstName + ", lastName="
+				+ lastName + ", middleName=" + middleName + ", address=" + address + ", birthDate=" + birthDate
+				+ ", gender=" + gender + ", isActive=" + isActive + ", isOtpVerified=" + isOtpVerified
+				+ ", isEmailVerified=" + isEmailVerified + ", userType=" + userType + ", bank=" + bank + ", password="
+				+ password + "]";
+	}
+	
 	
 	
 }

@@ -8,7 +8,6 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-
 @MappedSuperclass
 public class Auditor implements Serializable {
 
@@ -17,21 +16,21 @@ public class Auditor implements Serializable {
 	 */
 	private static final long serialVersionUID = 7184530724614478541L;
 
-	@Column(name="created_by")
+	@Column(name = "created_by")
 	private Long createdBy;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="created_date")
+	@Column(name = "created_date")
 	private Date createdDate;
-	
-	@Column(name="modified_by")
+
+	@Column(name = "modified_by")
 	private Long modifiedBy;
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="modified_date")
+	@Column(name = "modified_date")
 	private Date modifiedDate;
-	
-	@Column(name="is_active")
+
+	@Column(name = "is_active")
 	private Boolean isActive;
 
 	public Long getCreatedBy() {
@@ -74,4 +73,9 @@ public class Auditor implements Serializable {
 		this.isActive = isActive;
 	}
 
+	@Override
+	public String toString() {
+		return "Auditor [createdBy=" + createdBy + ", createdDate=" + createdDate + ", modifiedBy=" + modifiedBy
+				+ ", modifiedDate=" + modifiedDate + ", isActive=" + isActive + "]";
+	}
 }

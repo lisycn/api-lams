@@ -3,25 +3,28 @@ package com.lams.model.bo;
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.lams.model.bo.master.CityBO;
+import com.lams.model.bo.master.CountryBO;
+import com.lams.model.bo.master.StateBO;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AddressBO extends AuditorBO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private Long id;
-	
+
 	private String streetName;
-	
+
 	private String landMark;
-	
+
 	private Double pincode;
-	
-	private Long countryId;
-	
-	private Long stateId;
-	
-	private Long cityId;
+
+	private CountryBO country;
+
+	private StateBO state;
+
+	private CityBO city;
 
 	public Long getId() {
 		return id;
@@ -55,30 +58,34 @@ public class AddressBO extends AuditorBO implements Serializable {
 		this.pincode = pincode;
 	}
 
-	public Long getCountryId() {
-		return countryId;
+	public CountryBO getCountry() {
+		return country;
 	}
 
-	public void setCountryId(Long countryId) {
-		this.countryId = countryId;
+	public void setCountry(CountryBO country) {
+		this.country = country;
 	}
 
-	public Long getStateId() {
-		return stateId;
+	public StateBO getState() {
+		return state;
 	}
 
-	public void setStateId(Long stateId) {
-		this.stateId = stateId;
+	public void setState(StateBO state) {
+		this.state = state;
 	}
 
-	public Long getCityId() {
-		return cityId;
+	public CityBO getCity() {
+		return city;
 	}
 
-	public void setCityId(Long cityId) {
-		this.cityId = cityId;
+	public void setCity(CityBO city) {
+		this.city = city;
 	}
-	
-	
+
+	@Override
+	public String toString() {
+		return "AddressBO [id=" + id + ", streetName=" + streetName + ", landMark=" + landMark + ", pincode=" + pincode
+				+ ", country=" + country + ", state=" + state + ", city=" + city + "]";
+	}
 
 }

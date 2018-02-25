@@ -81,3 +81,69 @@ CREATE TABLE `lams`.`user` (
 
 
 INSERT INTO `lams`.`user` (`name`, `email`, `mobile`, `password`,  `is_active`) VALUES ('admin', 'admin@gmail.com', '8975849586', 'e8e99ce7fa9c15f522e21e2fb2cc752c', 1);
+
+--Master Base Table
+
+  CREATE TABLE `lams`.`mstr_base` (
+  `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(100) NOT NULL,
+  `code` VARCHAR(45) NULL,
+  `is_active` BIT(1) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`id`));
+  
+ALTER TABLE `lams`.`mstr_base` ADD COLUMN `created_by` BIGINT(20) UNSIGNED NULL AFTER `is_active`,
+ADD COLUMN `created_date` DATETIME NOT NULL DEFAULT NOW() AFTER `created_by`,
+ADD COLUMN `modified_by` BIGINT(20) UNSIGNED NULL AFTER `created_date`,
+ADD COLUMN `modified_date` DATETIME NULL AFTER `modified_by`, RENAME TO  `lams`.`mstr_base` ;
+
+
+
+--For Country
+CREATE TABLE `lams`.`country_mstr` (
+  `mstr_base_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`mstr_base_id`),
+  CONSTRAINT `fk_country_mstr_1`
+    FOREIGN KEY (`mstr_base_id`)
+    REFERENCES `lams`.`mstr_base` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+
+--  For State
+ CREATE TABLE `lams`.`state_mstr` (
+  `mstr_base_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `country_id` BIGINT(20) UNSIGNED NOT NULL,
+  PRIMARY KEY (`mstr_base_id`),
+  INDEX `fk_state_mstr_2_idx` (`country_id` ASC),
+  CONSTRAINT `fk_state_mstr_1`
+    FOREIGN KEY (`mstr_base_id`)
+    REFERENCES `lams`.`mstr_base` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_state_mstr_2`
+    FOREIGN KEY (`country_id`)
+    REFERENCES `lams`.`country_mstr` (`mstr_base_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+
+
+--  For City
+
+ CREATE TABLE `lams`.`city_mstr` (
+  `mstr_base_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `state_id` BIGINT(20) UNSIGNED NOT NULL,
+  PRIMARY KEY (`mstr_base_id`),
+  INDEX `fk_city_mstr_2_idx` (`state_id` ASC),
+  CONSTRAINT `fk_city_mstr_1`
+    FOREIGN KEY (`mstr_base_id`)
+    REFERENCES `lams`.`mstr_base` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_city_mstr_2`
+    FOREIGN KEY (`state_id`)
+    REFERENCES `lams`.`state_mstr` (`mstr_base_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+  
