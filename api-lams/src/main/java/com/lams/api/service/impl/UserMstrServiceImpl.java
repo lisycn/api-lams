@@ -14,9 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 
 import com.lams.api.domain.User;
+import com.lams.api.domain.master.AddressMstr;
 import com.lams.api.repository.UserMstrRepository;
+import com.lams.api.repository.master.AddressMstrRepository;
 import com.lams.api.repository.master.BankMstrRepository;
 import com.lams.api.service.UserMstrService;
+import com.lams.api.service.master.AddressService;
 import com.lams.model.bo.LamsResponse;
 import com.lams.model.bo.UserBO;
 import com.lams.model.utils.CommonUtils;
@@ -34,14 +37,17 @@ public class UserMstrServiceImpl implements UserMstrService {
 	@Autowired
 	private BankMstrRepository bankMstrRepository;
 
+	@Autowired
+	private AddressService addressService;
+
 	@Override
 	public LamsResponse registration(UserBO userBO, Long userId) {
 
 		User user = null;
-		if(!CommonUtils.isObjectNullOrEmpty(userBO.getId())) {
-			user = userMstrRepository.findOne(userBO.getId());			
+		if (!CommonUtils.isObjectNullOrEmpty(userBO.getId())) {
+			user = userMstrRepository.findOne(userBO.getId());
 		}
-		if(CommonUtils.isObjectNullOrEmpty(user)) {
+		if (CommonUtils.isObjectNullOrEmpty(user)) {
 			// CHECK IF EMAIL IS EXIST
 			if (userMstrRepository.checkEmail(userBO.getEmail()) > 0) {
 				logger.info("Email is already exist ------------------------->" + userBO.getEmail());
@@ -58,7 +64,7 @@ public class UserMstrServiceImpl implements UserMstrService {
 			user.setCreatedBy(userId);
 			user.setIsActive(true);
 		} else {
-			if(!user.getIsActive()) {
+			if (!user.getIsActive()) {
 				logger.info("Current User is Inactive ------------------------->" + userBO.getMobile());
 				return new LamsResponse(HttpStatus.BAD_REQUEST.value(), "User is inactive");
 			}
@@ -69,21 +75,23 @@ public class UserMstrServiceImpl implements UserMstrService {
 			}
 
 			// CHECK IF MOBILE IS EXIST
-			if (userMstrRepository.checkMobileById(userBO.getMobile(),user.getId()) > 0) {
+			if (userMstrRepository.checkMobileById(userBO.getMobile(), user.getId()) > 0) {
 				logger.info("Mobile is already exist ------------------------->" + userBO.getMobile());
 				return new LamsResponse(HttpStatus.BAD_REQUEST.value(), "Mobile is Already Exist");
 			}
 			user.setModifiedDate(new Date());
 			user.setModifiedBy(userId);
 		}
-		BeanUtils.copyProperties(userBO, user, "id","isActive","createdDate","createdBy");
+		BeanUtils.copyProperties(userBO, user, "id", "isActive", "createdDate", "createdBy");
 		user.setIsAcceptTermCondition(true);
-		user.setIsEmailVerified(!CommonUtils.isObjectNullOrEmpty(userBO.getIsEmailVerified()) ? userBO.getIsEmailVerified() : false);
-		user.setIsOtpVerified(!CommonUtils.isObjectNullOrEmpty(userBO.getIsOtpVerified()) ? userBO.getIsOtpVerified() : false);
-		
+		user.setIsEmailVerified(
+				!CommonUtils.isObjectNullOrEmpty(userBO.getIsEmailVerified()) ? userBO.getIsEmailVerified() : false);
+		user.setIsOtpVerified(
+				!CommonUtils.isObjectNullOrEmpty(userBO.getIsOtpVerified()) ? userBO.getIsOtpVerified() : false);
+
 		if (!CommonUtils.isObjectNullOrEmpty(userBO.getUserType())) {
 			UserType userType = CommonUtils.UserType.getType(userBO.getUserType().intValue());
-			if (CommonUtils.isObjectNullOrEmptyOrDash(userType) && userType.equals(CommonUtils.UserType.LENDER)) {
+			if (CommonUtils.isObjectNullOrEmpty(userType) && userType.equals(CommonUtils.UserType.LENDER)) {
 				if (!CommonUtils.isObjectNullOrEmpty(userBO.getBank())) {
 					user.setBank(bankMstrRepository.findOne(userBO.getBank().getId()));
 				}
@@ -137,7 +145,7 @@ public class UserMstrServiceImpl implements UserMstrService {
 		BeanUtils.copyProperties(userBO, user, "password");
 		if (!CommonUtils.isObjectNullOrEmpty(userBO.getUserType())) {
 			UserType userType = CommonUtils.UserType.getType(userBO.getUserType().intValue());
-			if (CommonUtils.isObjectNullOrEmptyOrDash(userType) && userType.equals(CommonUtils.UserType.LENDER)) {
+			if (CommonUtils.isObjectNullOrEmpty(userType) && userType.equals(CommonUtils.UserType.LENDER)) {
 				if (!CommonUtils.isObjectNullOrEmpty(userBO.getBank())) {
 					user.setBank(bankMstrRepository.findOne(userBO.getBank().getId()));
 				}
@@ -145,7 +153,10 @@ public class UserMstrServiceImpl implements UserMstrService {
 		}
 		user.setModifiedDate(new Date());
 		user.setModifiedBy(userBO.getId());
-		userMstrRepository.save(user);
+		user = userMstrRepository.save(user);
+		// Setting Addrss
+		addressService.saveAddress(userBO.getAddress(), userBO.getId());
+
 		logger.log(Level.INFO, "Successfully updated User Details for ID----" + user.getId());
 		return new LamsResponse(HttpStatus.OK.value(), "Success", getUserById(user.getId()));
 	}

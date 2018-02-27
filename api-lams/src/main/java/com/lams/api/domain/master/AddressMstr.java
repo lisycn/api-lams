@@ -31,14 +31,17 @@ public class AddressMstr extends Auditor implements Serializable {
 
 	private String pincode;
 
-	@Column(name = "country_id")
-	private Long countryId;
+//	@ManyToOne
+//	@JoinColumn(name = "country_id")
+//	private CountryMstr country;
+//
+//	@ManyToOne
+//	@JoinColumn(name = "state_id")
+//	private StateMstr state;
 
-	@Column(name = "state_id")
-	private Long stateId;
-
-	@Column(name = "city_id")
-	private Long cityId;
+	@ManyToOne
+	@JoinColumn(name = "city_id")
+	private CityMstr city;
 
 	@ManyToOne
 	@JoinColumn(name = "user_id")
@@ -68,30 +71,6 @@ public class AddressMstr extends Auditor implements Serializable {
 		this.landMark = landMark;
 	}
 
-	public Long getCountryId() {
-		return countryId;
-	}
-
-	public void setCountryId(Long countryId) {
-		this.countryId = countryId;
-	}
-
-	public Long getStateId() {
-		return stateId;
-	}
-
-	public void setStateId(Long stateId) {
-		this.stateId = stateId;
-	}
-
-	public Long getCityId() {
-		return cityId;
-	}
-
-	public void setCityId(Long cityId) {
-		this.cityId = cityId;
-	}
-
 	public String getPincode() {
 		return pincode;
 	}
@@ -108,10 +87,18 @@ public class AddressMstr extends Auditor implements Serializable {
 		this.user = user;
 	}
 
+	public CityMstr getCity() {
+		return city;
+	}
+
+	public void setCity(CityMstr city) {
+		this.city = city;
+	}
+
 	@Override
 	public String toString() {
 		return "AddressMstr [id=" + id + ", streetName=" + streetName + ", landMark=" + landMark + ", pincode="
-				+ pincode + ", countryId=" + countryId + ", stateId=" + stateId + ", cityId=" + cityId + ", user="
-				+ user + "]";
+				+ pincode + ", city=" + city + ", user=" + user + "]";
 	}
+
 }

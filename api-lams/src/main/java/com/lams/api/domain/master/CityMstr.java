@@ -25,6 +25,11 @@ public class CityMstr extends MasterBase implements Serializable {
 		super();
 	}
 
+	public CityMstr(Long id) {
+		super();
+		this.setId(id);
+	}
+
 	public StateMstr getState() {
 		return state;
 	}

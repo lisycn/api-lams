@@ -10,8 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.lams.api.domain.master.AddressMstr;
@@ -71,6 +69,15 @@ public class User extends Auditor implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "bank")
 	private BankMstr bank;
+
+	public User() {
+		super();
+	}
+
+	public User(Long id) {
+		super();
+		this.id = id;
+	}
 
 	public Long getId() {
 		return id;

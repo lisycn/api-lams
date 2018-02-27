@@ -15,4 +15,12 @@ public interface AddressMstrRepository extends JpaRepository<AddressMstr, Long> 
 	@Query("update AddressMstr addr set addr.isActive = false where addr.isActive = true and addr.user.id =:userId")
 	public int inactive(@Param("userId") Long userId);
 
+	@Modifying
+	@Query("update AddressMstr addr set addr.isActive = false where addr.isActive = true and addr.id =:id")
+	public int inactiveById(@Param("id") Long id);
+
+	public AddressMstr findByIdAndIsActive(Long id, Boolean isActive);
+	
+	public AddressMstr findByUserIdAndIsActive(Long userId, Boolean isActive);
+
 }
