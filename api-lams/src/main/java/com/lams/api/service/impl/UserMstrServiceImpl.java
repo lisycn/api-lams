@@ -15,13 +15,20 @@ import org.springframework.util.DigestUtils;
 
 import com.lams.api.domain.User;
 import com.lams.api.domain.master.AddressMstr;
+import com.lams.api.domain.master.CityMstr;
+import com.lams.api.domain.master.CountryMstr;
+import com.lams.api.domain.master.StateMstr;
 import com.lams.api.repository.UserMstrRepository;
 import com.lams.api.repository.master.AddressMstrRepository;
 import com.lams.api.repository.master.BankMstrRepository;
 import com.lams.api.service.UserMstrService;
 import com.lams.api.service.master.AddressService;
+import com.lams.model.bo.AddressBO;
 import com.lams.model.bo.LamsResponse;
 import com.lams.model.bo.UserBO;
+import com.lams.model.bo.master.CityBO;
+import com.lams.model.bo.master.CountryBO;
+import com.lams.model.bo.master.StateBO;
 import com.lams.model.utils.CommonUtils;
 import com.lams.model.utils.CommonUtils.UserType;
 
@@ -39,6 +46,9 @@ public class UserMstrServiceImpl implements UserMstrService {
 
 	@Autowired
 	private AddressService addressService;
+
+	@Autowired
+	private AddressMstrRepository addressMstrRepository;
 
 	@Override
 	public LamsResponse registration(UserBO userBO, Long userId) {
@@ -132,6 +142,36 @@ public class UserMstrServiceImpl implements UserMstrService {
 		}
 		UserBO userBo = new UserBO();
 		BeanUtils.copyProperties(user, userBo, "password");
+
+		AddressMstr addressMstr = addressMstrRepository.findByUserIdAndIsActive(user.getId(), true);
+		if (!CommonUtils.isObjectNullOrEmpty(addressMstr)) {
+			AddressBO addressBO = new AddressBO();
+			BeanUtils.copyProperties(addressMstr, addressBO);
+			// Copy City
+			CityMstr cityMstr = addressMstr.getCity();
+			if (!CommonUtils.isObjectNullOrEmpty(cityMstr)) {
+				CityBO cityBO = new CityBO();
+				BeanUtils.copyProperties(cityMstr, cityBO);
+				addressBO.setCity(cityBO);
+
+				// Copy State
+				StateMstr state = cityMstr.getState();
+				if (!CommonUtils.isObjectNullOrEmpty(state)) {
+					StateBO stateBO = new StateBO();
+					BeanUtils.copyProperties(state, stateBO);
+					addressBO.setState(stateBO);
+				}
+
+				// Copy Country
+				CountryMstr country = state.getCountry();
+				if (!CommonUtils.isObjectNullOrEmpty(country)) {
+					CountryBO coutryBO = new CountryBO();
+					BeanUtils.copyProperties(country, coutryBO);
+					addressBO.setCountry(coutryBO);
+				}
+			}
+			userBo.setAddress(addressBO);
+		}
 		return userBo;
 	}
 

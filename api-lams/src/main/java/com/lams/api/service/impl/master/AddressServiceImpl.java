@@ -11,8 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.lams.api.domain.User;
 import com.lams.api.domain.master.AddressMstr;
 import com.lams.api.domain.master.CityMstr;
-import com.lams.api.repository.LoginAuditTrailRepository;
-import com.lams.api.repository.UserMstrRepository;
 import com.lams.api.repository.master.AddressMstrRepository;
 import com.lams.api.service.master.AddressService;
 import com.lams.model.bo.AddressBO;
