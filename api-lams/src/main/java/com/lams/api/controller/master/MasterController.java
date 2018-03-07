@@ -19,6 +19,7 @@ import com.lams.api.service.master.StateService;
 import com.lams.model.bo.LamsResponse;
 import com.lams.model.bo.LoginResponse;
 import com.lams.model.utils.CommonUtils;
+import com.lams.model.utils.Enums;
 
 @RestController
 @RequestMapping("/master")
@@ -44,7 +45,7 @@ public class MasterController {
 		try {
 			if (CommonUtils.isObjectNullOrEmpty(mode)) {
 				logger.log(Level.WARNING, "No Mode Found so Returnig All Countries===>Mode====>{}", mode);
-				mode = CommonUtils.Mode.BOTH.getId();
+				mode = Enums.Mode.BOTH.getId();
 			}
 			return new ResponseEntity<LamsResponse>(
 					new LamsResponse(HttpStatus.OK.value(), "Success", countryService.getCountriesByMode(mode)),
@@ -108,7 +109,7 @@ public class MasterController {
 		try {
 			if (CommonUtils.isObjectNullOrEmpty(mode)) {
 				logger.log(Level.WARNING, "No Mode Found so Returnig All Salutations===>Mode====>{}", mode);
-				mode = CommonUtils.Mode.BOTH.getId();
+				mode = Enums.Mode.BOTH.getId();
 			}
 			return new ResponseEntity<LamsResponse>(
 					new LamsResponse(HttpStatus.OK.value(), "Success", salutationService.getSalutationByMode(mode)),

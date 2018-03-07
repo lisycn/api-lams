@@ -16,7 +16,8 @@ import com.lams.api.repository.master.SalutaionMstrRepository;
 import com.lams.api.service.master.SalutationService;
 import com.lams.model.bo.master.MasterBaseBO;
 import com.lams.model.utils.CommonUtils;
-import com.lams.model.utils.CommonUtils.Mode;
+import com.lams.model.utils.Enums;
+import com.lams.model.utils.Enums.Mode;
 
 @Service
 @Transactional
@@ -31,7 +32,7 @@ public class SalutationServiceImpl implements SalutationService {
 	public List<MasterBaseBO> getSalutationByMode(Integer mode) {
 		logger.log(Level.INFO, "Entry in getSalutationByMode");
 		List<SalutaionMstr> salutaions = null;
-		Mode type = CommonUtils.Mode.getType(mode);
+		Mode type = Enums.Mode.getType(mode);
 		switch (type) {
 		case ACTIVE:
 			salutaions = salutaionMstrRepository.findByIsActive(true);

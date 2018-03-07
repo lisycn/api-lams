@@ -30,7 +30,8 @@ import com.lams.model.bo.master.CityBO;
 import com.lams.model.bo.master.CountryBO;
 import com.lams.model.bo.master.StateBO;
 import com.lams.model.utils.CommonUtils;
-import com.lams.model.utils.CommonUtils.UserType;
+import com.lams.model.utils.Enums;
+import com.lams.model.utils.Enums.UserType;
 
 @Service
 @Transactional
@@ -100,8 +101,8 @@ public class UserMstrServiceImpl implements UserMstrService {
 				!CommonUtils.isObjectNullOrEmpty(userBO.getIsOtpVerified()) ? userBO.getIsOtpVerified() : false);
 
 		if (!CommonUtils.isObjectNullOrEmpty(userBO.getUserType())) {
-			UserType userType = CommonUtils.UserType.getType(userBO.getUserType().intValue());
-			if (CommonUtils.isObjectNullOrEmpty(userType) && userType.equals(CommonUtils.UserType.LENDER)) {
+			UserType userType = Enums.UserType.getType(userBO.getUserType().intValue());
+			if (CommonUtils.isObjectNullOrEmpty(userType) && userType.equals(Enums.UserType.LENDER)) {
 				if (!CommonUtils.isObjectNullOrEmpty(userBO.getBank())) {
 					user.setBank(bankMstrRepository.findOne(userBO.getBank().getId()));
 				}
@@ -184,8 +185,8 @@ public class UserMstrServiceImpl implements UserMstrService {
 		}
 		BeanUtils.copyProperties(userBO, user, "password");
 		if (!CommonUtils.isObjectNullOrEmpty(userBO.getUserType())) {
-			UserType userType = CommonUtils.UserType.getType(userBO.getUserType().intValue());
-			if (CommonUtils.isObjectNullOrEmpty(userType) && userType.equals(CommonUtils.UserType.LENDER)) {
+			UserType userType = Enums.UserType.getType(userBO.getUserType().intValue());
+			if (CommonUtils.isObjectNullOrEmpty(userType) && userType.equals(Enums.UserType.LENDER)) {
 				if (!CommonUtils.isObjectNullOrEmpty(userBO.getBank())) {
 					user.setBank(bankMstrRepository.findOne(userBO.getBank().getId()));
 				}

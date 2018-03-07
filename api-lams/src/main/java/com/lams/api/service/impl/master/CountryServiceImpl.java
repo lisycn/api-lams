@@ -1,7 +1,6 @@
 package com.lams.api.service.impl.master;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
@@ -17,7 +16,8 @@ import com.lams.api.repository.master.CountryMstrRepository;
 import com.lams.api.service.master.CountryService;
 import com.lams.model.bo.master.CountryBO;
 import com.lams.model.utils.CommonUtils;
-import com.lams.model.utils.CommonUtils.Mode;
+import com.lams.model.utils.Enums;
+import com.lams.model.utils.Enums.Mode;
 
 @Service
 @Transactional
@@ -32,7 +32,7 @@ public class CountryServiceImpl implements CountryService {
 	public List<CountryBO> getCountriesByMode(Integer mode) {
 		logger.log(Level.INFO, "Entry in getCountriesByMode");
 		List<CountryMstr> countries = null;
-		Mode type = CommonUtils.Mode.getType(mode);
+		Mode type = Enums.Mode.getType(mode);
 		switch (type) {
 		case ACTIVE:
 			countries = countryMstrRepository.findByIsActive(true);
