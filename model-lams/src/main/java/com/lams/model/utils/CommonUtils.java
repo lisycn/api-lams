@@ -104,35 +104,5 @@ public class CommonUtils {
 		public static final Integer COMMUNICATION = 2;
 	}
 
-	public enum YesNoType {
-		YES(1l,"Yes"), NO(2l,"No");
-
-		private Long id;
-		private String value;
-
-		private YesNoType(Long id,String value) {
-			this.id = id;
-			this.value = value;
-		}
-		public Long getId() {
-			return id;
-		}
-		public String getValue() {
-			return value;
-		}
-
-		public static YesNoType getType(Long x) {
-			switch (x.intValue()) {
-			case 1:
-				return YES;
-			case 2:
-				return NO;
-			default:
-				return null;
-			}
-		}
-		public static YesNoType[] getAll() {
-			return YesNoType.values();
-		}
-	}
+	
 }

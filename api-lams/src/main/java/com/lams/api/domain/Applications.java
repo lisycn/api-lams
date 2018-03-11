@@ -15,11 +15,12 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import com.lams.api.domain.master.ApplicationTypeMstr;
+import com.lams.api.domain.master.Auditor;
 import com.lams.api.domain.master.LoanTypeMstr;
 
 @Entity
 @Table(name = "applications")
-public class Applications implements Serializable {
+public class Applications extends Auditor implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -44,7 +45,7 @@ public class Applications implements Serializable {
 	private Double emi;
 	
 	@Column(name="balance_tenure")
-	private Double balance_tenure;
+	private Double balanceTenure;
 	
 	@Column(name="close_before_disbsmnt")
 	private Integer closeBeforeDisbsmnt;
@@ -66,22 +67,6 @@ public class Applications implements Serializable {
 	@Column(name="loan_amount")
 	private Double loanAmount;
 	
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="created_date")
-	private Date createdDate;
-	
-	@Column(name="created_by")
-	private Long createdBy;
-	
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="modify_date")
-	private Date modifyDate;
-	
-	@Column(name="modify_by")
-	private Long modifyBy;
-	
-	@Column(name="is_active")
-	private Boolean isActive;
 
 	public Long getId() {
 		return id;
@@ -123,12 +108,12 @@ public class Applications implements Serializable {
 		this.emi = emi;
 	}
 
-	public Double getBalance_tenure() {
-		return balance_tenure;
+	public Double getBalanceTenure() {
+		return balanceTenure;
 	}
 
-	public void setBalance_tenure(Double balance_tenure) {
-		this.balance_tenure = balance_tenure;
+	public void setBalanceTenure(Double balanceTenure) {
+		this.balanceTenure = balanceTenure;
 	}
 
 	public Integer getCloseBeforeDisbsmnt() {
@@ -187,45 +172,6 @@ public class Applications implements Serializable {
 		this.loanAmount = loanAmount;
 	}
 
-	public Date getCreatedDate() {
-		return createdDate;
-	}
-
-	public void setCreatedDate(Date createdDate) {
-		this.createdDate = createdDate;
-	}
-
-	public Long getCreatedBy() {
-		return createdBy;
-	}
-
-	public void setCreatedBy(Long createdBy) {
-		this.createdBy = createdBy;
-	}
-
-	public Date getModifyDate() {
-		return modifyDate;
-	}
-
-	public void setModifyDate(Date modifyDate) {
-		this.modifyDate = modifyDate;
-	}
-
-	public Long getModifyBy() {
-		return modifyBy;
-	}
-
-	public void setModifyBy(Long modifyBy) {
-		this.modifyBy = modifyBy;
-	}
-
-	public Boolean getIsActive() {
-		return isActive;
-	}
-
-	public void setIsActive(Boolean isActive) {
-		this.isActive = isActive;
-	}
 
 	public Long getUserId() {
 		return userId;

@@ -71,10 +71,10 @@ public class ApplicationsServiceImpl implements ApplicationsService{
 			applications.setIsActive(true);
 			applications.setUserId(applicationsBO.getUserId());
 		} else {
-			applications.setModifyBy(applicationsBO.getUserId());
-			applications.setModifyDate(new Date());
+			applications.setModifiedBy(applicationsBO.getUserId());
+			applications.setModifiedDate(new Date());
 		}
-		BeanUtils.copyProperties(applicationsBO, applications,"id","createdBy","modifyDate","createdBy","modifyBy","userId","isActive");
+		BeanUtils.copyProperties(applicationsBO, applications,"id","createdBy","modifiedDate","createdDate","modifiedBy","userId","isActive");
 		if(!CommonUtils.isObjectNullOrEmpty(applicationsBO.getApplicationTypeId())) {
 			applications.setApplicationTypeId(applicationTypeMstrRepository.findOne(applicationsBO.getApplicationTypeId()));
 		}
