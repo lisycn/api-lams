@@ -28,6 +28,9 @@ public class AddressMstr extends Auditor implements Serializable {
 
 	@Column(name = "land_mark")
 	private String landMark;
+	
+	@Column(name = "add_type")
+	private Integer addType;
 
 	private String pincode;
 
@@ -94,11 +97,21 @@ public class AddressMstr extends Auditor implements Serializable {
 	public void setCity(CityMstr city) {
 		this.city = city;
 	}
+	
+	public Integer getAddType() {
+		return addType;
+	}
+
+	public void setAddType(Integer addType) {
+		this.addType = addType;
+	}
 
 	@Override
 	public String toString() {
-		return "AddressMstr [id=" + id + ", streetName=" + streetName + ", landMark=" + landMark + ", pincode="
-				+ pincode + ", city=" + city + ", user=" + user + "]";
+		return "AddressMstr [id=" + id + ", streetName=" + streetName + ", landMark=" + landMark + ", addType="
+				+ addType + ", pincode=" + pincode + ", city=" + city + ", user=" + user + "]";
 	}
+
+	
 
 }

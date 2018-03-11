@@ -26,7 +26,7 @@ public class AddressServiceImpl implements AddressService {
 	private AddressMstrRepository addressMstrRepository;
 
 	@Override
-	public void saveAddress(AddressBO addressBO, Long userId) {
+	public void saveAddress(AddressBO addressBO, Long userId,Integer addType) {
 		logger.log(Level.INFO, "Start saveAddress()");
 		if (CommonUtils.isObjectNullOrEmpty(addressBO)) {
 			logger.log(Level.INFO, "Address must not be null while saving");
@@ -51,7 +51,11 @@ public class AddressServiceImpl implements AddressService {
 		if (!CommonUtils.isObjectNullOrEmpty(addressBO.getCity())
 				&& !CommonUtils.isObjectNullOrEmpty(addressBO.getCity().getId())) {
 			addressMstr.setCity(new CityMstr(addressBO.getCity().getId()));
+		} else {
+			addressMstr.setCity(null);
 		}
+		addressMstr.setPincode(addressBO.getPincode());
+		addressMstr.setAddType(addType);
 		addressMstr.setLandMark(addressBO.getLandMark());
 		addressMstr.setStreetName(addressBO.getStreetName());
 		addressMstrRepository.save(addressMstr);

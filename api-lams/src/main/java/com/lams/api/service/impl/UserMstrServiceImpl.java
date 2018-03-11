@@ -144,8 +144,8 @@ public class UserMstrServiceImpl implements UserMstrService {
 		UserBO userBo = new UserBO();
 		BeanUtils.copyProperties(user, userBo, "password");
 
-		AddressMstr addressMstr = addressMstrRepository.findByUserIdAndIsActive(user.getId(), true);
-		if (!CommonUtils.isObjectNullOrEmpty(addressMstr)) {
+		List<AddressMstr> addressMstrList = addressMstrRepository.findByUserIdAndIsActive(user.getId(), true);
+		for (AddressMstr addressMstr : addressMstrList) {
 			AddressBO addressBO = new AddressBO();
 			BeanUtils.copyProperties(addressMstr, addressBO);
 			// Copy City
@@ -161,17 +161,22 @@ public class UserMstrServiceImpl implements UserMstrService {
 					StateBO stateBO = new StateBO();
 					BeanUtils.copyProperties(state, stateBO);
 					addressBO.setState(stateBO);
-				}
-
-				// Copy Country
-				CountryMstr country = state.getCountry();
-				if (!CommonUtils.isObjectNullOrEmpty(country)) {
-					CountryBO coutryBO = new CountryBO();
-					BeanUtils.copyProperties(country, coutryBO);
-					addressBO.setCountry(coutryBO);
+					
+					// Copy Country
+					CountryMstr country = state.getCountry();
+					if (!CommonUtils.isObjectNullOrEmpty(country)) {
+						CountryBO coutryBO = new CountryBO();
+						BeanUtils.copyProperties(country, coutryBO);
+						addressBO.setCountry(coutryBO);
+					}
 				}
 			}
-			userBo.setAddress(addressBO);
+			if(addressMstr.getAddType() == CommonUtils.AddressType.PERMANENT) {
+				userBo.setPermanentAdd(addressBO);	
+			} else if(addressMstr.getAddType() == CommonUtils.AddressType.COMMUNICATION) {
+				userBo.setCommunicationAdd(addressBO);
+			}
+			
 		}
 		return userBo;
 	}
@@ -195,8 +200,14 @@ public class UserMstrServiceImpl implements UserMstrService {
 		user.setModifiedDate(new Date());
 		user.setModifiedBy(userBO.getId());
 		user = userMstrRepository.save(user);
-		// Setting Addrss
-		addressService.saveAddress(userBO.getAddress(), userBO.getId());
+		// Setting Address
+		if(!CommonUtils.isObjectNullOrEmpty(userBO.getPermanentAdd())) {
+			addressService.saveAddress(userBO.getPermanentAdd(), userBO.getId(),CommonUtils.AddressType.PERMANENT);	
+		}
+		if(!CommonUtils.isObjectNullOrEmpty(userBO.getCommunicationAdd())) {
+			addressService.saveAddress(userBO.getCommunicationAdd(), userBO.getId(),CommonUtils.AddressType.COMMUNICATION);	
+		}
+		
 
 		logger.log(Level.INFO, "Successfully updated User Details for ID----" + user.getId());
 		return new LamsResponse(HttpStatus.OK.value(), "Success", getUserById(user.getId()));

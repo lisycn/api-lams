@@ -3,6 +3,7 @@ package com.lams.model.bo;
 import java.io.Serializable;
 import java.util.Date;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -28,7 +29,9 @@ public class UserBO extends AuditorBO implements Serializable {
 
 	private String middleName;
 
-	private AddressBO address;
+	private AddressBO communicationAdd;
+	
+	private AddressBO permanentAdd;
 
 	private Date birthDate;
 
@@ -45,7 +48,17 @@ public class UserBO extends AuditorBO implements Serializable {
 	private BankBO bank;
 
 	private String password;
+	
+	private String panCard;
+	
+	private String aadharCardNo;
+	
+	private String eduQualification;
+	
+	private String contactNumber;
 
+	private Boolean isSameUsAddress;
+	
 	public Long getId() {
 		return id;
 	}
@@ -110,13 +123,6 @@ public class UserBO extends AuditorBO implements Serializable {
 		this.middleName = middleName;
 	}
 
-	public AddressBO getAddress() {
-		return address;
-	}
-
-	public void setAddress(AddressBO address) {
-		this.address = address;
-	}
 
 	public Date getBirthDate() {
 		return birthDate;
@@ -189,14 +195,78 @@ public class UserBO extends AuditorBO implements Serializable {
 	public void setSalutation(Long salutation) {
 		this.salutation = salutation;
 	}
+	
+	
+
+	public AddressBO getCommunicationAdd() {
+		return communicationAdd;
+	}
+
+	public void setCommunicationAdd(AddressBO communicationAdd) {
+		this.communicationAdd = communicationAdd;
+	}
+
+	public AddressBO getPermanentAdd() {
+		return permanentAdd;
+	}
+
+	public void setPermanentAdd(AddressBO permanentAdd) {
+		this.permanentAdd = permanentAdd;
+	}
+
+	public String getPanCard() {
+		return panCard;
+	}
+
+	public void setPanCard(String panCard) {
+		this.panCard = panCard;
+	}
+
+	public String getAadharCardNo() {
+		return aadharCardNo;
+	}
+
+	public void setAadharCardNo(String aadharCardNo) {
+		this.aadharCardNo = aadharCardNo;
+	}
+
+	public String getEduQualification() {
+		return eduQualification;
+	}
+
+	public void setEduQualification(String eduQualification) {
+		this.eduQualification = eduQualification;
+	}
+
+	public String getContactNumber() {
+		return contactNumber;
+	}
+
+	public void setContactNumber(String contactNumber) {
+		this.contactNumber = contactNumber;
+	}
+
+	public Boolean getIsSameUsAddress() {
+		return isSameUsAddress;
+	}
+
+	public void setIsSameUsAddress(Boolean isSameUsAddress) {
+		this.isSameUsAddress = isSameUsAddress;
+	}
 
 	@Override
 	public String toString() {
 		return "UserBO [id=" + id + ", salutation=" + salutation + ", name=" + name + ", email=" + email + ", mobile="
 				+ mobile + ", isAcceptTermCondition=" + isAcceptTermCondition + ", firstName=" + firstName
-				+ ", lastName=" + lastName + ", middleName=" + middleName + ", address=" + address + ", birthDate="
-				+ birthDate + ", gender=" + gender + ", isActive=" + isActive + ", isOtpVerified=" + isOtpVerified
-				+ ", isEmailVerified=" + isEmailVerified + ", userType=" + userType + ", bank=" + bank + ", password="
-				+ password + "]";
+				+ ", lastName=" + lastName + ", middleName=" + middleName + ", communicationAdd=" + communicationAdd
+				+ ", permanentAdd=" + permanentAdd + ", birthDate=" + birthDate + ", gender=" + gender + ", isActive="
+				+ isActive + ", isOtpVerified=" + isOtpVerified + ", isEmailVerified=" + isEmailVerified + ", userType="
+				+ userType + ", bank=" + bank + ", password=" + password + ", panCard=" + panCard + ", aadharCardNo="
+				+ aadharCardNo + ", eduQualification=" + eduQualification + ", contactNumber=" + contactNumber
+				+ ", isSameUsAddress=" + isSameUsAddress + "]";
 	}
+	
+	
+
+
 }

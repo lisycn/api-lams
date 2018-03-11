@@ -46,8 +46,11 @@ public class User extends Auditor implements Serializable {
 	@Column(name = "middle_name")
 	private String middleName;
 
-	@Column(name = "address")
-	private AddressMstr address;
+	@Column(name = "communication_add")
+	private AddressMstr communicationAdd;
+	
+	@Column(name = "permanent_add")
+	private AddressMstr permanentAdd;
 
 	@Column(name = "birth_date")
 	private Date birthDate;
@@ -69,6 +72,21 @@ public class User extends Auditor implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "bank")
 	private BankMstr bank;
+	
+	@Column(name = "pan_card")
+	private String panCard;
+	
+	@Column(name = "aadhar_card_no")
+	private String aadharCardNo;
+	
+	@Column(name = "edu_qualification")
+	private String eduQualification;
+	
+	@Column(name = "contact_number")
+	private String contactNumber;
+	
+	@Column(name = "is_same_us_address")
+	private Boolean isSameUsAddress;
 
 	public User() {
 		super();
@@ -143,14 +161,6 @@ public class User extends Auditor implements Serializable {
 		this.middleName = middleName;
 	}
 
-	public AddressMstr getAddress() {
-		return address;
-	}
-
-	public void setAddress(AddressMstr address) {
-		this.address = address;
-	}
-
 	public Date getBirthDate() {
 		return birthDate;
 	}
@@ -215,13 +225,75 @@ public class User extends Auditor implements Serializable {
 		this.salutation = salutation;
 	}
 
+	public AddressMstr getCommunicationAdd() {
+		return communicationAdd;
+	}
+
+	public void setCommunicationAdd(AddressMstr communicationAdd) {
+		this.communicationAdd = communicationAdd;
+	}
+
+	public AddressMstr getPermanentAdd() {
+		return permanentAdd;
+	}
+
+	public void setPermanentAdd(AddressMstr permanentAdd) {
+		this.permanentAdd = permanentAdd;
+	}
+
+	public String getPanCard() {
+		return panCard;
+	}
+
+	public void setPanCard(String panCard) {
+		this.panCard = panCard;
+	}
+
+	public String getAadharCardNo() {
+		return aadharCardNo;
+	}
+
+	public void setAadharCardNo(String aadharCardNo) {
+		this.aadharCardNo = aadharCardNo;
+	}
+
+	public String getEduQualification() {
+		return eduQualification;
+	}
+
+	public void setEduQualification(String eduQualification) {
+		this.eduQualification = eduQualification;
+	}
+
+	public String getContactNumber() {
+		return contactNumber;
+	}
+
+	public void setContactNumber(String contactNumber) {
+		this.contactNumber = contactNumber;
+	}
+
+	public Boolean getIsSameUsAddress() {
+		return isSameUsAddress;
+	}
+
+	public void setIsSameUsAddress(Boolean isSameUsAddress) {
+		this.isSameUsAddress = isSameUsAddress;
+	}
+
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", name=" + name + ", email=" + email + ", mobile=" + mobile + ", password="
 				+ password + ", isAcceptTermCondition=" + isAcceptTermCondition + ", firstName=" + firstName
-				+ ", lastName=" + lastName + ", middleName=" + middleName + ", address=" + address + ", birthDate="
-				+ birthDate + ", gender=" + gender + ", isOtpVerified=" + isOtpVerified + ", isEmailVerified="
-				+ isEmailVerified + ", userType=" + userType + ", salutation=" + salutation + ", bank=" + bank + "]";
+				+ ", lastName=" + lastName + ", middleName=" + middleName + ", communicationAdd=" + communicationAdd
+				+ ", permanentAdd=" + permanentAdd + ", birthDate=" + birthDate + ", gender=" + gender
+				+ ", isOtpVerified=" + isOtpVerified + ", isEmailVerified=" + isEmailVerified + ", userType=" + userType
+				+ ", salutation=" + salutation + ", bank=" + bank + ", panCard=" + panCard + ", aadharCardNo="
+				+ aadharCardNo + ", eduQualification=" + eduQualification + ", contactNumber=" + contactNumber
+				+ ", isSameUsAddress=" + isSameUsAddress + "]";
 	}
+	
+
+	
 
 }

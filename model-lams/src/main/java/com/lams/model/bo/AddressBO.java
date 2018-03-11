@@ -25,6 +25,8 @@ public class AddressBO extends AuditorBO implements Serializable {
 	private StateBO state;
 
 	private CityBO city;
+	
+	private Integer addType;
 
 	public Long getId() {
 		return id;
@@ -82,10 +84,19 @@ public class AddressBO extends AuditorBO implements Serializable {
 		this.city = city;
 	}
 
+	public Integer getAddType() {
+		return addType;
+	}
+
+	public void setAddType(Integer addType) {
+		this.addType = addType;
+	}
+
 	@Override
 	public String toString() {
 		return "AddressBO [id=" + id + ", streetName=" + streetName + ", landMark=" + landMark + ", pincode=" + pincode
-				+ ", country=" + country + ", state=" + state + ", city=" + city + "]";
+				+ ", country=" + country + ", state=" + state + ", city=" + city + ", addType=" + addType + "]";
 	}
+
 
 }
