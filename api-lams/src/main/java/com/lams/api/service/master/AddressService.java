@@ -4,5 +4,5 @@ import com.lams.model.bo.AddressBO;
 
 public interface AddressService {
 
-	public void saveAddress(AddressBO addressBO,Long userId);
+	public void saveAddress(AddressBO addressBO,Long userId,Integer addType);
 }

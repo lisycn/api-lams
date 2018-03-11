@@ -1,5 +1,7 @@
 package com.lams.api.repository.master;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -21,6 +23,8 @@ public interface AddressMstrRepository extends JpaRepository<AddressMstr, Long> 
 
 	public AddressMstr findByIdAndIsActive(Long id, Boolean isActive);
 	
-	public AddressMstr findByUserIdAndIsActive(Long userId, Boolean isActive);
+	public List<AddressMstr> findByUserIdAndIsActive(Long userId, Boolean isActive);
+	
+	public AddressMstr findByUserIdAndAddTypeAndIsActive(Long userId, Integer addType, Boolean isActive);
 
 }
