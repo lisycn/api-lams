@@ -1,13 +1,7 @@
 package com.lams.api.service;
 
-import java.io.IOException;
-
-import javax.mail.MessagingException;
-
 import com.lams.model.bo.NotificationBO;
 import com.lams.model.bo.NotificationResponse;
-
-import freemarker.template.TemplateException;
 
 /**
  * @author Akshay
@@ -15,7 +9,7 @@ import freemarker.template.TemplateException;
  */
 public interface NotificationService {
 
-	public NotificationResponse sendNotification(NotificationBO notificationRequest)
-			throws MessagingException, IOException, TemplateException;
+	public NotificationResponse sendNotification(NotificationBO notification)
+			throws Exception;
 
 }

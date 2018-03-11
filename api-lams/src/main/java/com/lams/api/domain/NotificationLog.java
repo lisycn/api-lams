@@ -24,7 +24,7 @@ import com.lams.api.domain.master.Auditor;
  */
 @Entity
 @Table(name = "notification_log")
-@NamedQuery(name = "NotificationEmailLog.findAll", query = "SELECT n FROM NotificationEmailLog n")
+@NamedQuery(name = "NotificationLog.findAll", query = "SELECT n FROM NotificationLog n")
 public class NotificationLog extends Auditor implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -123,35 +123,35 @@ public class NotificationLog extends Auditor implements Serializable {
 		this.notification = notification;
 	}
 
-	protected String getLogMessage() {
+	public String getLogMessage() {
 		return logMessage;
 	}
 
-	protected void setLogMessage(String logMessage) {
+	public void setLogMessage(String logMessage) {
 		this.logMessage = logMessage;
 	}
 
-	protected String getLogResponse() {
+	public String getLogResponse() {
 		return logResponse;
 	}
 
-	protected void setLogResponse(String logResponse) {
+	public void setLogResponse(String logResponse) {
 		this.logResponse = logResponse;
 	}
 
-	protected String getMobile() {
+	public String getMobile() {
 		return mobile;
 	}
 
-	protected void setMobile(String mobile) {
+	public void setMobile(String mobile) {
 		this.mobile = mobile;
 	}
 
-	protected String getNotificationType() {
+	public String getNotificationType() {
 		return notificationType;
 	}
 
-	protected void setNotificationType(String notificationType) {
+	public void setNotificationType(String notificationType) {
 		this.notificationType = notificationType;
 	}
 }

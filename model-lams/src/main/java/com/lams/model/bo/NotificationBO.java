@@ -1,17 +1,13 @@
 package com.lams.model.bo;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
- * @author Sanket
- *
- */
-/**
- * @author sanket
+ * @author Akshay
  *
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -25,12 +21,17 @@ public class NotificationBO implements Serializable {
 	private int retryCount;
 	private Long startTime;
 	private String fromName;
+	private List<NotificationMainBO> notifications = null;;
 	private Long applicationId;
 	private Long productId;
 	private String userType;
 	private Integer pageIndex;
 	private Integer size;
 	private Long clientId;
+
+	public NotificationBO() {
+		notifications = Collections.emptyList();
+	}
 
 	public Long getClientId() {
 		return clientId;
@@ -110,5 +111,13 @@ public class NotificationBO implements Serializable {
 
 	public void setRetryCount(int retryCount) {
 		this.retryCount = retryCount;
+	}
+
+	public List<NotificationMainBO> getNotifications() {
+		return notifications;
+	}
+
+	public void setNotifications(List<NotificationMainBO> notifications) {
+		this.notifications = notifications;
 	}
 }

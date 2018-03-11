@@ -1,17 +1,23 @@
 package com.lams.api.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.lams.api.domain.master.Auditor;
 import com.lams.api.domain.master.notification.NotificationProvider;
 
 /**
@@ -26,7 +32,7 @@ import com.lams.api.domain.master.notification.NotificationProvider;
 @Entity
 @Table(name = "notification")
 @NamedQuery(name = "Notification.findAll", query = "SELECT n FROM Notification n")
-public class Notification implements Serializable {
+public class Notification extends Auditor implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -48,16 +54,20 @@ public class Notification implements Serializable {
 
 	@Column(name = "user_id")
 	private Long userId;
+	
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "notification_id")
+	private List<NotificationLog> notificationLogs = new ArrayList<NotificationLog>();
 
 	public Notification() {
 		super();
 	}
 
-	protected String getTemplateName() {
+	public String getTemplateName() {
 		return templateName;
 	}
 
-	protected void setTemplateName(String templateName) {
+	public void setTemplateName(String templateName) {
 		this.templateName = templateName;
 	}
 
@@ -93,11 +103,34 @@ public class Notification implements Serializable {
 		this.provider = provider;
 	}
 
-	protected String getNotificationType() {
+	public String getNotificationType() {
 		return notificationType;
 	}
 
-	protected void setNotificationType(String notificationType) {
+	public void setNotificationType(String notificationType) {
 		this.notificationType = notificationType;
 	}
+	
+	public List<NotificationLog> getNotificationLogs() {
+		return this.notificationLogs;
+	}
+
+	public void setNotificationLogs(List<NotificationLog> notificationLogs) {
+		this.notificationLogs = notificationLogs;
+	}
+
+	public NotificationLog addNotificationLog(NotificationLog notificationLog) {
+		getNotificationLogs().add(notificationLog);
+		notificationLog.setNotification(this);
+
+		return notificationLog;
+	}
+
+	public NotificationLog removeNotificationLog(NotificationLog notificationLog) {
+		getNotificationLogs().remove(notificationLog);
+		notificationLog.setNotification(null);
+
+		return notificationLog;
+	}
+
 }

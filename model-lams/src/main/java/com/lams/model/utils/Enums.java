@@ -76,7 +76,7 @@ public class Enums {
 		}
 
 	}
-	
+
 	public enum NotificationType {
 		EMAIL(1, "Email"), SMS(2, "SMS"), SYSTEM(3, "SYSTEM");
 
@@ -112,5 +112,17 @@ public class Enums {
 		public static NotificationType[] getAll() {
 			return NotificationType.values();
 		}
+	}
+
+	public enum ContentType {
+
+		CONTENT, TEMPLATE
+
+	}
+
+	public enum AckType {
+
+		NO_ACK, REQUIRED_ACK
+
 	}
 }

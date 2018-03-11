@@ -1,12 +1,19 @@
 package com.lams.api.service;
 
-import javax.mail.MessagingException;
+import com.lams.model.bo.EmailResponse;
+import com.lams.model.bo.NotificationMainBO;
+
 
 /**
  * @author Akshay
  *
  */
 public interface MailService {
-	public boolean sendEmail() throws MessagingException;
 
+	public EmailResponse sendEmail(NotificationMainBO emailRequest) throws Exception;
+	
+	public void sendUnsentEmail();
+	
+	public void sendFailureEmailForSMS(String exception);
+	
 }
