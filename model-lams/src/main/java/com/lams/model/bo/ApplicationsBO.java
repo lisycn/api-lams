@@ -6,7 +6,7 @@ import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ApplicationsBO implements Serializable{
+public class ApplicationsBO extends AuditorBO implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
@@ -26,7 +26,7 @@ public class ApplicationsBO implements Serializable{
 	
 	private Double emi;
 	
-	private Double balance_tenure;
+	private Double balanceTenure;
 	
 	private Integer closeBeforeDisbsmnt;
 	
@@ -42,12 +42,6 @@ public class ApplicationsBO implements Serializable{
 	
 	private Double loanAmount;
 	
-	private Date createdDate;
-	
-	private Date modifyDate;
-	
-	private Boolean isActive;
-
 	public Long getId() {
 		return id;
 	}
@@ -104,12 +98,12 @@ public class ApplicationsBO implements Serializable{
 		this.emi = emi;
 	}
 
-	public Double getBalance_tenure() {
-		return balance_tenure;
+	public Double getBalanceTenure() {
+		return balanceTenure;
 	}
 
-	public void setBalance_tenure(Double balance_tenure) {
-		this.balance_tenure = balance_tenure;
+	public void setBalanceTenure(Double balanceTenure) {
+		this.balanceTenure = balanceTenure;
 	}
 
 	public Integer getCloseBeforeDisbsmnt() {
@@ -168,29 +162,6 @@ public class ApplicationsBO implements Serializable{
 		this.loanAmount = loanAmount;
 	}
 
-	public Date getCreatedDate() {
-		return createdDate;
-	}
-
-	public void setCreatedDate(Date createdDate) {
-		this.createdDate = createdDate;
-	}
-
-	public Date getModifyDate() {
-		return modifyDate;
-	}
-
-	public void setModifyDate(Date modifyDate) {
-		this.modifyDate = modifyDate;
-	}
-
-	public Boolean getIsActive() {
-		return isActive;
-	}
-
-	public void setIsActive(Boolean isActive) {
-		this.isActive = isActive;
-	}
 
 	public Long getUserId() {
 		return userId;

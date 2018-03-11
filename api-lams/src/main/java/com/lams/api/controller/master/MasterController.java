@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,8 +24,8 @@ import com.lams.model.bo.LamsResponse;
 import com.lams.model.bo.LoginResponse;
 import com.lams.model.bo.master.MasterBaseBO;
 import com.lams.model.utils.CommonUtils;
-import com.lams.model.utils.CommonUtils.YesNoType;
 import com.lams.model.utils.Enums;
+import com.lams.model.utils.Enums.YesNoType;
 
 @RestController
 @RequestMapping("/master")
