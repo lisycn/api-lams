@@ -3,7 +3,6 @@ package com.lams.model.bo;
 import java.io.Serializable;
 import java.util.Date;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -21,6 +20,8 @@ public class UserBO extends AuditorBO implements Serializable {
 
 	private String mobile;
 
+	private Integer invitationCount;
+
 	private Boolean isAcceptTermCondition;
 
 	private String firstName;
@@ -30,7 +31,7 @@ public class UserBO extends AuditorBO implements Serializable {
 	private String middleName;
 
 	private AddressBO communicationAdd;
-	
+
 	private AddressBO permanentAdd;
 
 	private Date birthDate;
@@ -48,17 +49,19 @@ public class UserBO extends AuditorBO implements Serializable {
 	private BankBO bank;
 
 	private String password;
-	
+
+	private String tempPassword;
+
 	private String panCard;
-	
+
 	private String aadharCardNo;
-	
+
 	private String eduQualification;
-	
+
 	private String contactNumber;
 
 	private Boolean isSameUsAddress;
-	
+
 	public Long getId() {
 		return id;
 	}
@@ -122,7 +125,6 @@ public class UserBO extends AuditorBO implements Serializable {
 	public void setMiddleName(String middleName) {
 		this.middleName = middleName;
 	}
-
 
 	public Date getBirthDate() {
 		return birthDate;
@@ -195,8 +197,6 @@ public class UserBO extends AuditorBO implements Serializable {
 	public void setSalutation(Long salutation) {
 		this.salutation = salutation;
 	}
-	
-	
 
 	public AddressBO getCommunicationAdd() {
 		return communicationAdd;
@@ -254,19 +254,32 @@ public class UserBO extends AuditorBO implements Serializable {
 		this.isSameUsAddress = isSameUsAddress;
 	}
 
+	public Integer getInvitationCount() {
+		return invitationCount;
+	}
+
+	public void setInvitationCount(Integer invitationCount) {
+		this.invitationCount = invitationCount;
+	}
+
+	public String getTempPassword() {
+		return tempPassword;
+	}
+
+	public void setTempPassword(String tempPassword) {
+		this.tempPassword = tempPassword;
+	}
+
 	@Override
 	public String toString() {
 		return "UserBO [id=" + id + ", salutation=" + salutation + ", name=" + name + ", email=" + email + ", mobile="
-				+ mobile + ", isAcceptTermCondition=" + isAcceptTermCondition + ", firstName=" + firstName
-				+ ", lastName=" + lastName + ", middleName=" + middleName + ", communicationAdd=" + communicationAdd
-				+ ", permanentAdd=" + permanentAdd + ", birthDate=" + birthDate + ", gender=" + gender + ", isActive="
-				+ isActive + ", isOtpVerified=" + isOtpVerified + ", isEmailVerified=" + isEmailVerified + ", userType="
-				+ userType + ", bank=" + bank + ", password=" + password + ", panCard=" + panCard + ", aadharCardNo="
+				+ mobile + ", invitationCount=" + invitationCount + ", isAcceptTermCondition=" + isAcceptTermCondition
+				+ ", firstName=" + firstName + ", lastName=" + lastName + ", middleName=" + middleName
+				+ ", communicationAdd=" + communicationAdd + ", permanentAdd=" + permanentAdd + ", birthDate="
+				+ birthDate + ", gender=" + gender + ", isActive=" + isActive + ", isOtpVerified=" + isOtpVerified
+				+ ", isEmailVerified=" + isEmailVerified + ", userType=" + userType + ", bank=" + bank + ", password="
+				+ password + ", tempPassword=" + tempPassword + ", panCard=" + panCard + ", aadharCardNo="
 				+ aadharCardNo + ", eduQualification=" + eduQualification + ", contactNumber=" + contactNumber
 				+ ", isSameUsAddress=" + isSameUsAddress + "]";
 	}
-	
-	
-
-
 }

@@ -52,7 +52,7 @@ public class UserMstrController {
 		}
 
 		try {
-			return new ResponseEntity<LamsResponse>(userMstrService.registration(userBO,null), HttpStatus.OK);
+			return new ResponseEntity<LamsResponse>(userMstrService.registration(userBO, null), HttpStatus.OK);
 		} catch (Exception e) {
 			logger.info("Throw Exception while registrion ---------------->" + userBO.getEmail());
 			e.printStackTrace();
@@ -119,12 +119,11 @@ public class UserMstrController {
 					HttpStatus.OK);
 		}
 	}
-	
-	
+
 	@RequestMapping(value = "/update_lender_details", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<LamsResponse> updateLenderDetails(@RequestBody UserBO userBO, HttpServletRequest request) {
 		logger.info("Enter in update lender details process");
-		
+
 		Long userId = (Long) request.getAttribute(CommonUtils.USER_ID);
 		if (CommonUtils.isObjectNullOrEmpty(userBO.getEmail())) {
 			logger.info("Email is null or empty");
@@ -145,7 +144,37 @@ public class UserMstrController {
 		}
 
 		try {
-			return new ResponseEntity<LamsResponse>(userMstrService.registration(userBO,userId), HttpStatus.OK);
+			return new ResponseEntity<LamsResponse>(userMstrService.registration(userBO, userId), HttpStatus.OK);
+		} catch (Exception e) {
+			logger.info("Throw Exception while update lender details ---------------->" + userBO.getEmail());
+			e.printStackTrace();
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Something went wrong"), HttpStatus.OK);
+		}
+	}
+
+	@RequestMapping(value = "/invite_lender", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<LamsResponse> inviteLender(@RequestBody UserBO userBO, HttpServletRequest request) {
+		logger.info("Enter in update lender details process");
+
+		Long userId = (Long) request.getAttribute(CommonUtils.USER_ID);
+		if (CommonUtils.isObjectNullOrEmpty(userBO.getEmail())) {
+			logger.info("Email is null or empty");
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.BAD_REQUEST.value(), "Email Must not be Empty"), HttpStatus.OK);
+		}
+
+		if (CommonUtils.isObjectNullOrEmpty(userBO.getMobile())) {
+			logger.info("Mobile is null or empty");
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.BAD_REQUEST.value(), "Mobile Must not be Empty"), HttpStatus.OK);
+		}
+
+		try {
+			userBO = userMstrService.inviteLender(userBO, userId);
+			logger.log(Level.INFO, "Response After Invited to Lender===>{}", userBO.toString());
+			LamsResponse lamsResponse = new LamsResponse(HttpStatus.OK.value(), "Successfully Invitation Sent", userBO);
+			return new ResponseEntity<LamsResponse>(lamsResponse, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.info("Throw Exception while update lender details ---------------->" + userBO.getEmail());
 			e.printStackTrace();

@@ -34,6 +34,12 @@ public class User extends Auditor implements Serializable {
 
 	private String password;
 
+	@Column(name = "temp_password")
+	private String tempPassword;
+
+	@Column(name = "invitation_count")
+	private Integer invitationCount;
+
 	@Column(name = "is_accept_term_condition")
 	private Boolean isAcceptTermCondition;
 
@@ -48,7 +54,7 @@ public class User extends Auditor implements Serializable {
 
 	@Column(name = "communication_add")
 	private AddressMstr communicationAdd;
-	
+
 	@Column(name = "permanent_add")
 	private AddressMstr permanentAdd;
 
@@ -72,19 +78,19 @@ public class User extends Auditor implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "bank")
 	private BankMstr bank;
-	
+
 	@Column(name = "pan_card")
 	private String panCard;
-	
+
 	@Column(name = "aadhar_card_no")
 	private String aadharCardNo;
-	
+
 	@Column(name = "edu_qualification")
 	private String eduQualification;
-	
+
 	@Column(name = "contact_number")
 	private String contactNumber;
-	
+
 	@Column(name = "is_same_us_address")
 	private Boolean isSameUsAddress;
 
@@ -281,19 +287,32 @@ public class User extends Auditor implements Serializable {
 		this.isSameUsAddress = isSameUsAddress;
 	}
 
+	public Integer getInvitationCount() {
+		return invitationCount == null ? 0 : invitationCount;
+	}
+
+	public void setInvitationCount(Integer invitationCount) {
+		this.invitationCount = invitationCount;
+	}
+
+	public String getTempPassword() {
+		return tempPassword;
+	}
+
+	public void setTempPassword(String tempPassword) {
+		this.tempPassword = tempPassword;
+	}
+
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", name=" + name + ", email=" + email + ", mobile=" + mobile + ", password="
-				+ password + ", isAcceptTermCondition=" + isAcceptTermCondition + ", firstName=" + firstName
-				+ ", lastName=" + lastName + ", middleName=" + middleName + ", communicationAdd=" + communicationAdd
-				+ ", permanentAdd=" + permanentAdd + ", birthDate=" + birthDate + ", gender=" + gender
-				+ ", isOtpVerified=" + isOtpVerified + ", isEmailVerified=" + isEmailVerified + ", userType=" + userType
-				+ ", salutation=" + salutation + ", bank=" + bank + ", panCard=" + panCard + ", aadharCardNo="
-				+ aadharCardNo + ", eduQualification=" + eduQualification + ", contactNumber=" + contactNumber
-				+ ", isSameUsAddress=" + isSameUsAddress + "]";
+				+ password + ", tempPassword=" + tempPassword + ", invitationCount=" + invitationCount
+				+ ", isAcceptTermCondition=" + isAcceptTermCondition + ", firstName=" + firstName + ", lastName="
+				+ lastName + ", middleName=" + middleName + ", communicationAdd=" + communicationAdd + ", permanentAdd="
+				+ permanentAdd + ", birthDate=" + birthDate + ", gender=" + gender + ", isOtpVerified=" + isOtpVerified
+				+ ", isEmailVerified=" + isEmailVerified + ", userType=" + userType + ", salutation=" + salutation
+				+ ", bank=" + bank + ", panCard=" + panCard + ", aadharCardNo=" + aadharCardNo + ", eduQualification="
+				+ eduQualification + ", contactNumber=" + contactNumber + ", isSameUsAddress=" + isSameUsAddress + "]";
 	}
-	
-
-	
 
 }

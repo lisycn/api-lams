@@ -2,12 +2,15 @@ package com.lams.api.service.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,17 +24,23 @@ import com.lams.api.domain.master.StateMstr;
 import com.lams.api.repository.UserMstrRepository;
 import com.lams.api.repository.master.AddressMstrRepository;
 import com.lams.api.repository.master.BankMstrRepository;
+import com.lams.api.service.NotificationService;
 import com.lams.api.service.UserMstrService;
 import com.lams.api.service.master.AddressService;
 import com.lams.model.bo.AddressBO;
 import com.lams.model.bo.LamsResponse;
+import com.lams.model.bo.NotificationBO;
+import com.lams.model.bo.NotificationMainBO;
 import com.lams.model.bo.UserBO;
 import com.lams.model.bo.master.CityBO;
 import com.lams.model.bo.master.CountryBO;
 import com.lams.model.bo.master.StateBO;
 import com.lams.model.utils.CommonUtils;
 import com.lams.model.utils.Enums;
+import com.lams.model.utils.Enums.ContentType;
+import com.lams.model.utils.Enums.NotificationType;
 import com.lams.model.utils.Enums.UserType;
+import com.lams.model.utils.NotificationAlias;
 
 @Service
 @Transactional
@@ -50,6 +59,12 @@ public class UserMstrServiceImpl implements UserMstrService {
 
 	@Autowired
 	private AddressMstrRepository addressMstrRepository;
+
+	@Autowired
+	private NotificationService notificationService;
+
+	@Value("${com.lams.notification.email.sender}")
+	private String SENDER;
 
 	@Override
 	public LamsResponse registration(UserBO userBO, Long userId) {
@@ -93,7 +108,7 @@ public class UserMstrServiceImpl implements UserMstrService {
 			user.setModifiedDate(new Date());
 			user.setModifiedBy(userId);
 		}
-		BeanUtils.copyProperties(userBO, user, "id", "isActive", "createdDate", "createdBy");
+		BeanUtils.copyProperties(userBO, user, "id", "isActive", "createdDate", "createdBy", "invitationCount");
 		user.setIsAcceptTermCondition(true);
 		user.setIsEmailVerified(
 				!CommonUtils.isObjectNullOrEmpty(userBO.getIsEmailVerified()) ? userBO.getIsEmailVerified() : false);
@@ -102,6 +117,7 @@ public class UserMstrServiceImpl implements UserMstrService {
 
 		if (!CommonUtils.isObjectNullOrEmpty(userBO.getUserType())) {
 			UserType userType = Enums.UserType.getType(userBO.getUserType().intValue());
+			user.setInvitationCount(0);
 			if (CommonUtils.isObjectNullOrEmpty(userType) && userType.equals(Enums.UserType.LENDER)) {
 				if (!CommonUtils.isObjectNullOrEmpty(userBO.getBank())) {
 					user.setBank(bankMstrRepository.findOne(userBO.getBank().getId()));
@@ -161,7 +177,7 @@ public class UserMstrServiceImpl implements UserMstrService {
 					StateBO stateBO = new StateBO();
 					BeanUtils.copyProperties(state, stateBO);
 					addressBO.setState(stateBO);
-					
+
 					// Copy Country
 					CountryMstr country = state.getCountry();
 					if (!CommonUtils.isObjectNullOrEmpty(country)) {
@@ -171,12 +187,12 @@ public class UserMstrServiceImpl implements UserMstrService {
 					}
 				}
 			}
-			if(addressMstr.getAddType() == CommonUtils.AddressType.PERMANENT) {
-				userBo.setPermanentAdd(addressBO);	
-			} else if(addressMstr.getAddType() == CommonUtils.AddressType.COMMUNICATION) {
+			if (addressMstr.getAddType() == CommonUtils.AddressType.PERMANENT) {
+				userBo.setPermanentAdd(addressBO);
+			} else if (addressMstr.getAddType() == CommonUtils.AddressType.COMMUNICATION) {
 				userBo.setCommunicationAdd(addressBO);
 			}
-			
+
 		}
 		return userBo;
 	}
@@ -201,15 +217,55 @@ public class UserMstrServiceImpl implements UserMstrService {
 		user.setModifiedBy(userBO.getId());
 		user = userMstrRepository.save(user);
 		// Setting Address
-		if(!CommonUtils.isObjectNullOrEmpty(userBO.getPermanentAdd())) {
-			addressService.saveAddress(userBO.getPermanentAdd(), userBO.getId(),CommonUtils.AddressType.PERMANENT);	
+		if (!CommonUtils.isObjectNullOrEmpty(userBO.getPermanentAdd())) {
+			addressService.saveAddress(userBO.getPermanentAdd(), userBO.getId(), CommonUtils.AddressType.PERMANENT);
 		}
-		if(!CommonUtils.isObjectNullOrEmpty(userBO.getCommunicationAdd())) {
-			addressService.saveAddress(userBO.getCommunicationAdd(), userBO.getId(),CommonUtils.AddressType.COMMUNICATION);	
+		if (!CommonUtils.isObjectNullOrEmpty(userBO.getCommunicationAdd())) {
+			addressService.saveAddress(userBO.getCommunicationAdd(), userBO.getId(),
+					CommonUtils.AddressType.COMMUNICATION);
 		}
-		
 
 		logger.log(Level.INFO, "Successfully updated User Details for ID----" + user.getId());
 		return new LamsResponse(HttpStatus.OK.value(), "Success", getUserById(user.getId()));
 	}
+
+	@Override
+	public UserBO inviteLender(UserBO userBO, Long userId) throws Exception {
+		logger.log(Level.INFO, "inviteLender==>{0}", userBO.toString());
+		NotificationBO notificationBO = new NotificationBO();
+		notificationBO.setClientRefId(String.valueOf(1l));
+
+		logger.log(Level.INFO, "Sender=======>{0}", SENDER);
+		List<NotificationMainBO> mainBolist = new ArrayList<>();
+		NotificationMainBO mainBO = new NotificationMainBO();
+		String to[] = { userBO.getEmail() };
+		mainBO.setTo(to);
+		mainBO.setFrom(SENDER);
+		mainBO.setContentType(ContentType.TEMPLATE);
+		mainBO.setType(NotificationType.EMAIL);
+		mainBO.setTemplateName(NotificationAlias.EMAIL_LENDER_INVITATION);
+		Map<String, Object> data = new HashMap<>();
+		data.put("title", "Hi," + userBO.getEmail());
+		data.put("userName", userBO.getEmail());
+		data.put("password", userBO.getTempPassword());
+		mainBO.setParameters(data);
+		mainBO.setSubject("Invitation From VFinance");
+		mainBolist.add(mainBO);
+		notificationBO.setNotifications(mainBolist);
+		notificationService.sendNotification(notificationBO);
+
+		// Increasing Invitation Count
+		User user = userMstrRepository.findByEmailAndIsActive(userBO.getEmail(), true);
+		user.setInvitationCount(user.getInvitationCount() + 1);
+		user.setModifiedBy(userId);
+		user.setModifiedDate(new Date());
+		user = userMstrRepository.save(user);
+
+		// Setting updated Fields
+		userBO.setModifiedBy(userId);
+		userBO.setInvitationCount(user.getInvitationCount());
+		userBO.setModifiedDate(user.getModifiedDate());
+		return userBO;
+	}
+
 }

@@ -27,4 +27,6 @@ public interface UserMstrRepository extends JpaRepository<User, Long>{
 	public List<User> findByUserType(Long userType);
 	
 	public User findByEmailAndPasswordAndIsActive(String email,String password, Boolean isActive);
+	
+	public User findByEmailAndIsActive(String email,Boolean isActive);
 }

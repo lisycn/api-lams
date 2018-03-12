@@ -14,5 +14,7 @@ public interface UserMstrService {
 	public UserBO getUserById(Long id);
 	
 	public LamsResponse updateUserDetails(UserBO userBO);
+	
+	public UserBO inviteLender(UserBO userBO,Long userId) throws Exception;
 }
 
