@@ -34,6 +34,11 @@ public class MasterBase extends Auditor implements Serializable {
 		super();
 	}
 
+	public MasterBase(Long id) {
+		super();
+		this.id = id;
+	}
+
 	public Long getId() {
 		return id;
 	}

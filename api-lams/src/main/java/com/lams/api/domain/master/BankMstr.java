@@ -22,6 +22,15 @@ public class BankMstr extends Auditor implements Serializable {
 
 	private String name;
 
+	public BankMstr() {
+		super();
+	}
+
+	public BankMstr(Long id) {
+		super();
+		this.id = id;
+	}
+
 	public Long getId() {
 		return id;
 	}

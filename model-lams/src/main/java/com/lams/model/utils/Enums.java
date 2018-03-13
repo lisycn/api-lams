@@ -41,7 +41,7 @@ public class Enums {
 	}
 
 	public enum UserType {
-		ALL(-1, "All"), BORROWER(1, "Borrower"), LENDER(2, "Lender");
+		ALL(-1, "All"), LENDER(1, "Lender"), BORROWER(2, "Borrower");
 
 		private int id;
 		private String value;
@@ -64,9 +64,9 @@ public class Enums {
 			case -1:
 				return ALL;
 			case 1:
-				return BORROWER;
-			case 2:
 				return LENDER;
+			case 2:
+				return BORROWER;
 			default:
 				return null;
 			}

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lams.api.service.master.ApplicationTypeMstrService;
+import com.lams.api.service.master.BankService;
 import com.lams.api.service.master.CityService;
 import com.lams.api.service.master.CountryService;
 import com.lams.api.service.master.LoanTypeMstrService;
@@ -41,16 +42,18 @@ public class MasterController {
 
 	@Autowired
 	private CityService cityService;
-	
+
 	@Autowired
 	private SalutationService salutationService;
-	
+
 	@Autowired
 	private ApplicationTypeMstrService applicationTypeMstrService;
-	
+
+	@Autowired
+	private BankService bankService;
+
 	@Autowired
 	private LoanTypeMstrService loanTypeMstrService;
-	
 
 	@RequestMapping(value = "/get_country/{mode}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<LamsResponse> getCountry(@PathVariable("mode") Integer mode) {
@@ -115,7 +118,7 @@ public class MasterController {
 					HttpStatus.OK);
 		}
 	}
-	
+
 	@RequestMapping(value = "/get_salutation/{mode}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<LamsResponse> getSalutation(@PathVariable("mode") Integer mode) {
 		logger.info("Enter in getSalutation");
@@ -135,7 +138,7 @@ public class MasterController {
 					HttpStatus.OK);
 		}
 	}
-	
+
 	@RequestMapping(value = "/get_application_type/{mode}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<LamsResponse> getApplicationType(@PathVariable("mode") Integer mode) {
 		logger.info("Enter in getApplicationType");
@@ -144,9 +147,8 @@ public class MasterController {
 				logger.log(Level.WARNING, "No Mode Found so Returnig All Application Type===>Mode====>{}", mode);
 				mode = Enums.Mode.BOTH.getId();
 			}
-			return new ResponseEntity<LamsResponse>(
-					new LamsResponse(HttpStatus.OK.value(), "Success", applicationTypeMstrService.getApplicationTypeByMode(mode)),
-					HttpStatus.OK);
+			return new ResponseEntity<LamsResponse>(new LamsResponse(HttpStatus.OK.value(), "Success",
+					applicationTypeMstrService.getApplicationTypeByMode(mode)), HttpStatus.OK);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "Error while Getting ApplicationType by Mode==>{}" + mode);
 			e.printStackTrace();
@@ -155,7 +157,27 @@ public class MasterController {
 					HttpStatus.OK);
 		}
 	}
-	
+
+	@RequestMapping(value = "/get_banks/{mode}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<LamsResponse> getBanks(@PathVariable("mode") Integer mode) {
+		logger.info("Enter in getBanks");
+		try {
+			if (CommonUtils.isObjectNullOrEmpty(mode)) {
+				logger.log(Level.WARNING, "No Mode Found so Returnig All getBanks===>Mode====>{}", mode);
+				mode = Enums.Mode.BOTH.getId();
+			}
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.OK.value(), "Success", bankService.getBanksByMode(mode)),
+					HttpStatus.OK);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "Error while Getting getBanks by Mode==>{}" + mode);
+			e.printStackTrace();
+			return new ResponseEntity<LamsResponse>(
+					new LoginResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), CommonUtils.SOMETHING_WENT_WRONG),
+					HttpStatus.OK);
+		}
+	}
+
 	@RequestMapping(value = "/get_loan_type/{mode}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<LamsResponse> getLoanType(@PathVariable("mode") Integer mode) {
 		logger.info("Enter in getLoanType");
@@ -175,7 +197,7 @@ public class MasterController {
 					HttpStatus.OK);
 		}
 	}
-	
+
 	@RequestMapping(value = "/get_yes_no_list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<LamsResponse> getYesNoList() {
 		logger.info("Enter in getYesNoList");
@@ -183,15 +205,14 @@ public class MasterController {
 			YesNoType[] yesNoTypeList = YesNoType.getAll();
 			List<MasterBaseBO> masterBaseBOList = new ArrayList<>(yesNoTypeList.length);
 			MasterBaseBO masterBaseBO = null;
-			for(YesNoType yesNoType : yesNoTypeList) {
+			for (YesNoType yesNoType : yesNoTypeList) {
 				masterBaseBO = new MasterBaseBO();
 				masterBaseBO.setId(yesNoType.getId());
 				masterBaseBO.setName(yesNoType.getValue());
 				masterBaseBOList.add(masterBaseBO);
 			}
 			return new ResponseEntity<LamsResponse>(
-					new LamsResponse(HttpStatus.OK.value(), "Success", masterBaseBOList),
-					HttpStatus.OK);
+					new LamsResponse(HttpStatus.OK.value(), "Success", masterBaseBOList), HttpStatus.OK);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "Error while Getting Yes No Master List");
 			e.printStackTrace();

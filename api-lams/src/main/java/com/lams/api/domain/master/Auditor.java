@@ -32,6 +32,10 @@ public class Auditor implements Serializable {
 
 	@Column(name = "is_active")
 	private Boolean isActive;
+	
+	public Auditor() {
+		
+	}
 
 	public Long getCreatedBy() {
 		return createdBy;

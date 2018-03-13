@@ -60,7 +60,7 @@ public class NotificationServiceImpl implements NotificationService {
 				case EMAIL:
 					if (CommonUtils.isObjectListNull(request.getContentType(), request.getTemplateName(),
 							request.getParameters(), request.getSubject(), request.getTo(),
-							notification.getClientRefId(),request.getFrom())) {
+							notification.getClientRefId())) {
 						logger.warn("Some parameter values Missing for Notification Type: EMAIL");
 						continue;
 					}

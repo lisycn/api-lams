@@ -66,6 +66,7 @@ public class MailUtils {
 			return notificationUtils.sendEmail(mimeMessage, javaMailSender, emailRequest, text);
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			EmailResponse response = new EmailResponse();
 			response.setEmailMessage(text);
 			response.setMessage("Failure While Sending Email");

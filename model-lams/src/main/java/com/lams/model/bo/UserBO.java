@@ -2,8 +2,10 @@ package com.lams.model.bo;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.lams.model.bo.master.ApplicationTypeMstrBO;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserBO extends AuditorBO implements Serializable {
@@ -47,6 +49,8 @@ public class UserBO extends AuditorBO implements Serializable {
 	private Long userType;
 
 	private BankBO bank;
+
+	private List<ApplicationTypeMstrBO> applications;
 
 	private String password;
 
@@ -270,6 +274,14 @@ public class UserBO extends AuditorBO implements Serializable {
 		this.tempPassword = tempPassword;
 	}
 
+	public List<ApplicationTypeMstrBO> getApplications() {
+		return applications;
+	}
+
+	public void setApplications(List<ApplicationTypeMstrBO> applications) {
+		this.applications = applications;
+	}
+
 	@Override
 	public String toString() {
 		return "UserBO [id=" + id + ", salutation=" + salutation + ", name=" + name + ", email=" + email + ", mobile="
@@ -277,9 +289,9 @@ public class UserBO extends AuditorBO implements Serializable {
 				+ ", firstName=" + firstName + ", lastName=" + lastName + ", middleName=" + middleName
 				+ ", communicationAdd=" + communicationAdd + ", permanentAdd=" + permanentAdd + ", birthDate="
 				+ birthDate + ", gender=" + gender + ", isActive=" + isActive + ", isOtpVerified=" + isOtpVerified
-				+ ", isEmailVerified=" + isEmailVerified + ", userType=" + userType + ", bank=" + bank + ", password="
-				+ password + ", tempPassword=" + tempPassword + ", panCard=" + panCard + ", aadharCardNo="
-				+ aadharCardNo + ", eduQualification=" + eduQualification + ", contactNumber=" + contactNumber
-				+ ", isSameUsAddress=" + isSameUsAddress + "]";
+				+ ", isEmailVerified=" + isEmailVerified + ", userType=" + userType + ", bank=" + bank
+				+ ", applications=" + applications + ", password=" + password + ", tempPassword=" + tempPassword
+				+ ", panCard=" + panCard + ", aadharCardNo=" + aadharCardNo + ", eduQualification=" + eduQualification
+				+ ", contactNumber=" + contactNumber + ", isSameUsAddress=" + isSameUsAddress + "]";
 	}
 }
