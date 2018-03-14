@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,7 @@ import org.springframework.util.DigestUtils;
 
 import com.lams.api.domain.User;
 import com.lams.api.domain.master.AddressMstr;
+import com.lams.api.domain.master.ApplicationTypeMstr;
 import com.lams.api.domain.master.BankMstr;
 import com.lams.api.domain.master.CityMstr;
 import com.lams.api.domain.master.CountryMstr;
@@ -25,11 +27,13 @@ import com.lams.api.repository.LenderApplicationMappingRepository;
 import com.lams.api.repository.UserMstrRepository;
 import com.lams.api.repository.master.AddressMstrRepository;
 import com.lams.api.repository.master.BankMstrRepository;
+import com.lams.api.service.ApplicationsService;
 import com.lams.api.service.LenderApplicationMappingService;
 import com.lams.api.service.NotificationService;
 import com.lams.api.service.UserMstrService;
 import com.lams.api.service.master.AddressService;
 import com.lams.model.bo.AddressBO;
+import com.lams.model.bo.ApplicationsBO;
 import com.lams.model.bo.BankBO;
 import com.lams.model.bo.LamsResponse;
 import com.lams.model.bo.NotificationBO;
@@ -71,8 +75,14 @@ public class UserMstrServiceImpl implements UserMstrService {
 	private LenderApplicationMappingService lenderApplicationMappingService;
 	
 	@Autowired
-	private LenderApplicationMappingRepository lenderApplicationMappingRepository; 
+	private LenderApplicationMappingRepository lenderApplicationMappingRepository;
+	
+	@Autowired
+	private ApplicationsService applicationsService; 
 
+	@Value("${com.lams.login.url}")
+	private String loginUrl;
+	
 	@Override
 	public LamsResponse registration(UserBO userBO, Long userId) {
 
@@ -98,9 +108,11 @@ public class UserMstrServiceImpl implements UserMstrService {
 			user.setIsActive(true);
 			user.setInvitationCount(0);
 		} else {
-			if (!user.getIsActive()) {
-				logger.info("Current User is Inactive ------------------------->" + userBO.getMobile());
-				return new LamsResponse(HttpStatus.BAD_REQUEST.value(), "User is inactive");
+			if (Enums.UserType.LENDER.getId() != userBO.getUserType()) {
+				if (!user.getIsActive()) {
+					logger.info("Current User is Inactive ------------------------->" + userBO.getMobile());
+					return new LamsResponse(HttpStatus.BAD_REQUEST.value(), "User is inactive");
+				}				
 			}
 			// CHECK IF EMAIL IS EXIST
 			if (userMstrRepository.checkEmailById(userBO.getEmail(), user.getId()) > 0) {
@@ -143,13 +155,17 @@ public class UserMstrServiceImpl implements UserMstrService {
 		//Adding Mapping
 		if (!CommonUtils.isListNullOrEmpty(userBO.getApplications())) {
 			lenderApplicationMappingRepository.inActiveByUserId(user.getId(), userId);
-			for (ApplicationTypeMstrBO typeBo : userBO.getApplications()) {
-				lenderApplicationMappingService.save(typeBo.getId(), user.getId(),userId);
+			for (ApplicationsBO appBo: userBO.getApplications()) {
+				lenderApplicationMappingService.save(appBo.getApplicationTypeId(), user.getId(),userId);
 			}
 		}
 		logger.info(
 				"Successfully registration --------EMAIL---> " + userBO.getEmail() + "---------ID----" + user.getId());
-		return new LamsResponse(HttpStatus.OK.value(), "Successfully Registration");
+		String msg = "Successfully Registration";
+		if(!CommonUtils.isObjectNullOrEmpty(userBO.getId())) {
+			msg = "Successfully Updated";
+		}
+		return new LamsResponse(HttpStatus.OK.value(), msg);
 	}
 
 	@Override
@@ -171,8 +187,22 @@ public class UserMstrServiceImpl implements UserMstrService {
 				BeanUtils.copyProperties(user.getBank(), bankBO);
 				userBo.setBank(bankBO);
 			}
-			lenderApplicationMappingService.getApplicationTypeByUserIdAndIsActive(user.getId(), true);
-
+			if(user.getUserType() == Enums.UserType.BORROWER.getId()) {
+//				Set Borrower Applications
+				userBo.setApplications(applicationsService.getAll(user.getId()));
+			}else {
+//				Set Lender Applications
+				List<ApplicationTypeMstr> list = lenderApplicationMappingRepository.getApplicationTypesByUserIdAndIsActive(user.getId(), true);
+				List<ApplicationsBO> apps = new ArrayList<>(list.size());
+				for(ApplicationTypeMstr mstr : list) {
+					ApplicationsBO bo = new ApplicationsBO();
+					bo.setApplicationTypeId(mstr.getId());
+					bo.setApplicationTypeName(mstr.getName());
+					apps.add(bo);
+				}
+				userBo.setApplications(apps);
+			}
+			
 			userBOList.add(userBo);
 		}
 		return userBOList;
@@ -273,6 +303,7 @@ public class UserMstrServiceImpl implements UserMstrService {
 		data.put("title", "Hi," + userBO.getFirstName() + " " + userBO.getLastName());
 		data.put("userName", userBO.getEmail());
 		data.put("password", userBO.getTempPassword());
+		data.put("loginUrl", loginUrl);
 		mainBO.setParameters(data);
 		mainBO.setSubject("Invitation From VFinance");
 		mainBolist.add(mainBO);
@@ -293,4 +324,34 @@ public class UserMstrServiceImpl implements UserMstrService {
 		return userBO;
 	}
 
+//	@Override
+//	public LamsResponse verifyEmail(String email) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+	
+//	public String generateEncryptString(Date signUp, String email) {
+//		logger.info("generateEncryptString=================>" + signUp);
+//		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+//		Date parsedDate;
+//		String signUpDate = null;
+//		try {
+//			parsedDate = sdf.parse(signUp.toString());
+//			SimpleDateFormat print = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//			signUpDate = print.format(parsedDate);
+//		} catch (ParseException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//			logger.error("Error while parsing date");
+//		}
+//		String stringToEncrypt = email + "$" + signUpDate + "$" + UsersUtils.EMAIL_VERIFICATION_URL;
+//		String finalString = "";
+//		try {
+//			finalString = Base64.getEncoder().encodeToString(stringToEncrypt.getBytes("utf-8"));
+//		} catch (Exception e) {
+//			logger.warn("Error while encrypt url for email verification");
+//			e.printStackTrace();
+//		}
+//		return finalString;
+//	}
 }

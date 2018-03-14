@@ -15,6 +15,8 @@ public interface UserMstrService {
 	
 	public LamsResponse updateUserDetails(UserBO userBO);
 	
+//	public LamsResponse verifyEmail(String email);
+	
 	public UserBO inviteLender(UserBO userBO,Long userId) throws Exception;
 }
 

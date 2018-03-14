@@ -50,8 +50,8 @@ public class UserBO extends AuditorBO implements Serializable {
 
 	private BankBO bank;
 
-	private List<ApplicationTypeMstrBO> applications;
-
+	private List<ApplicationsBO> applications;
+	
 	private String password;
 
 	private String tempPassword;
@@ -274,11 +274,11 @@ public class UserBO extends AuditorBO implements Serializable {
 		this.tempPassword = tempPassword;
 	}
 
-	public List<ApplicationTypeMstrBO> getApplications() {
+	public List<ApplicationsBO> getApplications() {
 		return applications;
 	}
 
-	public void setApplications(List<ApplicationTypeMstrBO> applications) {
+	public void setApplications(List<ApplicationsBO> applications) {
 		this.applications = applications;
 	}
 
