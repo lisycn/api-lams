@@ -47,7 +47,7 @@ public class PrivateEquityFinanceLoanDetailsServiceImpl implements PrivateEquity
 			domainObj.setModifiedBy(requestLoanDetailsBO.getUserId());
 			domainObj.setModifiedDate(new Date());
 		}
-		BeanUtils.copyProperties(requestLoanDetailsBO, domainObj,"id","createdBy","modifiedDate","createdDate","modifiedBy","userId","isActive");
+		BeanUtils.copyProperties(requestLoanDetailsBO, domainObj,CommonUtils.skipFieldsForCreateApp);
 		if(!CommonUtils.isObjectNullOrEmpty(requestLoanDetailsBO.getApplicationTypeId())) {
 			domainObj.setApplicationTypeId(applicationTypeMstrRepository.findOne(requestLoanDetailsBO.getApplicationTypeId()));
 		}

@@ -28,6 +28,8 @@ public class CommonUtils {
 	private CommonUtils() {
 
 	}
+	
+	public static final String[] skipFieldsForCreateApp = {"id","createdBy","modifiedDate","createdDate","modifiedBy","userId","isActive","leadReferenceNo"};
 
 	public static boolean isListNullOrEmpty(Collection<?> data) {
 		return (data == null || data.isEmpty());
