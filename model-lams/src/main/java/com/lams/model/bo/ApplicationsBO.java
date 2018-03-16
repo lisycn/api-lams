@@ -1,7 +1,6 @@
 package com.lams.model.bo;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -32,15 +31,13 @@ public class ApplicationsBO extends AuditorBO implements Serializable{
 	
 	private Integer tenure;
 
-	private Double propertyCost;
-	
-	private String propertyAddress;
-	
 	private String bankName;
 	
 	private String bankAccNumber;
 	
 	private Double loanAmount;
+	
+	private String leadReferenceNo;
 	
 	public Long getId() {
 		return id;
@@ -122,20 +119,12 @@ public class ApplicationsBO extends AuditorBO implements Serializable{
 		this.tenure = tenure;
 	}
 
-	public Double getPropertyCost() {
-		return propertyCost;
+	public String getLeadReferenceNo() {
+		return leadReferenceNo;
 	}
 
-	public void setPropertyCost(Double propertyCost) {
-		this.propertyCost = propertyCost;
-	}
-
-	public String getPropertyAddress() {
-		return propertyAddress;
-	}
-
-	public void setPropertyAddress(String propertyAddress) {
-		this.propertyAddress = propertyAddress;
+	public void setLeadReferenceNo(String leadReferenceNo) {
+		this.leadReferenceNo = leadReferenceNo;
 	}
 
 	public String getBankName() {
