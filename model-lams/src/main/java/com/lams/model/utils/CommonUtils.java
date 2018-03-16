@@ -100,9 +100,37 @@ public class CommonUtils {
 	}
 	
 	public interface AddressType {
-		public static final Integer PERMANENT = 1;
-		public static final Integer COMMUNICATION = 2;
+		public static final int PERMANENT = 1;
+		public static final int COMMUNICATION = 2;
+	}
+	
+	public interface LoanType {
+		public static final int EXISTING_LOAN = 22;
+		public static final int CURRENT_LOAN = 23;
+		public static final int CLOSED_LOAN = 25;
 	}
 
+	public interface ApplicationType {
+		
+		public static final int HOME_LOAN = 5;
+		public static final int LOAN_AGAINST_PROPERTY = 6;
+		public static final int SECURED_BUSINESS_LOAN = 7;
+		public static final int WORKING_CAPITAL_LOAN = 8;
+		public static final int EDUCATION_LOAN = 9;
+		public static final int CAR_LOAN = 10;
+		public static final int OVERDRAFT_FACILITIES_LOAN = 11;
+		public static final int DROPLINE_OVERDRAFT_FACILITIES_LOAN = 12;
+		public static final int BANK_GUARANTEE_LOAN = 13;
+		public static final int CC_FACILITIES_LOAN = 14;
+		public static final int TERM_LOAN = 15;
+		public static final int LOAN_AGAINST_FDS = 16;
+		public static final int LOAN_AGAINST_SECURITIS = 17;
+		public static final int PROJECT_FINANCE_LOAN = 18;
+		public static final int PRIVATE_EQUITY_FINANCE_LOAN = 19;
+		public static final int GOLD_LOAN = 20;
+		public static final int OTHER_LOAN = 21;
+		public static final int PERSONAL_LOAN = 26;
+
+	}
 	
 }

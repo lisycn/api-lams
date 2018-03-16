@@ -2,7 +2,9 @@ package com.lams.api.service;
 
 import java.util.List;
 
+import com.lams.model.bo.ApplicationRequestBO;
 import com.lams.model.bo.ApplicationsBO;
+import com.lams.model.bo.LamsResponse;
 
 public interface ApplicationsService {
 
@@ -10,5 +12,7 @@ public interface ApplicationsService {
 	
 	public ApplicationsBO get(Long id);
 	
-	public Long save(ApplicationsBO applicationsBO);
+	public Long save(ApplicationRequestBO applicationsBO);
+	
+	public LamsResponse getLoanApplicationDetails(Long id,Long applicationTypeId);
 }

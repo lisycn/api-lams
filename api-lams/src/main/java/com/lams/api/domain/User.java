@@ -93,6 +93,30 @@ public class User extends Auditor implements Serializable {
 
 	@Column(name = "is_same_us_address")
 	private Boolean isSameUsAddress;
+	
+	@Column(name="employment_type")
+	private Long employmentType;
+	
+	@Column(name="employer_name")
+	private String employerName;
+	
+	@Column(name="employment_address")
+	private String employmentAddress;
+	
+	@Column(name="gross_monthly_income")
+	private Double grossMonthlyIncome;
+	
+	@Column(name="total_work_experience")
+	private Integer totalWorkExperience;
+	
+	@Column(name="entity_name")
+	private String entityName;
+	
+	@Column(name="entity_type")
+	private Long entityType;
+	
+	@Column(name="self_employed_type")
+	private Long selfEmployedType;
 
 	public User() {
 		super();
@@ -301,6 +325,71 @@ public class User extends Auditor implements Serializable {
 
 	public void setTempPassword(String tempPassword) {
 		this.tempPassword = tempPassword;
+	}
+	
+
+	public Long getEmploymentType() {
+		return employmentType;
+	}
+
+	public void setEmploymentType(Long employmentType) {
+		this.employmentType = employmentType;
+	}
+
+	public String getEmployerName() {
+		return employerName;
+	}
+
+	public void setEmployerName(String employerName) {
+		this.employerName = employerName;
+	}
+
+	public String getEmploymentAddress() {
+		return employmentAddress;
+	}
+
+	public void setEmploymentAddress(String employmentAddress) {
+		this.employmentAddress = employmentAddress;
+	}
+
+	public Double getGrossMonthlyIncome() {
+		return grossMonthlyIncome;
+	}
+
+	public void setGrossMonthlyIncome(Double grossMonthlyIncome) {
+		this.grossMonthlyIncome = grossMonthlyIncome;
+	}
+
+	public Integer getTotalWorkExperience() {
+		return totalWorkExperience;
+	}
+
+	public void setTotalWorkExperience(Integer totalWorkExperience) {
+		this.totalWorkExperience = totalWorkExperience;
+	}
+
+	public String getEntityName() {
+		return entityName;
+	}
+
+	public void setEntityName(String entityName) {
+		this.entityName = entityName;
+	}
+
+	public Long getEntityType() {
+		return entityType;
+	}
+
+	public void setEntityType(Long entityType) {
+		this.entityType = entityType;
+	}
+
+	public Long getSelfEmployedType() {
+		return selfEmployedType;
+	}
+
+	public void setSelfEmployedType(Long selfEmployedType) {
+		this.selfEmployedType = selfEmployedType;
 	}
 
 	@Override

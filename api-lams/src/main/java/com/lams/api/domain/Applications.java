@@ -1,18 +1,17 @@
 package com.lams.api.domain;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import com.lams.api.domain.master.ApplicationTypeMstr;
 import com.lams.api.domain.master.Auditor;
@@ -20,6 +19,7 @@ import com.lams.api.domain.master.LoanTypeMstr;
 
 @Entity
 @Table(name = "applications")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Applications extends Auditor implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -51,12 +51,6 @@ public class Applications extends Auditor implements Serializable {
 	private Integer closeBeforeDisbsmnt;
 	
 	private Integer tenure;
-
-	@Column(name="property_cost")
-	private Double propertyCost;
-	
-	@Column(name="property_address")
-	private String propertyAddress;
 	
 	@Column(name="bank_name")
 	private String bankName;
@@ -67,7 +61,9 @@ public class Applications extends Auditor implements Serializable {
 	@Column(name="loan_amount")
 	private Double loanAmount;
 	
-
+	@Column(name="lead_reference_no")
+	private String leadReferenceNo;
+	
 	public Long getId() {
 		return id;
 	}
@@ -132,22 +128,6 @@ public class Applications extends Auditor implements Serializable {
 		this.tenure = tenure;
 	}
 
-	public Double getPropertyCost() {
-		return propertyCost;
-	}
-
-	public void setPropertyCost(Double propertyCost) {
-		this.propertyCost = propertyCost;
-	}
-
-	public String getPropertyAddress() {
-		return propertyAddress;
-	}
-
-	public void setPropertyAddress(String propertyAddress) {
-		this.propertyAddress = propertyAddress;
-	}
-
 	public String getBankName() {
 		return bankName;
 	}
@@ -180,6 +160,15 @@ public class Applications extends Auditor implements Serializable {
 	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
+
+	public String getLeadReferenceNo() {
+		return leadReferenceNo;
+	}
+
+	public void setLeadReferenceNo(String leadReferenceNo) {
+		this.leadReferenceNo = leadReferenceNo;
+	}
+
 	
 	
 	
