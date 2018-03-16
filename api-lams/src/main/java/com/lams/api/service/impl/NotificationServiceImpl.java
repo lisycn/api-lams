@@ -93,7 +93,7 @@ public class NotificationServiceImpl implements NotificationService {
 					smsRequest.setParameters(request.getParameters());
 					smsRequest.setContent(request.getContent());
 					smsRequest.setUserId(Long.valueOf(notification.getClientRefId()));
-					SMSResponse smsResponse = smsService.sendSMS(smsRequest);
+					SMSResponse smsResponse = smsService.sendSMS(request);
 					response = new NotificationResponse();
 					response.setMessage(smsResponse.getMessage());
 					response.setSentMessage(smsResponse.getSmsMessage());

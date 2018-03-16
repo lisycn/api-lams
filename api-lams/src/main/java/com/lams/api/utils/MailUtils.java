@@ -105,7 +105,7 @@ public class MailUtils {
 		notification.setMessage(response.getEmailMessage());
 		notification.setProvider(notificationProvider);
 		notification.setNotificationType(NotificationType.EMAIL.getValue());
-		notification.setUserId(1L);
+		notification.setUserId(request.getUserId());
 		notification.addNotificationLog(notificationLog);
 		return notification;
 	}

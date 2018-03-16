@@ -20,6 +20,7 @@ import com.lams.api.service.UserMstrService;
 import com.lams.model.bo.LamsResponse;
 import com.lams.model.bo.UserBO;
 import com.lams.model.utils.CommonUtils;
+import com.lams.model.utils.Enums.OTPType;
 
 //@CrossOrigin(origins = {"http://localhost:*","http://localhost:*"})
 @RestController
@@ -183,18 +184,113 @@ public class UserMstrController {
 		}
 	}
 
-//	@RequestMapping(value = "/verify_email/{emailId}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-//	public ResponseEntity<LamsResponse> verifyEmail(@PathVariable("emailId") String emailId,
-//			HttpServletRequest request) {
-//		logger.info("Enter in verifyAccount");
-//		try {
-//			logger.log(Level.INFO, "Response After Invited to Lender===>{0}", emailId);
-//			return new ResponseEntity<LamsResponse>(userMstrService.verifyEmail(emailId), HttpStatus.OK);
-//		} catch (Exception e) {
-//			logger.info("Throw Exception while Verifying Email ---------------->" + emailId);
-//			e.printStackTrace();
-//			return new ResponseEntity<LamsResponse>(
-//					new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Something went wrong"), HttpStatus.OK);
-//		}
-//	}
+	@RequestMapping(value = "/verify_otp/{type}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<LamsResponse> verifyOTP(@RequestBody UserBO userBO, @PathVariable("type") Long type,
+			HttpServletRequest request) {
+		logger.info("Enter in update lender details process");
+
+		Long userId = (Long) request.getAttribute(CommonUtils.USER_ID);
+		if (CommonUtils.isObjectNullOrEmpty(userBO.getId())) {
+			userBO.setId(userId);
+		}
+
+		if (CommonUtils.isObjectNullOrEmpty(userBO.getId())) {
+			logger.info("ID is null or empty");
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.BAD_REQUEST.value(), CommonUtils.INVALID_REQUEST), HttpStatus.OK);
+		}
+
+		if (CommonUtils.isObjectNullOrEmpty(userBO.getOtp())) {
+			logger.info("OTP is null or empty");
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.BAD_REQUEST.value(), "OTP Must not be Empty."), HttpStatus.OK);
+		}
+
+		if (CommonUtils.isObjectNullOrEmpty(type)) {
+			logger.info("TYPE is null or empty");
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.BAD_REQUEST.value(), CommonUtils.INVALID_REQUEST), HttpStatus.OK);
+		}
+
+		OTPType otpType = OTPType.getType(type);
+		if (CommonUtils.isObjectNullOrEmpty(type)) {
+			logger.info("otpType Enum Object is null or empty");
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.BAD_REQUEST.value(), CommonUtils.INVALID_REQUEST), HttpStatus.OK);
+		}
+		try {
+			return new ResponseEntity<LamsResponse>(userMstrService.verifyOTP(userBO, otpType), HttpStatus.OK);
+		} catch (Exception e) {
+			logger.info("Throw Exception while update lender details ---------------->" + userBO.getEmail());
+			e.printStackTrace();
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Something went wrong"), HttpStatus.OK);
+		}
+	}
+
+	@RequestMapping(value = "/resend_otp/{type}/{templateName}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<LamsResponse> resendOTP(@RequestBody UserBO userBO, @PathVariable("type") Long type,
+			@PathVariable("templateName") String templateName, HttpServletRequest request) {
+		logger.info("Enter in resendOTP");
+
+		Long userId = (Long) request.getAttribute(CommonUtils.USER_ID);
+		if (CommonUtils.isObjectNullOrEmpty(userBO.getId())) {
+			userBO.setId(userId);
+		}
+
+		if (CommonUtils.isObjectNullOrEmpty(userBO.getId())) {
+			logger.info("UsesrId is null or empty");
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.BAD_REQUEST.value(), CommonUtils.INVALID_REQUEST), HttpStatus.OK);
+		}
+
+		if (CommonUtils.isObjectNullOrEmpty(templateName)) {
+			logger.info("templateName is null or empty");
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.BAD_REQUEST.value(), CommonUtils.INVALID_REQUEST), HttpStatus.OK);
+		}
+
+		if (CommonUtils.isObjectNullOrEmpty(type)) {
+			logger.info("TYPE is null or empty");
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.BAD_REQUEST.value(), CommonUtils.INVALID_REQUEST), HttpStatus.OK);
+		}
+
+		OTPType otpType = OTPType.getType(type);
+		if (CommonUtils.isObjectNullOrEmpty(type)) {
+			logger.info("otpType Enum Object is null or empty");
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.BAD_REQUEST.value(), CommonUtils.INVALID_REQUEST), HttpStatus.OK);
+		}
+		try {
+			return new ResponseEntity<LamsResponse>(userMstrService.resendOtp(userBO, otpType, templateName),
+					HttpStatus.OK);
+		} catch (Exception e) {
+			logger.info("Throw Exception while update lender details ---------------->" + userBO.getEmail());
+			e.printStackTrace();
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Something went wrong"), HttpStatus.OK);
+		}
+	}
+
+	// @RequestMapping(value = "/verify_email/{emailId}", method =
+	// RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces =
+	// MediaType.APPLICATION_JSON_VALUE)
+	// public ResponseEntity<LamsResponse> verifyEmail(@PathVariable("emailId")
+	// String emailId,
+	// HttpServletRequest request) {
+	// logger.info("Enter in verifyAccount");
+	// try {
+	// logger.log(Level.INFO, "Response After Invited to Lender===>{0}", emailId);
+	// return new ResponseEntity<LamsResponse>(userMstrService.verifyEmail(emailId),
+	// HttpStatus.OK);
+	// } catch (Exception e) {
+	// logger.info("Throw Exception while Verifying Email ---------------->" +
+	// emailId);
+	// e.printStackTrace();
+	// return new ResponseEntity<LamsResponse>(
+	// new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Something went
+	// wrong"), HttpStatus.OK);
+	// }
+	// }
 }

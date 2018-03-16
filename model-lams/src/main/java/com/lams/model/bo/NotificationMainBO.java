@@ -20,37 +20,39 @@ public class NotificationMainBO implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -9151646917155081519L;
-	protected NotificationType type;
-	protected String[] to;
-	protected String[] cc;
-	protected String from;
-	protected ContentType contentType;
-	protected String content;
-	protected String templateName;
-	protected String title;
-	protected String subject;
-	protected Map<String, Object> parameters = null;
-	protected AckType ackType;
-	protected Integer ackTimeout;
-	protected Integer retryCount;
-	protected Integer order;
-	protected Boolean secure;
-	protected String attachmentIds;
-	protected String fileName;
-	protected String fileFormat;
-	protected byte[] contentInBytes;
-	protected Long readSysNotifId;
-	protected Boolean readStatusSysNotif;
-	protected Long applicationId;
-	protected Long productId;
-	protected List<ContentAttachmentBO> contentAttachments = null;
+	private NotificationType type;
+	private String[] to;
+	private String[] cc;
+	private String from;
+	private ContentType contentType;
+	private String content;
+	private String templateName;
+	private String title;
+	private String subject;
+	private Map<String, Object> parameters = null;
+	private AckType ackType;
+	private Integer ackTimeout;
+	private Integer retryCount;
+	private Integer order;
+	private Boolean secure;
+	private String attachmentIds;
+	private String fileName;
+	private String fileFormat;
+	private byte[] contentInBytes;
+	private Long readSysNotifId;
+	private Boolean readStatusSysNotif;
+	private Long applicationId;
+	private Long productId;
+	private Long userId;
+	private String phoneNumber[];
+	private List<ContentAttachmentBO> contentAttachments = null;
 
 	public NotificationMainBO() {
 		contentAttachments = Collections.emptyList();
 		parameters = Collections.emptyMap();
 	}
 
-	protected String[] bcc;
+	private String[] bcc;
 
 	public String[] getBcc() {
 		return bcc;
@@ -256,6 +258,22 @@ public class NotificationMainBO implements Serializable {
 		this.templateName = templateName;
 	}
 
+	public String[] getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String[] phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
 	@Override
 	public String toString() {
 		return "NotificationMainBO [type=" + type + ", to=" + Arrays.toString(to) + ", cc=" + Arrays.toString(cc)
@@ -265,8 +283,9 @@ public class NotificationMainBO implements Serializable {
 				+ order + ", secure=" + secure + ", attachmentIds=" + attachmentIds + ", fileName=" + fileName
 				+ ", fileFormat=" + fileFormat + ", contentInBytes=" + Arrays.toString(contentInBytes)
 				+ ", readSysNotifId=" + readSysNotifId + ", readStatusSysNotif=" + readStatusSysNotif
-				+ ", applicationId=" + applicationId + ", productId=" + productId + ", contentAttachments="
-				+ contentAttachments + ", bcc=" + Arrays.toString(bcc) + "]";
+				+ ", applicationId=" + applicationId + ", productId=" + productId + ", userId=" + userId
+				+ ", phoneNumber=" + Arrays.toString(phoneNumber) + ", contentAttachments=" + contentAttachments
+				+ ", bcc=" + Arrays.toString(bcc) + "]";
 	}
-	
+
 }

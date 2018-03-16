@@ -50,7 +50,7 @@ public class UserBO extends AuditorBO implements Serializable {
 	private BankBO bank;
 
 	private List<ApplicationsBO> applications;
-	
+
 	private String password;
 
 	private String tempPassword;
@@ -63,22 +63,24 @@ public class UserBO extends AuditorBO implements Serializable {
 
 	private String contactNumber;
 
+	private String otp;
+
 	private Boolean isSameUsAddress;
-	
+
 	private Long employmentType;
-	
+
 	private String employerName;
-	
+
 	private String employmentAddress;
-	
+
 	private Double grossMonthlyIncome;
-	
+
 	private Integer totalWorkExperience;
-	
+
 	private String entityName;
-	
+
 	private Long selfEmployedType;
-	
+
 	private Long entityType;
 
 	public Long getId() {
@@ -361,6 +363,14 @@ public class UserBO extends AuditorBO implements Serializable {
 		this.entityType = entityType;
 	}
 
+	public String getOtp() {
+		return otp;
+	}
+
+	public void setOtp(String otp) {
+		this.otp = otp;
+	}
+
 	@Override
 	public String toString() {
 		return "UserBO [id=" + id + ", salutation=" + salutation + ", name=" + name + ", email=" + email + ", mobile="
@@ -371,6 +381,10 @@ public class UserBO extends AuditorBO implements Serializable {
 				+ ", isEmailVerified=" + isEmailVerified + ", userType=" + userType + ", bank=" + bank
 				+ ", applications=" + applications + ", password=" + password + ", tempPassword=" + tempPassword
 				+ ", panCard=" + panCard + ", aadharCardNo=" + aadharCardNo + ", eduQualification=" + eduQualification
-				+ ", contactNumber=" + contactNumber + ", isSameUsAddress=" + isSameUsAddress + "]";
+				+ ", contactNumber=" + contactNumber + ", otp=" + otp + ", isSameUsAddress=" + isSameUsAddress
+				+ ", employmentType=" + employmentType + ", employerName=" + employerName + ", employmentAddress="
+				+ employmentAddress + ", grossMonthlyIncome=" + grossMonthlyIncome + ", totalWorkExperience="
+				+ totalWorkExperience + ", entityName=" + entityName + ", selfEmployedType=" + selfEmployedType
+				+ ", entityType=" + entityType + "]";
 	}
 }

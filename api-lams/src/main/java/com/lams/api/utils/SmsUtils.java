@@ -7,7 +7,7 @@ import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import com.lams.api.domain.Notification;
 import com.lams.api.domain.NotificationLog;
 import com.lams.api.domain.master.notification.NotificationProvider;
-import com.lams.model.bo.SMSRequest;
+import com.lams.model.bo.NotificationMainBO;
 import com.lams.model.bo.SMSResponse;
 import com.lams.model.utils.CommonUtils;
 import com.lams.model.utils.Enums.ContentType;
@@ -33,7 +33,7 @@ public class SmsUtils {
 		this.fmConfiguration = fmConfiguration;
 	}
 
-	public String generateMessageFromTemplate(SMSRequest smsRequest) throws Exception {
+	public String generateMessageFromTemplate(NotificationMainBO smsRequest) throws Exception {
 		String message = null;
 		try {
 			if (ContentType.TEMPLATE.equals(smsRequest.getContentType())) {
@@ -54,7 +54,7 @@ public class SmsUtils {
 
 	}
 
-	public SMSResponse sendSMS(SMSRequest smsRequest, String message) throws Exception {
+	public SMSResponse sendSMS(NotificationMainBO smsRequest, String message) throws Exception {
 		String recipient = null;
 		try {
 			recipient = NotificationUtils.convertTOCommaSpe(smsRequest.getPhoneNumber());
@@ -71,7 +71,7 @@ public class SmsUtils {
 	}
 
 	public Notification generateNotificationToSave(SMSResponse response, NotificationProvider notificationProvider,
-			Long status, SMSRequest request, Long resentCount) {
+			Long status, NotificationMainBO request, Long resentCount) {
 
 		NotificationLog notificationSmsLog = new NotificationLog();
 		notificationSmsLog.setCreatedBy(1L);
@@ -100,8 +100,8 @@ public class SmsUtils {
 		notification.setMessage(response.getSmsMessage());
 		notification.setProvider(notificationProvider);
 		notification.setNotificationType(NotificationType.SMS.getValue());
-		notification.setUserId(1L);
 		notification.setUserId(request.getUserId());
+		notification.addNotificationLog(notificationSmsLog);
 		return notification;
 	}
 

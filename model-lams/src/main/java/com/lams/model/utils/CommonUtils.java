@@ -2,6 +2,7 @@ package com.lams.model.utils;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -16,6 +17,7 @@ public class CommonUtils {
 	public static final String USER_TYPE = "userType";
 	public static final String SOMETHING_WENT_WRONG = "Something Went Wrong !";
 	public static final String INVALID_REQUEST = "Invalid Request !";
+	public static final String DEFAULT_FORMATE = "MM/dd/yyyy HH:mm:ss";
 
 	static {
 		lamsUrls = new ArrayList<String>();
@@ -28,8 +30,9 @@ public class CommonUtils {
 	private CommonUtils() {
 
 	}
-	
-	public static final String[] skipFieldsForCreateApp = {"id","createdBy","modifiedDate","createdDate","modifiedBy","userId","isActive","leadReferenceNo"};
+
+	public static final String[] skipFieldsForCreateApp = { "id", "createdBy", "modifiedDate", "createdDate",
+			"modifiedBy", "userId", "isActive", "leadReferenceNo" };
 
 	public static boolean isListNullOrEmpty(Collection<?> data) {
 		return (data == null || data.isEmpty());
@@ -100,12 +103,12 @@ public class CommonUtils {
 		public static final Long FAILURE = 0L;
 
 	}
-	
+
 	public interface AddressType {
 		public static final int PERMANENT = 1;
 		public static final int COMMUNICATION = 2;
 	}
-	
+
 	public interface LoanType {
 		public static final int EXISTING_LOAN = 22;
 		public static final int CURRENT_LOAN = 23;
@@ -113,7 +116,7 @@ public class CommonUtils {
 	}
 
 	public interface ApplicationType {
-		
+
 		public static final int HOME_LOAN = 5;
 		public static final int LOAN_AGAINST_PROPERTY = 6;
 		public static final int SECURED_BUSINESS_LOAN = 7;
@@ -134,5 +137,42 @@ public class CommonUtils {
 		public static final int PERSONAL_LOAN = 26;
 
 	}
-	
+
+	public interface DateTime {
+		public static final int DAY = 1;
+		public static final int HOUR = 2;
+		public static final int MINUTES = 3;
+		public static final int SECONDS = 4;
+		public static final int MILISECONDS = 5;
+	}
+
+	public static long getDateDifference(Date toDate, Date fromDate, int returnType) throws ParseException {
+		SimpleDateFormat format = new SimpleDateFormat(DEFAULT_FORMATE);
+
+		fromDate = format.parse(format.format(fromDate));
+		toDate = format.parse(format.format(toDate));
+		long diff = toDate.getTime() - fromDate.getTime();
+		long result = 0l;
+
+		switch (returnType) {
+		case DateTime.DAY:
+			result = diff / (24 * 60 * 60 * 1000);
+			break;
+		case DateTime.HOUR:
+			result = diff / (60 * 60 * 1000) % 24;
+			break;
+		case DateTime.MINUTES:
+			result = diff / (60 * 1000) % 60;
+			break;
+		case DateTime.SECONDS:
+			result = diff / 1000 % 60;
+			break;
+		case DateTime.MILISECONDS:
+			result = diff;
+			break;
+		default:
+			break;
+		}
+		return result;
+	}
 }

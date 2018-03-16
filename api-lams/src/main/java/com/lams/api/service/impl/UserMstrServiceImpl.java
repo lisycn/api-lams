@@ -1,5 +1,6 @@
 package com.lams.api.service.impl;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -30,6 +31,7 @@ import com.lams.api.repository.master.BankMstrRepository;
 import com.lams.api.service.ApplicationsService;
 import com.lams.api.service.LenderApplicationMappingService;
 import com.lams.api.service.NotificationService;
+import com.lams.api.service.OTPLoggingService;
 import com.lams.api.service.UserMstrService;
 import com.lams.api.service.master.AddressService;
 import com.lams.model.bo.AddressBO;
@@ -38,8 +40,8 @@ import com.lams.model.bo.BankBO;
 import com.lams.model.bo.LamsResponse;
 import com.lams.model.bo.NotificationBO;
 import com.lams.model.bo.NotificationMainBO;
+import com.lams.model.bo.OTPRequest;
 import com.lams.model.bo.UserBO;
-import com.lams.model.bo.master.ApplicationTypeMstrBO;
 import com.lams.model.bo.master.CityBO;
 import com.lams.model.bo.master.CountryBO;
 import com.lams.model.bo.master.StateBO;
@@ -47,6 +49,7 @@ import com.lams.model.utils.CommonUtils;
 import com.lams.model.utils.Enums;
 import com.lams.model.utils.Enums.ContentType;
 import com.lams.model.utils.Enums.NotificationType;
+import com.lams.model.utils.Enums.OTPType;
 import com.lams.model.utils.Enums.UserType;
 import com.lams.model.utils.NotificationAlias;
 
@@ -73,16 +76,19 @@ public class UserMstrServiceImpl implements UserMstrService {
 
 	@Autowired
 	private LenderApplicationMappingService lenderApplicationMappingService;
-	
+
 	@Autowired
 	private LenderApplicationMappingRepository lenderApplicationMappingRepository;
-	
+
 	@Autowired
-	private ApplicationsService applicationsService; 
+	private ApplicationsService applicationsService;
+
+	@Autowired
+	private OTPLoggingService oTPLoggingService;
 
 	@Value("${com.lams.login.url}")
 	private String loginUrl;
-	
+
 	@Override
 	public LamsResponse registration(UserBO userBO, Long userId) {
 
@@ -112,7 +118,7 @@ public class UserMstrServiceImpl implements UserMstrService {
 				if (!user.getIsActive()) {
 					logger.info("Current User is Inactive ------------------------->" + userBO.getMobile());
 					return new LamsResponse(HttpStatus.BAD_REQUEST.value(), "User is inactive");
-				}				
+				}
 			}
 			// CHECK IF EMAIL IS EXIST
 			if (userMstrRepository.checkEmailById(userBO.getEmail(), user.getId()) > 0) {
@@ -130,42 +136,58 @@ public class UserMstrServiceImpl implements UserMstrService {
 		}
 		BeanUtils.copyProperties(userBO, user, "id", "isActive", "createdDate", "createdBy", "invitationCount");
 		user.setIsAcceptTermCondition(true);
-		user.setIsEmailVerified(
-				!CommonUtils.isObjectNullOrEmpty(userBO.getIsEmailVerified()) ? userBO.getIsEmailVerified() : false);
-		user.setIsOtpVerified(
-				!CommonUtils.isObjectNullOrEmpty(userBO.getIsOtpVerified()) ? userBO.getIsOtpVerified() : false);
-
 		if (!CommonUtils.isObjectNullOrEmpty(userBO.getUserType())) {
 			UserType userType = Enums.UserType.getType(userBO.getUserType().intValue());
 			if (!CommonUtils.isObjectNullOrEmpty(userType) && userType.equals(Enums.UserType.LENDER)) {
+				user.setIsEmailVerified(
+						!CommonUtils.isObjectNullOrEmpty(userBO.getIsEmailVerified()) ? userBO.getIsEmailVerified()
+								: true);
+				user.setIsOtpVerified(
+						!CommonUtils.isObjectNullOrEmpty(userBO.getIsOtpVerified()) ? userBO.getIsOtpVerified() : true);
 				if (CommonUtils.isObjectNullOrEmpty(userBO.getIsActive())) {
 					user.setIsActive(false);
 				} else {
 					user.setIsActive(userBO.getIsActive());
 				}
+
 				if (!CommonUtils.isObjectNullOrEmpty(userBO.getBank())
 						&& !CommonUtils.isObjectNullOrEmpty(userBO.getBank().getId())) {
 					user.setBank(new BankMstr(userBO.getBank().getId()));
 				}
+			} else if (!CommonUtils.isObjectNullOrEmpty(userType) && userType.equals(Enums.UserType.BORROWER)) {
+				user.setIsEmailVerified(false);
+				user.setIsOtpVerified(true);
 			}
 		}
 		user.setPassword(DigestUtils.md5DigestAsHex(userBO.getPassword().getBytes()).toString());
 		user = userMstrRepository.save(user);
-		
-		//Adding Mapping
+
+		// Adding Mapping
 		if (!CommonUtils.isListNullOrEmpty(userBO.getApplications())) {
 			lenderApplicationMappingRepository.inActiveByUserId(user.getId(), userId);
-			for (ApplicationsBO appBo: userBO.getApplications()) {
-				lenderApplicationMappingService.save(appBo.getApplicationTypeId(), user.getId(),userId);
+			for (ApplicationsBO appBo : userBO.getApplications()) {
+				lenderApplicationMappingService.save(appBo.getApplicationTypeId(), user.getId(), userId);
+			}
+		}
+
+		// Sending OTP to Registered Email
+		if (!CommonUtils.isObjectNullOrEmpty(user.getUserType())
+				&& Enums.UserType.BORROWER.getId() == user.getUserType().intValue()) {
+			boolean sendOtp = sendOtp(user, OTPType.REGISTRATION, NotificationAlias.SMS);
+			logger.log(Level.INFO, "Is Otp Sent===>{0}", sendOtp);
+			if (sendOtp) {
+				logger.log(Level.INFO, "OTP Sent For Mobile===>{0}=====Email=={1}",
+						new Object[] { user.getMobile(), user.getEmail() });
+				userBO.setId(user.getId());
 			}
 		}
 		logger.info(
 				"Successfully registration --------EMAIL---> " + userBO.getEmail() + "---------ID----" + user.getId());
 		String msg = "Successfully Registration";
-		if(!CommonUtils.isObjectNullOrEmpty(userBO.getId())) {
+		if (!CommonUtils.isObjectNullOrEmpty(userBO.getId())) {
 			msg = "Successfully Updated";
 		}
-		return new LamsResponse(HttpStatus.OK.value(), msg);
+		return new LamsResponse(HttpStatus.OK.value(), msg, userBO);
 	}
 
 	@Override
@@ -187,14 +209,15 @@ public class UserMstrServiceImpl implements UserMstrService {
 				BeanUtils.copyProperties(user.getBank(), bankBO);
 				userBo.setBank(bankBO);
 			}
-			if(user.getUserType() == Enums.UserType.BORROWER.getId()) {
-//				Set Borrower Applications
+			if (user.getUserType() == Enums.UserType.BORROWER.getId()) {
+				// Set Borrower Applications
 				userBo.setApplications(applicationsService.getAll(user.getId()));
-			}else {
-//				Set Lender Applications
-				List<ApplicationTypeMstr> list = lenderApplicationMappingRepository.getApplicationTypesByUserIdAndIsActive(user.getId(), true);
+			} else {
+				// Set Lender Applications
+				List<ApplicationTypeMstr> list = lenderApplicationMappingRepository
+						.getApplicationTypesByUserIdAndIsActive(user.getId(), true);
 				List<ApplicationsBO> apps = new ArrayList<>(list.size());
-				for(ApplicationTypeMstr mstr : list) {
+				for (ApplicationTypeMstr mstr : list) {
 					ApplicationsBO bo = new ApplicationsBO();
 					bo.setApplicationTypeId(mstr.getId());
 					bo.setApplicationTypeName(mstr.getName());
@@ -202,7 +225,7 @@ public class UserMstrServiceImpl implements UserMstrService {
 				}
 				userBo.setApplications(apps);
 			}
-			
+
 			userBOList.add(userBo);
 		}
 		return userBOList;
@@ -324,34 +347,51 @@ public class UserMstrServiceImpl implements UserMstrService {
 		return userBO;
 	}
 
-//	@Override
-//	public LamsResponse verifyEmail(String email) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-	
-//	public String generateEncryptString(Date signUp, String email) {
-//		logger.info("generateEncryptString=================>" + signUp);
-//		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
-//		Date parsedDate;
-//		String signUpDate = null;
-//		try {
-//			parsedDate = sdf.parse(signUp.toString());
-//			SimpleDateFormat print = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//			signUpDate = print.format(parsedDate);
-//		} catch (ParseException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//			logger.error("Error while parsing date");
-//		}
-//		String stringToEncrypt = email + "$" + signUpDate + "$" + UsersUtils.EMAIL_VERIFICATION_URL;
-//		String finalString = "";
-//		try {
-//			finalString = Base64.getEncoder().encodeToString(stringToEncrypt.getBytes("utf-8"));
-//		} catch (Exception e) {
-//			logger.warn("Error while encrypt url for email verification");
-//			e.printStackTrace();
-//		}
-//		return finalString;
-//	}
+	private boolean sendOtp(User user, OTPType type, String templateName) {
+		OTPRequest otpRequest = new OTPRequest();
+		otpRequest.setMasterId(user.getId());
+		otpRequest.setEmailId(user.getEmail());
+		otpRequest.setMobileNo(user.getMobile());
+		otpRequest.setRequestType(type.getId());
+		otpRequest.setTemplateName(templateName);
+		return oTPLoggingService.sendOTP(otpRequest);
+	}
+
+	@Override
+	public LamsResponse verifyOTP(UserBO userBO, OTPType type) throws ParseException {
+		// TODO Auto-generated method stub
+		User user = userMstrRepository.findOne(userBO.getId());
+		if (CommonUtils.isObjectNullOrEmpty(user)) {
+			return new LamsResponse(HttpStatus.BAD_REQUEST.value(), "Invalid Request");
+		}
+
+		OTPRequest otpRequest = new OTPRequest();
+		otpRequest.setEmailId(user.getEmail());
+		otpRequest.setMasterId(user.getId());
+		otpRequest.setMobileNo(user.getMobile());
+		otpRequest.setRequestType(type.getId());
+		otpRequest.setOtp(userBO.getOtp());
+		boolean isVerified = oTPLoggingService.verifyOTP(otpRequest);
+		if (isVerified) {
+			new LamsResponse(HttpStatus.OK.value(), "Mobile No " + user.getMobile() + "SuccessFully Verified");
+		}
+		return new LamsResponse(HttpStatus.OK.value(), "Invalid or Expired OTP.");
+	}
+
+	@Override
+	public LamsResponse resendOtp(UserBO userBO, OTPType type, String templateName) {
+		User user = userMstrRepository.findOne(userBO.getId());
+		if (CommonUtils.isObjectNullOrEmpty(user)) {
+			return new LamsResponse(HttpStatus.BAD_REQUEST.value(), "Invalid Request");
+		}
+		boolean sendOtp = sendOtp(user, type, templateName);
+		String msg = null;
+		if (sendOtp) {
+			msg = "Otp Successfully Sent on " + user.getMobile();
+			return new LamsResponse(HttpStatus.OK.value(), msg);
+		}
+		msg = CommonUtils.SOMETHING_WENT_WRONG + " Please try again after Sometime!";
+		return new LamsResponse(HttpStatus.OK.value(), msg);
+	}
+
 }

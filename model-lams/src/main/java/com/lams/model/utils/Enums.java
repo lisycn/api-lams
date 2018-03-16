@@ -1,6 +1,5 @@
 package com.lams.model.utils;
 
-
 public class Enums {
 
 	public enum Mode {
@@ -126,20 +125,22 @@ public class Enums {
 		NO_ACK, REQUIRED_ACK
 
 	}
-	
+
 	public enum YesNoType {
-		YES(1l,"Yes"), NO(2l,"No");
+		YES(1l, "Yes"), NO(2l, "No");
 
 		private Long id;
 		private String value;
 
-		private YesNoType(Long id,String value) {
+		private YesNoType(Long id, String value) {
 			this.id = id;
 			this.value = value;
 		}
+
 		public Long getId() {
 			return id;
 		}
+
 		public String getValue() {
 			return value;
 		}
@@ -154,6 +155,45 @@ public class Enums {
 				return null;
 			}
 		}
+
+		public static YesNoType[] getAll() {
+			return YesNoType.values();
+		}
+	}
+
+	public enum OTPType {
+		REGISTRATION(26l, "Registration", "RG");
+
+		private Long id;
+		private String value;
+		private String code;
+
+		private OTPType(Long id, String value, String code) {
+			this.id = id;
+			this.value = value;
+		}
+
+		public Long getId() {
+			return id;
+		}
+
+		public String getValue() {
+			return value;
+		}
+
+		public String getCode() {
+			return code;
+		}
+
+		public static OTPType getType(Long x) {
+			switch (x.intValue()) {
+			case 1:
+				return REGISTRATION;
+			default:
+				return null;
+			}
+		}
+
 		public static YesNoType[] getAll() {
 			return YesNoType.values();
 		}
