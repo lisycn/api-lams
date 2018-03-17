@@ -53,9 +53,11 @@ public class OTPLoggingServiceImpl implements OTPLoggingService {
 		// INACTIVE previous OTP if user has send OTP request twice or more than
 		// twice.
 		try {
-			oTPLoggingRepository.inActivePreviousOTP(request.getRequestType(), request.getMasterId(),
+			logger.log(Level.INFO, "Updating Data====>{0}====>{1}====>{2}",
+					new Object[] { request.getRequestType(), request.getMasterId(), request.getMobileNo() });
+			int updatedRows = oTPLoggingRepository.inActivePreviousOTP(request.getRequestType(), request.getMasterId(),
 					request.getMobileNo());
-
+			logger.log(Level.INFO, "updatedRows OTP ROWS====>{0}", updatedRows);
 			// saving new OTP
 			OtpLoggingDetail loggingDetails = new OtpLoggingDetail();
 			String otp = getOTP(request);

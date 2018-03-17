@@ -27,45 +27,48 @@ import com.lams.model.utils.CommonUtils;
 @Transactional
 public class AOPConfig {
 
-
 	private Logger logger = LoggerFactory.getLogger(AOPConfig.class);
-	
+
 	@Autowired
-	private LoginAuditTrailRepository auditTrailRepository; 
-	
-	 @Pointcut("within(@org.springframework.web.bind.annotation.RestController *) && " +
-		        "@annotation(requestMapping) && " +
-		        "execution(* *(..))")
-	 public void controller(RequestMapping requestMapping) {}
+	private LoginAuditTrailRepository auditTrailRepository;
+
+	@Pointcut("within(@org.springframework.web.bind.annotation.RestController *) && "
+			+ "@annotation(requestMapping) && " + "execution(* *(..))")
+	public void controller(RequestMapping requestMapping) {
+	}
 
 	@Before("controller(requestMapping)")
-	public void beforeMethod(JoinPoint joinPoint,RequestMapping requestMapping) throws Exception {
-		
+	public void beforeMethod(JoinPoint joinPoint, RequestMapping requestMapping) throws Exception {
+
 		String url = requestMapping.value()[0];
 		logger.info("Enter in authentication --------------------------------> " + url);
-		if(CommonUtils.lamsUrls.contains(url)) {
-			logger.info("Skip Authentication URI -------------> "+url);
+		logger.info("lamsUrls--------------------------------> {}",CommonUtils.lamsUrls);
+		if (CommonUtils.lamsUrls.contains(url)) {
+			logger.info("Skip Authentication URI -------------> " + url);
 			return;
 		}
-		 
-		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-		HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getResponse();
-		
+
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
+				.getRequest();
+		HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
+				.getResponse();
+
 		String token = request.getHeader("token");
-		if(CommonUtils.isObjectNullOrEmpty(token)) {
+		if (CommonUtils.isObjectNullOrEmpty(token)) {
 			logger.info("Token can't found from http request");
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED, HttpStatus.UNAUTHORIZED.name() + " , Token null or Empty !!");
+			throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED,
+					HttpStatus.UNAUTHORIZED.name() + " , Token null or Empty !!");
 		}
 		LoginAuditTrail loginAuditTrail = auditTrailRepository.findByTokenAndIsActive(token, true);
-		if(CommonUtils.isObjectNullOrEmpty(loginAuditTrail)) {
+		if (CommonUtils.isObjectNullOrEmpty(loginAuditTrail)) {
 			logger.info("Token is not valid -----------------------> " + token);
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED, "Token is not valid !!");
 		}
-		if(CommonUtils.findDiffBetTwoDate(loginAuditTrail.getLoginDate()) > 0) {
+		if (CommonUtils.findDiffBetTwoDate(loginAuditTrail.getLoginDate()) > 0) {
 			logger.info("Token is expire -----------------------> " + token);
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);	
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED, "Token is Expire !!");
 		}
 		request.setAttribute(CommonUtils.USER_ID, loginAuditTrail.getUserId());

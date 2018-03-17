@@ -185,7 +185,7 @@ public class UserMstrController {
 	}
 
 	@RequestMapping(value = "/verify_otp/{type}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<LamsResponse> verifyOTP(@RequestBody UserBO userBO, @PathVariable("type") Long type,
+	public ResponseEntity<LamsResponse> verifyOTP(@RequestBody UserBO userBO, @PathVariable("type") String typeCode,
 			HttpServletRequest request) {
 		logger.info("Enter in update lender details process");
 
@@ -206,14 +206,14 @@ public class UserMstrController {
 					new LamsResponse(HttpStatus.BAD_REQUEST.value(), "OTP Must not be Empty."), HttpStatus.OK);
 		}
 
-		if (CommonUtils.isObjectNullOrEmpty(type)) {
+		if (CommonUtils.isObjectNullOrEmpty(typeCode)) {
 			logger.info("TYPE is null or empty");
 			return new ResponseEntity<LamsResponse>(
 					new LamsResponse(HttpStatus.BAD_REQUEST.value(), CommonUtils.INVALID_REQUEST), HttpStatus.OK);
 		}
 
-		OTPType otpType = OTPType.getType(type);
-		if (CommonUtils.isObjectNullOrEmpty(type)) {
+		OTPType otpType = OTPType.getType(typeCode);
+		if (CommonUtils.isObjectNullOrEmpty(typeCode)) {
 			logger.info("otpType Enum Object is null or empty");
 			return new ResponseEntity<LamsResponse>(
 					new LamsResponse(HttpStatus.BAD_REQUEST.value(), CommonUtils.INVALID_REQUEST), HttpStatus.OK);
@@ -229,7 +229,7 @@ public class UserMstrController {
 	}
 
 	@RequestMapping(value = "/resend_otp/{type}/{templateName}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<LamsResponse> resendOTP(@RequestBody UserBO userBO, @PathVariable("type") Long type,
+	public ResponseEntity<LamsResponse> resendOTP(@RequestBody UserBO userBO, @PathVariable("type") String typeCode,
 			@PathVariable("templateName") String templateName, HttpServletRequest request) {
 		logger.info("Enter in resendOTP");
 
@@ -250,14 +250,14 @@ public class UserMstrController {
 					new LamsResponse(HttpStatus.BAD_REQUEST.value(), CommonUtils.INVALID_REQUEST), HttpStatus.OK);
 		}
 
-		if (CommonUtils.isObjectNullOrEmpty(type)) {
+		if (CommonUtils.isObjectNullOrEmpty(typeCode)) {
 			logger.info("TYPE is null or empty");
 			return new ResponseEntity<LamsResponse>(
 					new LamsResponse(HttpStatus.BAD_REQUEST.value(), CommonUtils.INVALID_REQUEST), HttpStatus.OK);
 		}
 
-		OTPType otpType = OTPType.getType(type);
-		if (CommonUtils.isObjectNullOrEmpty(type)) {
+		OTPType otpType = OTPType.getType(typeCode);
+		if (CommonUtils.isObjectNullOrEmpty(typeCode)) {
 			logger.info("otpType Enum Object is null or empty");
 			return new ResponseEntity<LamsResponse>(
 					new LamsResponse(HttpStatus.BAD_REQUEST.value(), CommonUtils.INVALID_REQUEST), HttpStatus.OK);
@@ -270,6 +270,43 @@ public class UserMstrController {
 			e.printStackTrace();
 			return new ResponseEntity<LamsResponse>(
 					new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Something went wrong"), HttpStatus.OK);
+		}
+	}
+
+	@RequestMapping(value = "/change_password", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<LamsResponse> changePassword(@RequestBody UserBO userBO, HttpServletRequest request) {
+		logger.info("Enter in resendOTP");
+
+		Long userId = (Long) request.getAttribute(CommonUtils.USER_ID);
+		if (CommonUtils.isObjectNullOrEmpty(userBO.getId())) {
+			userBO.setId(userId);
+		}
+
+		if (CommonUtils.isObjectNullOrEmpty(userBO.getId())) {
+			logger.info("UsesrId is null or empty");
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.BAD_REQUEST.value(), CommonUtils.INVALID_REQUEST), HttpStatus.OK);
+		}
+
+		if (CommonUtils.isObjectNullOrEmpty(userBO.getTempPassword())) {
+			logger.info("Temp (Current) password is NUll");
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.BAD_REQUEST.value(), "Please Enter Current Password."), HttpStatus.OK);
+		}
+
+		if (CommonUtils.isObjectNullOrEmpty(userBO.getPassword())) {
+			logger.info("New password is NUll");
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.BAD_REQUEST.value(), "Please Enter New Password."), HttpStatus.OK);
+		}
+		try {
+			return new ResponseEntity<LamsResponse>(userMstrService.changePassword(userBO), HttpStatus.OK);
+		} catch (Exception e) {
+			logger.info("Throw Exception while update lender details ---------------->" + userBO.getEmail());
+			e.printStackTrace();
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), CommonUtils.SOMETHING_WENT_WRONG),
+					HttpStatus.OK);
 		}
 	}
 

@@ -185,9 +185,9 @@ public class Enums {
 			return code;
 		}
 
-		public static OTPType getType(Long x) {
-			switch (x.intValue()) {
-			case 1:
+		public static OTPType getType(String code) {
+			switch (code) {
+			case "RG":
 				return REGISTRATION;
 			default:
 				return null;

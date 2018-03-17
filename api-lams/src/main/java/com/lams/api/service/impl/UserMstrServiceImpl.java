@@ -174,6 +174,7 @@ public class UserMstrServiceImpl implements UserMstrService {
 		if (!CommonUtils.isObjectNullOrEmpty(user.getUserType())
 				&& Enums.UserType.BORROWER.getId() == user.getUserType().intValue()) {
 			boolean sendOtp = sendOtp(user, OTPType.REGISTRATION, NotificationAlias.SMS);
+			userBO.setIsSent(sendOtp);
 			logger.log(Level.INFO, "Is Otp Sent===>{0}", sendOtp);
 			if (sendOtp) {
 				logger.log(Level.INFO, "OTP Sent For Mobile===>{0}=====Email=={1}",
@@ -347,7 +348,8 @@ public class UserMstrServiceImpl implements UserMstrService {
 		return userBO;
 	}
 
-	private boolean sendOtp(User user, OTPType type, String templateName) {
+	@Override
+	public boolean sendOtp(User user, OTPType type, String templateName) {
 		OTPRequest otpRequest = new OTPRequest();
 		otpRequest.setMasterId(user.getId());
 		otpRequest.setEmailId(user.getEmail());
@@ -362,7 +364,7 @@ public class UserMstrServiceImpl implements UserMstrService {
 		// TODO Auto-generated method stub
 		User user = userMstrRepository.findOne(userBO.getId());
 		if (CommonUtils.isObjectNullOrEmpty(user)) {
-			return new LamsResponse(HttpStatus.BAD_REQUEST.value(), "Invalid Request");
+			return new LamsResponse(HttpStatus.BAD_REQUEST.value(), CommonUtils.INVALID_REQUEST);
 		}
 
 		OTPRequest otpRequest = new OTPRequest();
@@ -372,17 +374,22 @@ public class UserMstrServiceImpl implements UserMstrService {
 		otpRequest.setRequestType(type.getId());
 		otpRequest.setOtp(userBO.getOtp());
 		boolean isVerified = oTPLoggingService.verifyOTP(otpRequest);
+		user.setIsOtpVerified(isVerified);
+		userMstrRepository.save(user);
 		if (isVerified) {
-			new LamsResponse(HttpStatus.OK.value(), "Mobile No " + user.getMobile() + "SuccessFully Verified");
+			return new LamsResponse(HttpStatus.OK.value(), "Mobile No " + user.getMobile() + " SuccessFully Verified.");
 		}
-		return new LamsResponse(HttpStatus.OK.value(), "Invalid or Expired OTP.");
+		return new LamsResponse(HttpStatus.BAD_REQUEST.value(), "Invalid or Expired OTP.");
 	}
 
 	@Override
 	public LamsResponse resendOtp(UserBO userBO, OTPType type, String templateName) {
 		User user = userMstrRepository.findOne(userBO.getId());
 		if (CommonUtils.isObjectNullOrEmpty(user)) {
-			return new LamsResponse(HttpStatus.BAD_REQUEST.value(), "Invalid Request");
+			return new LamsResponse(HttpStatus.BAD_REQUEST.value(), CommonUtils.INVALID_REQUEST);
+		}
+		if (!templateName.contains("ftl")) {
+			templateName = templateName.concat(".ftl");
 		}
 		boolean sendOtp = sendOtp(user, type, templateName);
 		String msg = null;
@@ -391,7 +398,33 @@ public class UserMstrServiceImpl implements UserMstrService {
 			return new LamsResponse(HttpStatus.OK.value(), msg);
 		}
 		msg = CommonUtils.SOMETHING_WENT_WRONG + " Please try again after Sometime!";
-		return new LamsResponse(HttpStatus.OK.value(), msg);
+		return new LamsResponse(HttpStatus.BAD_REQUEST.value(), msg);
+	}
+
+	@Override
+	public LamsResponse changePassword(UserBO userBO) {
+		// TODO Auto-generated method stub
+		logger.log(Level.INFO, "userBO===>", userBO.toString());
+		User user = userMstrRepository.findOne(userBO.getId());
+		if (CommonUtils.isObjectNullOrEmpty(user)) {
+			logger.log(Level.WARNING, "Invalid User Id while Getting User by Id ==>{0}", userBO.getId());
+			return new LamsResponse(HttpStatus.BAD_REQUEST.value(), "Invalid UserId. Please try to Relogin!");
+		}
+		String currPass = DigestUtils.md5DigestAsHex(userBO.getTempPassword().getBytes()).toString();
+		if (!user.getPassword().equals(currPass)) {
+			return new LamsResponse(HttpStatus.BAD_REQUEST.value(),
+					"Current Password does not Match with the Database Record.");
+		}
+
+		String newPass = DigestUtils.md5DigestAsHex(userBO.getPassword().getBytes()).toString();
+		if (currPass.equals(newPass)) {
+			return new LamsResponse(HttpStatus.BAD_REQUEST.value(),
+					"Current Password And New Password Must not be Same!");
+		}
+		user.setPassword(newPass);
+		user = userMstrRepository.save(user);
+		BeanUtils.copyProperties(user, userBO, "password", "tempPassword");
+		return new LamsResponse(HttpStatus.OK.value(), "Password Successfully Updated", userBO);
 	}
 
 }

@@ -65,6 +65,8 @@ public class UserBO extends AuditorBO implements Serializable {
 
 	private String otp;
 
+	private Boolean isSent;
+
 	private Boolean isSameUsAddress;
 
 	private Long employmentType;
@@ -371,6 +373,14 @@ public class UserBO extends AuditorBO implements Serializable {
 		this.otp = otp;
 	}
 
+	public Boolean getIsSent() {
+		return isSent;
+	}
+
+	public void setIsSent(Boolean isSent) {
+		this.isSent = isSent;
+	}
+
 	@Override
 	public String toString() {
 		return "UserBO [id=" + id + ", salutation=" + salutation + ", name=" + name + ", email=" + email + ", mobile="
@@ -381,10 +391,10 @@ public class UserBO extends AuditorBO implements Serializable {
 				+ ", isEmailVerified=" + isEmailVerified + ", userType=" + userType + ", bank=" + bank
 				+ ", applications=" + applications + ", password=" + password + ", tempPassword=" + tempPassword
 				+ ", panCard=" + panCard + ", aadharCardNo=" + aadharCardNo + ", eduQualification=" + eduQualification
-				+ ", contactNumber=" + contactNumber + ", otp=" + otp + ", isSameUsAddress=" + isSameUsAddress
-				+ ", employmentType=" + employmentType + ", employerName=" + employerName + ", employmentAddress="
-				+ employmentAddress + ", grossMonthlyIncome=" + grossMonthlyIncome + ", totalWorkExperience="
-				+ totalWorkExperience + ", entityName=" + entityName + ", selfEmployedType=" + selfEmployedType
-				+ ", entityType=" + entityType + "]";
+				+ ", contactNumber=" + contactNumber + ", otp=" + otp + ", isSent=" + isSent
+				+ ", isSameUsAddress=" + isSameUsAddress + ", employmentType=" + employmentType + ", employerName="
+				+ employerName + ", employmentAddress=" + employmentAddress + ", grossMonthlyIncome="
+				+ grossMonthlyIncome + ", totalWorkExperience=" + totalWorkExperience + ", entityName=" + entityName
+				+ ", selfEmployedType=" + selfEmployedType + ", entityType=" + entityType + "]";
 	}
 }

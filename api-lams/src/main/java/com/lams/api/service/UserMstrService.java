@@ -21,6 +21,10 @@ public interface UserMstrService {
 	public LamsResponse verifyOTP(UserBO userBO, OTPType type) throws ParseException;
 
 	public UserBO inviteLender(UserBO userBO, Long userId) throws Exception;
-	
+
 	public LamsResponse resendOtp(UserBO userBO, OTPType type, String templateName);
+	
+	public LamsResponse changePassword(UserBO userBO);
+
+	public boolean sendOtp(User user, OTPType type, String templateName);
 }
