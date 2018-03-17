@@ -7,12 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.lams.api.domain.loan.OverDraftFacilitiesLoanDetails;
+import com.lams.api.repository.ApplicationsRepository;
 import com.lams.api.repository.loan.OverDraftFacilitiesLoanDetailsRepository;
 import com.lams.api.repository.master.ApplicationTypeMstrRepository;
 import com.lams.api.repository.master.LoanTypeMstrRepository;
 import com.lams.api.service.loan.OverDraftFacilitiesLoanDetailsService;
 import com.lams.model.loan.bo.OverDraftFacilitiesLoanDetailsBO;
 import com.lams.model.utils.CommonUtils;
+import com.lams.model.utils.CommonUtils.ApplicationType;
+import com.lams.model.utils.CommonUtils.ApplicationTypeCode;
 
 @Service
 @Transactional
@@ -28,6 +31,9 @@ public class OverDraftFacilitiesLoanDetailsServiceImpl implements OverDraftFacil
 	
 	@Autowired
 	private ApplicationTypeMstrRepository applicationTypeMstrRepository;
+	
+	@Autowired 
+	private ApplicationsRepository applicationsRepository;
 
 	@Override
 	public Long save(OverDraftFacilitiesLoanDetailsBO requestLoanDetailsBO) {
@@ -40,7 +46,8 @@ public class OverDraftFacilitiesLoanDetailsServiceImpl implements OverDraftFacil
 			domainObj.setCreatedBy(requestLoanDetailsBO.getUserId());
 			domainObj.setCreatedDate(new Date());
 			domainObj.setIsActive(true);
-			domainObj.setLeadReferenceNo("ODF-001");
+			String lastLeadReferenceNo = applicationsRepository.getLastLeadReferenceNo(Long.valueOf(ApplicationType.OVERDRAFT_FACILITIES_LOAN));
+			domainObj.setLeadReferenceNo(CommonUtils.generateRefNo(ApplicationTypeCode.OVERDRAFT_FACILITIES_LOAN, lastLeadReferenceNo));
 			domainObj.setUserId(requestLoanDetailsBO.getUserId());
 		} else {
 			domainObj.setModifiedBy(requestLoanDetailsBO.getUserId());

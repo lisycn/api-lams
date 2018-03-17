@@ -9,12 +9,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lams.api.domain.loan.GoldLoanDetails;
+import com.lams.api.repository.ApplicationsRepository;
 import com.lams.api.repository.loan.GoldLoanDetailsRepository;
 import com.lams.api.repository.master.ApplicationTypeMstrRepository;
 import com.lams.api.repository.master.LoanTypeMstrRepository;
 import com.lams.api.service.loan.GoldLoanDetailsService;
 import com.lams.model.loan.bo.GoldLoanDetailsBO;
 import com.lams.model.utils.CommonUtils;
+import com.lams.model.utils.CommonUtils.ApplicationType;
+import com.lams.model.utils.CommonUtils.ApplicationTypeCode;
 
 @Service
 @Transactional
@@ -30,6 +33,9 @@ public class GoldLoanDetailsServiceImpl implements GoldLoanDetailsService{
 	
 	@Autowired
 	private ApplicationTypeMstrRepository applicationTypeMstrRepository;
+	
+	@Autowired 
+	private ApplicationsRepository applicationsRepository;
 
 	@Override
 	public Long save(GoldLoanDetailsBO requestLoanDetailsBO) {
@@ -41,7 +47,8 @@ public class GoldLoanDetailsServiceImpl implements GoldLoanDetailsService{
 			domainObj = new GoldLoanDetails();
 			domainObj.setCreatedBy(requestLoanDetailsBO.getUserId());
 			domainObj.setCreatedDate(new Date());
-			domainObj.setLeadReferenceNo("GL-001");
+			String lastLeadReferenceNo = applicationsRepository.getLastLeadReferenceNo(Long.valueOf(ApplicationType.GOLD_LOAN));
+			domainObj.setLeadReferenceNo(CommonUtils.generateRefNo(ApplicationTypeCode.GOLD_LOAN, lastLeadReferenceNo));
 			domainObj.setIsActive(true);
 			domainObj.setUserId(requestLoanDetailsBO.getUserId());
 		} else {

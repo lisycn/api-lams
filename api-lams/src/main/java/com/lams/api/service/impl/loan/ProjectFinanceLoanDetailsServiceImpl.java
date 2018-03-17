@@ -9,12 +9,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lams.api.domain.loan.ProjectFinanceLoanDetails;
+import com.lams.api.repository.ApplicationsRepository;
 import com.lams.api.repository.loan.ProjectFinanceLoanDetailsRepository;
 import com.lams.api.repository.master.ApplicationTypeMstrRepository;
 import com.lams.api.repository.master.LoanTypeMstrRepository;
 import com.lams.api.service.loan.ProjectFinanceLoanDetailsService;
 import com.lams.model.loan.bo.ProjectFinanceLoanDetailsBO;
 import com.lams.model.utils.CommonUtils;
+import com.lams.model.utils.CommonUtils.ApplicationType;
+import com.lams.model.utils.CommonUtils.ApplicationTypeCode;
 
 @Service
 @Transactional
@@ -30,6 +33,9 @@ public class ProjectFinanceLoanDetailsServiceImpl implements ProjectFinanceLoanD
 	
 	@Autowired
 	private ApplicationTypeMstrRepository applicationTypeMstrRepository;
+	
+	@Autowired 
+	private ApplicationsRepository applicationsRepository;
 
 	@Override
 	public Long save(ProjectFinanceLoanDetailsBO requestLoanDetailsBO) {
@@ -42,7 +48,8 @@ public class ProjectFinanceLoanDetailsServiceImpl implements ProjectFinanceLoanD
 			domainObj.setCreatedBy(requestLoanDetailsBO.getUserId());
 			domainObj.setCreatedDate(new Date());
 			domainObj.setIsActive(true);
-			domainObj.setLeadReferenceNo("PFL-001");
+			String lastLeadReferenceNo = applicationsRepository.getLastLeadReferenceNo(Long.valueOf(ApplicationType.PROJECT_FINANCE_LOAN));
+			domainObj.setLeadReferenceNo(CommonUtils.generateRefNo(ApplicationTypeCode.PROJECT_FINANCE_LOAN, lastLeadReferenceNo));
 			domainObj.setUserId(requestLoanDetailsBO.getUserId());
 		} else {
 			domainObj.setModifiedBy(requestLoanDetailsBO.getUserId());

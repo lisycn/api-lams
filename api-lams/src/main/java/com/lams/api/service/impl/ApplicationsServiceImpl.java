@@ -294,7 +294,8 @@ public class ApplicationsServiceImpl implements ApplicationsService{
 		BeanUtils.copyProperties(applications, applicationsBO);
 		if(!CommonUtils.isObjectNullOrEmpty(applications.getApplicationTypeId())) {
 			applicationsBO.setApplicationTypeId(applications.getApplicationTypeId().getId());
-			applicationsBO.setApplicationTypeName(applications.getApplicationTypeId().getName());	
+			applicationsBO.setApplicationTypeName(applications.getApplicationTypeId().getName());
+			applicationsBO.setApplicationTypeCode(applications.getApplicationTypeId().getCode());
 		}
 		if(!CommonUtils.isObjectNullOrEmpty(applications.getLoanTypeId())) {
 			applicationsBO.setLoanTypeId(applications.getLoanTypeId().getId());

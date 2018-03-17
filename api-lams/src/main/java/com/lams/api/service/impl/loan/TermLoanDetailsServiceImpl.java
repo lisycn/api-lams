@@ -9,12 +9,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lams.api.domain.loan.TermLoanDetails;
+import com.lams.api.repository.ApplicationsRepository;
 import com.lams.api.repository.loan.TermLoanDetailsRepository;
 import com.lams.api.repository.master.ApplicationTypeMstrRepository;
 import com.lams.api.repository.master.LoanTypeMstrRepository;
 import com.lams.api.service.loan.TermLoanDetailsService;
 import com.lams.model.loan.bo.TermLoanDetailsBO;
 import com.lams.model.utils.CommonUtils;
+import com.lams.model.utils.CommonUtils.ApplicationType;
+import com.lams.model.utils.CommonUtils.ApplicationTypeCode;
 
 @Service
 @Transactional
@@ -31,6 +34,9 @@ public class TermLoanDetailsServiceImpl implements TermLoanDetailsService {
 	@Autowired
 	private ApplicationTypeMstrRepository applicationTypeMstrRepository;
 
+	@Autowired 
+	private ApplicationsRepository applicationsRepository;
+	
 	@Override
 	public Long save(TermLoanDetailsBO requestLoanDetailsBO) {
 		TermLoanDetails domainObj = null;
@@ -42,7 +48,8 @@ public class TermLoanDetailsServiceImpl implements TermLoanDetailsService {
 			domainObj.setCreatedBy(requestLoanDetailsBO.getUserId());
 			domainObj.setCreatedDate(new Date());
 			domainObj.setIsActive(true);
-			domainObj.setLeadReferenceNo("TL-001");
+			String lastLeadReferenceNo = applicationsRepository.getLastLeadReferenceNo(Long.valueOf(ApplicationType.TERM_LOAN));
+			domainObj.setLeadReferenceNo(CommonUtils.generateRefNo(ApplicationTypeCode.TERM_LOAN, lastLeadReferenceNo));
 			domainObj.setUserId(requestLoanDetailsBO.getUserId());
 		} else {
 			domainObj.setModifiedBy(requestLoanDetailsBO.getUserId());

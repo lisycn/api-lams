@@ -7,12 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.lams.api.domain.loan.LoanAgainstSecuritiesLoanDetails;
+import com.lams.api.repository.ApplicationsRepository;
 import com.lams.api.repository.loan.LoanAgainstSecuritiesLoanDetailsRepository;
 import com.lams.api.repository.master.ApplicationTypeMstrRepository;
 import com.lams.api.repository.master.LoanTypeMstrRepository;
 import com.lams.api.service.loan.LoanAgainstSecuritiesLoanDetailsService;
 import com.lams.model.loan.bo.LoanAgainstSecuritiesLoanDetailsBO;
 import com.lams.model.utils.CommonUtils;
+import com.lams.model.utils.CommonUtils.ApplicationType;
+import com.lams.model.utils.CommonUtils.ApplicationTypeCode;
 
 @Service
 @Transactional
@@ -28,6 +31,9 @@ public class LoanAgainstSecuritiesLoanDetailsServiceImpl implements LoanAgainstS
 	
 	@Autowired
 	private ApplicationTypeMstrRepository applicationTypeMstrRepository;
+	
+	@Autowired 
+	private ApplicationsRepository applicationsRepository;
 
 	@Override
 	public Long save(LoanAgainstSecuritiesLoanDetailsBO requestLoanDetailsBO) {
@@ -40,7 +46,8 @@ public class LoanAgainstSecuritiesLoanDetailsServiceImpl implements LoanAgainstS
 			domainObj.setCreatedBy(requestLoanDetailsBO.getUserId());
 			domainObj.setCreatedDate(new Date());
 			domainObj.setIsActive(true);
-			domainObj.setLeadReferenceNo("LAS-001");
+			String lastLeadReferenceNo = applicationsRepository.getLastLeadReferenceNo(Long.valueOf(ApplicationType.LOAN_AGAINST_SECURITIS));
+			domainObj.setLeadReferenceNo(CommonUtils.generateRefNo(ApplicationTypeCode.LOAN_AGAINST_SECURITIS, lastLeadReferenceNo));
 			domainObj.setUserId(requestLoanDetailsBO.getUserId());
 		} else {
 			domainObj.setModifiedBy(requestLoanDetailsBO.getUserId());

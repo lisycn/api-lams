@@ -9,12 +9,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lams.api.domain.loan.WorkingCapitalLoanDetails;
+import com.lams.api.repository.ApplicationsRepository;
 import com.lams.api.repository.loan.WorkingCapitalLoanDetailsRepository;
 import com.lams.api.repository.master.ApplicationTypeMstrRepository;
 import com.lams.api.repository.master.LoanTypeMstrRepository;
 import com.lams.api.service.loan.WorkingCapitalLoanDetailsService;
 import com.lams.model.loan.bo.WorkingCapitalLoanDetailsBO;
 import com.lams.model.utils.CommonUtils;
+import com.lams.model.utils.CommonUtils.ApplicationType;
+import com.lams.model.utils.CommonUtils.ApplicationTypeCode;
 
 @Service
 @Transactional
@@ -30,6 +33,9 @@ public class WorkingCapitalLoanDetailsServiceImpl implements WorkingCapitalLoanD
 	
 	@Autowired
 	private ApplicationTypeMstrRepository applicationTypeMstrRepository;
+	
+	@Autowired 
+	private ApplicationsRepository applicationsRepository;
 
 	@Override
 	public Long save(WorkingCapitalLoanDetailsBO requestLoanDetailsBO) {
@@ -42,7 +48,8 @@ public class WorkingCapitalLoanDetailsServiceImpl implements WorkingCapitalLoanD
 			domainObj.setCreatedBy(requestLoanDetailsBO.getUserId());
 			domainObj.setCreatedDate(new Date());
 			domainObj.setIsActive(true);
-			domainObj.setLeadReferenceNo("WC-001");
+			String lastLeadReferenceNo = applicationsRepository.getLastLeadReferenceNo(Long.valueOf(ApplicationType.WORKING_CAPITAL_LOAN));
+			domainObj.setLeadReferenceNo(CommonUtils.generateRefNo(ApplicationTypeCode.WORKING_CAPITAL_LOAN, lastLeadReferenceNo));
 			domainObj.setUserId(requestLoanDetailsBO.getUserId());
 		} else {
 			domainObj.setModifiedBy(requestLoanDetailsBO.getUserId());

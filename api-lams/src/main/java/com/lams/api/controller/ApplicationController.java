@@ -92,7 +92,7 @@ public class ApplicationController {
 	}
 	
 	@RequestMapping(value="/getLoanDetails/{id}/{appTypeId}",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<LamsResponse> save (@PathVariable("id") Long id,@PathVariable("appType") Long appTypeId){
+	public ResponseEntity<LamsResponse> save (@PathVariable("id") Long id,@PathVariable("appTypeId") Long appTypeId){
 		logger.info("Enter in save application");
 		if(CommonUtils.isObjectNullOrEmpty(appTypeId)) {
 			return new ResponseEntity<LamsResponse>(new LamsResponse(HttpStatus.BAD_REQUEST.value(), "Application Type Null Or Empty"),
