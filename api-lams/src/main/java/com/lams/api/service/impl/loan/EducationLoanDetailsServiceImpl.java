@@ -7,12 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.lams.api.domain.loan.EducationLoanDetails;
+import com.lams.api.repository.ApplicationsRepository;
 import com.lams.api.repository.loan.EducationLoanDetailsRepository;
 import com.lams.api.repository.master.ApplicationTypeMstrRepository;
 import com.lams.api.repository.master.LoanTypeMstrRepository;
 import com.lams.api.service.loan.EducationLoanDetailsService;
 import com.lams.model.loan.bo.EducationLoanDetailsBO;
 import com.lams.model.utils.CommonUtils;
+import com.lams.model.utils.CommonUtils.ApplicationType;
+import com.lams.model.utils.CommonUtils.ApplicationTypeCode;
 
 @Service
 @Transactional
@@ -29,6 +32,9 @@ public class EducationLoanDetailsServiceImpl implements EducationLoanDetailsServ
 	@Autowired
 	private ApplicationTypeMstrRepository applicationTypeMstrRepository;
 
+	@Autowired 
+	private ApplicationsRepository applicationsRepository;
+	
 	@Override
 	public Long save(EducationLoanDetailsBO requestLoanDetailsBO) {
 		EducationLoanDetails domainObj = null;
@@ -40,7 +46,8 @@ public class EducationLoanDetailsServiceImpl implements EducationLoanDetailsServ
 			domainObj.setCreatedBy(requestLoanDetailsBO.getUserId());
 			domainObj.setCreatedDate(new Date());
 			domainObj.setIsActive(true);
-			domainObj.setLeadReferenceNo("EL-001");
+			String lastLeadReferenceNo = applicationsRepository.getLastLeadReferenceNo(Long.valueOf(ApplicationType.EDUCATION_LOAN));
+			domainObj.setLeadReferenceNo(CommonUtils.generateRefNo(ApplicationTypeCode.EDUCATION_LOAN, lastLeadReferenceNo));
 			domainObj.setUserId(requestLoanDetailsBO.getUserId());
 		} else {
 			domainObj.setModifiedBy(requestLoanDetailsBO.getUserId());

@@ -15,6 +15,7 @@ public class CommonUtils {
 	public static List<String> lamsUrls = null;
 	public static final String USER_ID = "userId";
 	public static final String USER_TYPE = "userType";
+	public static final String VSCP = "VSCP";
 	public static final String SOMETHING_WENT_WRONG = "Something Went Wrong !";
 	public static final String INVALID_REQUEST = "Invalid Request !";
 	public static final String DEFAULT_FORMATE = "MM/dd/yyyy HH:mm:ss";
@@ -175,4 +176,39 @@ public class CommonUtils {
 		}
 		return result;
 	}
+
+
+	public interface ApplicationTypeCode {
+
+		public static final String HOME_LOAN = "HL";
+		public static final String LOAN_AGAINST_PROPERTY = "LAP";
+		public static final String SECURED_BUSINESS_LOAN = "SBL";
+		public static final String WORKING_CAPITAL_LOAN = "WC";
+		public static final String EDUCATION_LOAN = "EL";
+		public static final String CAR_LOAN = "CL";
+		public static final String OVERDRAFT_FACILITIES_LOAN = "ODL";
+		public static final String DROPLINE_OVERDRAFT_FACILITIES_LOAN = "DLOF";
+		public static final String BANK_GUARANTEE_LOAN = "BG";
+		public static final String CC_FACILITIES_LOAN = "CCF";
+		public static final String TERM_LOAN = "TL";
+		public static final String LOAN_AGAINST_FDS = "LAF";
+		public static final String LOAN_AGAINST_SECURITIS = "LAS";
+		public static final String PROJECT_FINANCE_LOAN = "PFL";
+		public static final String PRIVATE_EQUITY_FINANCE_LOAN = "PEF";
+		public static final String GOLD_LOAN = "GL";
+		public static final String OTHER_LOAN = "OL";
+		public static final String PERSONAL_LOAN = "PL";
+
+	}
+
+	public static String generateRefNo(String applicationCode, String code) {
+		if (!CommonUtils.isObjectNullOrEmpty(code)) {
+			String[] codes = code.split("-");
+			if (codes.length > 2) {
+				return VSCP + "-" + applicationCode + "-" + String.format("%06d", Integer.valueOf(codes[2]) + 1);
+			}
+		}
+		return VSCP + "-" + applicationCode + "-" + String.format("%06d", 1);
+	}
+
 }

@@ -8,12 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.lams.api.domain.loan.DropLineOdFacilitiesLoanDetails;
+import com.lams.api.repository.ApplicationsRepository;
 import com.lams.api.repository.loan.DropLineOdFacilitiesLoanDetailsRepository;
 import com.lams.api.repository.master.ApplicationTypeMstrRepository;
 import com.lams.api.repository.master.LoanTypeMstrRepository;
 import com.lams.api.service.loan.DropLineOdFacilitiesLoanDetailsService;
 import com.lams.model.loan.bo.DropLineOdFacilitiesLoanDetailsBO;
 import com.lams.model.utils.CommonUtils;
+import com.lams.model.utils.CommonUtils.ApplicationType;
+import com.lams.model.utils.CommonUtils.ApplicationTypeCode;
 
 @Service
 @Transactional
@@ -29,6 +32,9 @@ public class DropLineOdFacilitiesLoanDetailsServiceImpl implements DropLineOdFac
 	
 	@Autowired
 	private ApplicationTypeMstrRepository applicationTypeMstrRepository;
+	
+	@Autowired 
+	private ApplicationsRepository applicationsRepository;
 
 	@Override
 	public Long save(DropLineOdFacilitiesLoanDetailsBO requestLoanDetailsBO) {
@@ -40,7 +46,8 @@ public class DropLineOdFacilitiesLoanDetailsServiceImpl implements DropLineOdFac
 			domainObj = new DropLineOdFacilitiesLoanDetails();
 			domainObj.setCreatedBy(requestLoanDetailsBO.getUserId());
 			domainObj.setCreatedDate(new Date());
-			domainObj.setLeadReferenceNo("DLOF-001");
+			String lastLeadReferenceNo = applicationsRepository.getLastLeadReferenceNo(Long.valueOf(ApplicationType.DROPLINE_OVERDRAFT_FACILITIES_LOAN));
+			domainObj.setLeadReferenceNo(CommonUtils.generateRefNo(ApplicationTypeCode.DROPLINE_OVERDRAFT_FACILITIES_LOAN, lastLeadReferenceNo));
 			domainObj.setIsActive(true);
 			domainObj.setUserId(requestLoanDetailsBO.getUserId());
 		} else {

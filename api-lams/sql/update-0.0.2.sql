@@ -25,7 +25,7 @@ INSERT INTO `lams`.`mstr_base` (`id`,`name`, `code`, `is_active`, `created_by`, 
 VALUES (7,'Secured Business Loans', 'SBL', 1, 1, '2018-03-11 23:26:49', 1, '2018-03-11 23:26:49');
 
 INSERT INTO `lams`.`mstr_base` (`id`,`name`, `code`, `is_active`, `created_by`, `created_date`, `modified_by`, `modified_date`) 
-VALUES (8,'Working Capital Loans', 'WL', 1, 1, '2018-03-11 23:26:49', 1, '2018-03-11 23:26:49');
+VALUES (8,'Working Capital Loans', 'WC', 1, 1, '2018-03-11 23:26:49', 1, '2018-03-11 23:26:49');
 
 INSERT INTO `lams`.`mstr_base` (`id`,`name`, `code`, `is_active`, `created_by`, `created_date`, `modified_by`, `modified_date`) 
 VALUES (9,'Education Loans', 'EL', 1, 1, '2018-03-11 23:26:49', 1, '2018-03-11 23:26:49');

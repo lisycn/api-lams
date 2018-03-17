@@ -15,6 +15,8 @@ public class ApplicationsBO extends AuditorBO implements Serializable{
 	
 	private String applicationTypeName;
 	
+	private String applicationTypeCode;
+	
 	private Long loanTypeId;
 	
 	private String loanTypeName;
@@ -158,6 +160,14 @@ public class ApplicationsBO extends AuditorBO implements Serializable{
 
 	public void setUserId(Long userId) {
 		this.userId = userId;
+	}
+
+	public String getApplicationTypeCode() {
+		return applicationTypeCode;
+	}
+
+	public void setApplicationTypeCode(String applicationTypeCode) {
+		this.applicationTypeCode = applicationTypeCode;
 	}
 	
 	
