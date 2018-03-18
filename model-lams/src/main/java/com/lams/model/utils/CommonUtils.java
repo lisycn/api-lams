@@ -27,6 +27,7 @@ public class CommonUtils {
 		lamsUrls.add("/registration");
 		lamsUrls.add("/resend_otp/{type}/{templateName}");
 		lamsUrls.add("/verify_otp/{type}");
+		lamsUrls.add("/verify_email/{link}");
 
 	}
 

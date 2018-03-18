@@ -4,10 +4,12 @@ package com.lams.model.bo;
  * @author Akshay
  *
  */
-public class EmailResponse {
+public class EmailResponse extends NotificationResponse {
 
-	private Long status;
-	private String message;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5755244717360011445L;
 	private String emailMessage;
 
 	public String getEmailMessage() {
@@ -18,20 +20,8 @@ public class EmailResponse {
 		this.emailMessage = emailMessage;
 	}
 
-	public Long getStatus() {
-		return status;
+	@Override
+	public String toString() {
+		return "EmailResponse [emailMessage=" + emailMessage + "]";
 	}
-
-	public void setStatus(Long status) {
-		this.status = status;
-	}
-
-	public String getMessage() {
-		return message;
-	}
-
-	public void setMessage(String message) {
-		this.message = message;
-	}
-
 }

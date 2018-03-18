@@ -1,7 +1,10 @@
 package com.lams.api.service.impl;
 
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -40,6 +43,7 @@ import com.lams.model.bo.BankBO;
 import com.lams.model.bo.LamsResponse;
 import com.lams.model.bo.NotificationBO;
 import com.lams.model.bo.NotificationMainBO;
+import com.lams.model.bo.NotificationResponse;
 import com.lams.model.bo.OTPRequest;
 import com.lams.model.bo.UserBO;
 import com.lams.model.bo.master.CityBO;
@@ -88,6 +92,9 @@ public class UserMstrServiceImpl implements UserMstrService {
 
 	@Value("${com.lams.login.url}")
 	private String loginUrl;
+
+	@Value("${com.lams.email.verification.url}")
+	private String emailVerificationUrl;
 
 	@Override
 	public LamsResponse registration(UserBO userBO, Long userId) {
@@ -427,4 +434,98 @@ public class UserMstrServiceImpl implements UserMstrService {
 		return new LamsResponse(HttpStatus.OK.value(), "Password Successfully Updated", userBO);
 	}
 
+	@Override
+	public String generateEncryptString(Date signUp, String email) {
+		logger.info("generateEncryptString=================>" + signUp);
+		String signUpDate = null;
+		SimpleDateFormat print = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		signUpDate = print.format(signUp);
+		try {
+			String encEmail = encrypt(email);
+			String encDate = encrypt(signUpDate);
+			return encEmail + "|" + encDate;
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "Error while encrypt url for email verification");
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	private String encrypt(String data) throws UnsupportedEncodingException {
+		return Base64.getEncoder().encodeToString(data.getBytes("utf-8"));
+	}
+
+	private String decrypt(String data) throws UnsupportedEncodingException {
+		return new String(Base64.getDecoder().decode(data),"utf-8");
+	}
+
+	@Override
+	public boolean sendLinkOnMail(User user) throws Exception {
+		logger.log(Level.INFO, "Send Email Verification OBject==>{0}", user.toString());
+		NotificationBO notificationBO = new NotificationBO();
+		notificationBO.setClientRefId(String.valueOf(1l));
+		List<NotificationMainBO> mainBolist = new ArrayList<>();
+		NotificationMainBO mainBO = new NotificationMainBO();
+		String to[] = { user.getEmail() };
+		mainBO.setTo(to);
+		mainBO.setContentType(ContentType.TEMPLATE);
+		mainBO.setType(NotificationType.EMAIL);
+		mainBO.setTemplateName(NotificationAlias.EMAIL_VERIFY_ACCOUNT);
+		Map<String, Object> data = new HashMap<>();
+		data.put("user_name", user.getName());
+		data.put("emailAddress", user.getEmail());
+		String encryptString = generateEncryptString(user.getCreatedDate(), user.getEmail());
+		logger.log(Level.INFO, "encryptString===>{0}", new Object[] { encryptString });
+		logger.log(Level.INFO, "VerificationURL===>{0}", emailVerificationUrl + encryptString);
+		data.put("link", emailVerificationUrl + "/" + encryptString);
+		mainBO.setParameters(data);
+		mainBO.setSubject("VfinanceS – E Mail Verification");
+		mainBolist.add(mainBO);
+		notificationBO.setNotifications(mainBolist);
+		NotificationResponse response = notificationService.sendNotification(notificationBO);
+		if (CommonUtils.isObjectNullOrEmpty(response)) {
+			logger.log(Level.SEVERE, "Something went wrong while Sending Email Verification on === >", user.getEmail());
+			return false;
+		}
+		logger.log(Level.INFO, "Response while Sending Email Verification Mail===>{0}",
+				new Object[] { response.toString() });
+
+		if (CommonUtils.NotificationProperty.STATUS_SUCCESSFULL.equals(response.getStatus())) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public LamsResponse verifyEmail(String link) {
+		logger.log(Level.INFO, "Link From Web===>{0}", new Object[] { link });
+		String[] arr = link.toString().split("\\|");
+		if (arr == null || arr.length < 2) {
+			return new LamsResponse(HttpStatus.BAD_REQUEST.value(), "Invalid Link. Please try Again!");
+		}
+		try {
+			String decEmail = decrypt(arr[0]);
+			logger.log(Level.INFO, "Descrypted Email=======>{0}", new Object[] { decEmail });
+			User user = userMstrRepository.findByEmailAndIsActive(decEmail, true);
+			if (CommonUtils.isObjectNullOrEmpty(user)) {
+				return new LamsResponse(HttpStatus.BAD_REQUEST.value(), "Invalid Email Id");
+			}
+			SimpleDateFormat print = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String encDate = encrypt(print.format(user.getCreatedDate()));
+			logger.log(Level.INFO, "New Encrypted Date String === {0}", new Object[] { encDate });
+			logger.log(Level.INFO, "Old Encrypted Date String === {0}", new Object[] { arr[1] });
+			if (!encDate.equals(arr[1])) {
+				return new LamsResponse(HttpStatus.BAD_REQUEST.value(), "Invalid Link. Please try Again!");
+			}
+			user.setIsEmailVerified(true);
+			userMstrRepository.save(user);
+			return new LamsResponse(HttpStatus.OK.value(),
+					"Your Email " + user.getEmail() + " Successfully Verified !");
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.log(Level.SEVERE, "Error while Descrypting Email Verificaiton Link");
+			return new LamsResponse(HttpStatus.BAD_REQUEST.value(), CommonUtils.SOMETHING_WENT_WRONG);
+		}
+
+	}
 }

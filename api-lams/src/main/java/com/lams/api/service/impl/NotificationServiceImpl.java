@@ -71,11 +71,7 @@ public class NotificationServiceImpl implements NotificationService {
 					parameters.put("support_email", SUPPORT_EMAIL);
 					parameters.put("support_mobile", SUPPORT_MOBILE);
 					request.setParameters(parameters);
-					EmailResponse emailResponse = mailService.sendEmail(request);
-					response = new NotificationResponse();
-					response.setMessage(emailResponse.getMessage());
-					response.setSentMessage(emailResponse.getEmailMessage());
-					response.setStatus(emailResponse.getStatus());
+					response = mailService.sendEmail(request);
 					logger.info("Notification Service executed successfully For EMAIL");
 					// return response;
 					break;
@@ -93,11 +89,7 @@ public class NotificationServiceImpl implements NotificationService {
 					smsRequest.setParameters(request.getParameters());
 					smsRequest.setContent(request.getContent());
 					smsRequest.setUserId(Long.valueOf(notification.getClientRefId()));
-					SMSResponse smsResponse = smsService.sendSMS(request);
-					response = new NotificationResponse();
-					response.setMessage(smsResponse.getMessage());
-					response.setSentMessage(smsResponse.getSmsMessage());
-					response.setStatus(smsResponse.getStatus());
+					response = smsService.sendSMS(request);
 					logger.info("Notification Service executed successfully For SMS");
 					// return response;
 					break;

@@ -310,24 +310,22 @@ public class UserMstrController {
 		}
 	}
 
-	// @RequestMapping(value = "/verify_email/{emailId}", method =
-	// RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces =
-	// MediaType.APPLICATION_JSON_VALUE)
-	// public ResponseEntity<LamsResponse> verifyEmail(@PathVariable("emailId")
-	// String emailId,
-	// HttpServletRequest request) {
-	// logger.info("Enter in verifyAccount");
-	// try {
-	// logger.log(Level.INFO, "Response After Invited to Lender===>{0}", emailId);
-	// return new ResponseEntity<LamsResponse>(userMstrService.verifyEmail(emailId),
-	// HttpStatus.OK);
-	// } catch (Exception e) {
-	// logger.info("Throw Exception while Verifying Email ---------------->" +
-	// emailId);
-	// e.printStackTrace();
-	// return new ResponseEntity<LamsResponse>(
-	// new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Something went
-	// wrong"), HttpStatus.OK);
-	// }
-	// }
+	@RequestMapping(value = "/verify_email/{link}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<LamsResponse> verifyEmail(@PathVariable("link") String link, HttpServletRequest request) {
+		logger.info("Enter in verifyAccount");
+		try {
+			if (CommonUtils.isObjectNullOrEmpty(link)) {
+				logger.info("Link is NUll");
+				return new ResponseEntity<LamsResponse>(new LamsResponse(HttpStatus.BAD_REQUEST.value(),
+						CommonUtils.INVALID_REQUEST + " Please try Again!"), HttpStatus.OK);
+			}
+			logger.log(Level.INFO, "Response After Invited to Lender===>{0}", new Object[] { link });
+			return new ResponseEntity<LamsResponse>(userMstrService.verifyEmail(link), HttpStatus.OK);
+		} catch (Exception e) {
+			logger.info("Throw Exception while Verifying Email ---------------->{0}" + new Object[] { link });
+			e.printStackTrace();
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Something went wrong"), HttpStatus.OK);
+		}
+	}
 }

@@ -1,6 +1,7 @@
 package com.lams.api.service;
 
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 import com.lams.api.domain.User;
@@ -23,8 +24,14 @@ public interface UserMstrService {
 	public UserBO inviteLender(UserBO userBO, Long userId) throws Exception;
 
 	public LamsResponse resendOtp(UserBO userBO, OTPType type, String templateName);
-	
+
 	public LamsResponse changePassword(UserBO userBO);
 
 	public boolean sendOtp(User user, OTPType type, String templateName);
+
+	public String generateEncryptString(Date signUp, String email);
+
+	public boolean sendLinkOnMail(User user) throws Exception;
+	
+	public LamsResponse verifyEmail(String link);
 }

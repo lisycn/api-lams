@@ -62,4 +62,9 @@ public class NotificationResponse implements Serializable {
 		this.sentMessage = sentMessage;
 	}
 
+	@Override
+	public String toString() {
+		return "NotificationResponse [status=" + status + ", message=" + message + ", sentMessage=" + sentMessage
+				+ ", sysNotification=" + sysNotification + ", count=" + count + "]";
+	}
 }
