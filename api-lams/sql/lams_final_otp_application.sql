@@ -1048,3 +1048,6 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2018-03-18  2:55:54
+
+
+INSERT INTO `lams`.`notification_template` (`created_by`, `created_date`, `is_active`, `alias`, `name`, `notification_type`) VALUES (1, NOW(), 1, 'EMAIL_VERIFY_ACCOUNT', 'email_verify_account.ftl', 'EMAIL');
