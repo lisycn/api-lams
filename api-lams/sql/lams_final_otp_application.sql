@@ -1051,3 +1051,4 @@ UNLOCK TABLES;
 
 
 INSERT INTO `lams`.`notification_template` (`created_by`, `created_date`, `is_active`, `alias`, `name`, `notification_type`) VALUES (1, NOW(), 1, 'EMAIL_VERIFY_ACCOUNT', 'email_verify_account.ftl', 'EMAIL');
+INSERT INTO `lams`.`notification_template` (`created_by`, `created_date`, `is_active`, `modified_by`, `modified_date`, `alias`, `name`, `notification_type`) VALUES (1, NOW(), 1, 1, NOW(), 'FORGOT_PASSWORD_EMAIL', 'forgot_password_email.ftl', 'EMAIL');

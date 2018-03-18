@@ -58,7 +58,8 @@ public class LoginServiceImpl implements LoginService {
 		// Check if Email is Verified or not
 		if (CommonUtils.isObjectNullOrEmpty(user.getIsEmailVerified()) || !user.getIsEmailVerified()) {
 			try {
-				boolean isMailSend = userMstrService.sendLinkOnMail(user);
+				String subject = "VfinanceS – E Mail Verification";
+				boolean isMailSend = userMstrService.sendLinkOnMail(user,NotificationAlias.EMAIL_VERIFY_ACCOUNT,subject,"email-verification");
 				BeanUtils.copyProperties(user, userBO, "tempPassword", "password");
 				userBO.setIsSent(isMailSend);
 				return new LoginResponse(HttpStatus.OK.value(), "We have sent Email Verification Link on "

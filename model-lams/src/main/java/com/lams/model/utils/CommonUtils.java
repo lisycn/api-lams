@@ -28,7 +28,8 @@ public class CommonUtils {
 		lamsUrls.add("/resend_otp/{type}/{templateName}");
 		lamsUrls.add("/verify_otp/{type}");
 		lamsUrls.add("/verify_email/{link}");
-
+		lamsUrls.add("/send_link");
+		lamsUrls.add("/reset_password/{link}");
 	}
 
 	private CommonUtils() {

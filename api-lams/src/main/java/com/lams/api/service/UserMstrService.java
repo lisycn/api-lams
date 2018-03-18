@@ -31,7 +31,11 @@ public interface UserMstrService {
 
 	public String generateEncryptString(Date signUp, String email);
 
-	public boolean sendLinkOnMail(User user) throws Exception;
-	
+	public boolean sendLinkOnMail(User user, String template, String subject, String postUrl) throws Exception;
+
 	public LamsResponse verifyEmail(String link);
+
+	public LamsResponse sendForgotPasswordLink(String email) throws Exception;
+	
+	public LamsResponse resetPassword(UserBO userBO,String link);
 }
