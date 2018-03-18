@@ -58,7 +58,8 @@ public class UserMstrController {
 			logger.info("Throw Exception while registrion ---------------->" + userBO.getEmail());
 			e.printStackTrace();
 			return new ResponseEntity<LamsResponse>(
-					new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Something went wrong"), HttpStatus.OK);
+					new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), CommonUtils.SOMETHING_WENT_WRONG),
+					HttpStatus.OK);
 		}
 	}
 
@@ -74,7 +75,8 @@ public class UserMstrController {
 			logger.info("Throw Exception while get users by user type");
 			e.printStackTrace();
 			return new ResponseEntity<LamsResponse>(
-					new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Something went wrong"), HttpStatus.OK);
+					new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), CommonUtils.SOMETHING_WENT_WRONG),
+					HttpStatus.OK);
 		}
 	}
 
@@ -150,7 +152,8 @@ public class UserMstrController {
 			logger.info("Throw Exception while update lender details ---------------->" + userBO.getEmail());
 			e.printStackTrace();
 			return new ResponseEntity<LamsResponse>(
-					new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Something went wrong"), HttpStatus.OK);
+					new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), CommonUtils.SOMETHING_WENT_WRONG),
+					HttpStatus.OK);
 		}
 	}
 
@@ -180,7 +183,8 @@ public class UserMstrController {
 			logger.info("Throw Exception while update lender details ---------------->" + userBO.getEmail());
 			e.printStackTrace();
 			return new ResponseEntity<LamsResponse>(
-					new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Something went wrong"), HttpStatus.OK);
+					new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), CommonUtils.SOMETHING_WENT_WRONG),
+					HttpStatus.OK);
 		}
 	}
 
@@ -224,7 +228,8 @@ public class UserMstrController {
 			logger.info("Throw Exception while update lender details ---------------->" + userBO.getEmail());
 			e.printStackTrace();
 			return new ResponseEntity<LamsResponse>(
-					new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Something went wrong"), HttpStatus.OK);
+					new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), CommonUtils.SOMETHING_WENT_WRONG),
+					HttpStatus.OK);
 		}
 	}
 
@@ -269,7 +274,8 @@ public class UserMstrController {
 			logger.info("Throw Exception while update lender details ---------------->" + userBO.getEmail());
 			e.printStackTrace();
 			return new ResponseEntity<LamsResponse>(
-					new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Something went wrong"), HttpStatus.OK);
+					new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), CommonUtils.SOMETHING_WENT_WRONG),
+					HttpStatus.OK);
 		}
 	}
 
@@ -325,7 +331,56 @@ public class UserMstrController {
 			logger.info("Throw Exception while Verifying Email ---------------->{0}" + new Object[] { link });
 			e.printStackTrace();
 			return new ResponseEntity<LamsResponse>(
-					new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Something went wrong"), HttpStatus.OK);
+					new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), CommonUtils.SOMETHING_WENT_WRONG),
+					HttpStatus.OK);
+		}
+	}
+
+	@RequestMapping(value = "/send_link", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<LamsResponse> sendLink(@RequestBody UserBO userBO, HttpServletRequest request) {
+		logger.info("Enter in sendLink");
+		try {
+			if (CommonUtils.isObjectNullOrEmpty(userBO.getEmail())) {
+				logger.info("email is NUll");
+				return new ResponseEntity<LamsResponse>(
+						new LamsResponse(HttpStatus.BAD_REQUEST.value(), "Please Enter Email."), HttpStatus.OK);
+			}
+			logger.log(Level.INFO, "Email for Forgot Password===>{0}", new Object[] { userBO.getEmail() });
+			return new ResponseEntity<LamsResponse>(userMstrService.sendForgotPasswordLink(userBO.getEmail()), HttpStatus.OK);
+		} catch (Exception e) {
+			logger.info("Throw Exception while Sending Link on Forgot Password ---------------->{0}"
+					+ new Object[] { userBO.getEmail()});
+			e.printStackTrace();
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), CommonUtils.SOMETHING_WENT_WRONG),
+					HttpStatus.OK);
+		}
+	}
+
+	@RequestMapping(value = "/reset_password/{link}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<LamsResponse> resetPassword(@RequestBody UserBO userBO,@PathVariable("link")String link, HttpServletRequest request) {
+		logger.info("Enter in resetPassword");
+		try {
+			if (CommonUtils.isObjectNullOrEmpty(link)) {
+				logger.info("Link is NUll");
+				return new ResponseEntity<LamsResponse>(
+						new LamsResponse(HttpStatus.BAD_REQUEST.value(), "Invalid Email"), HttpStatus.OK);
+			}
+			
+			if (CommonUtils.isObjectNullOrEmpty(userBO.getPassword())) {
+				logger.info("Password is NUll");
+				return new ResponseEntity<LamsResponse>(
+						new LamsResponse(HttpStatus.BAD_REQUEST.value(), "Password must not be Empty."), HttpStatus.OK);
+			}
+			logger.log(Level.INFO, "Link for Reset Password===>{0}", new Object[] { link });
+			return new ResponseEntity<LamsResponse>(userMstrService.resetPassword(userBO,link), HttpStatus.OK);
+		} catch (Exception e) {
+			logger.info("Throw Exception while updating Password on Link ---------------->{0}"
+					+ new Object[] { link});
+			e.printStackTrace();
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), CommonUtils.SOMETHING_WENT_WRONG),
+					HttpStatus.OK);
 		}
 	}
 }
