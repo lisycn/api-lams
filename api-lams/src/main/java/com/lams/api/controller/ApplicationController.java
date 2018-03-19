@@ -92,19 +92,23 @@ public class ApplicationController {
 	}
 	
 	@RequestMapping(value="/getLoanDetails/{id}/{appTypeId}",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<LamsResponse> save (@PathVariable("id") Long id,@PathVariable("appTypeId") Long appTypeId){
-		logger.info("Enter in save application");
+	public ResponseEntity<LamsResponse> save (@PathVariable("id") Long id,@PathVariable("appTypeId") Long appTypeId,HttpServletRequest httpServletRequest){
+		logger.info("Enter in get application details");
 		if(CommonUtils.isObjectNullOrEmpty(appTypeId)) {
+			logger.info("Application Type Null Or Empty");
 			return new ResponseEntity<LamsResponse>(new LamsResponse(HttpStatus.BAD_REQUEST.value(), "Application Type Null Or Empty"),
 					HttpStatus.OK);
 		}
 		if(CommonUtils.isObjectNullOrEmpty(id)) {
+			logger.info("Id Null Or Empty");
 			return new ResponseEntity<LamsResponse>(new LamsResponse(HttpStatus.BAD_REQUEST.value(), "Id Null Or Empty"),
 					HttpStatus.OK);
 		}
+		Long userId = (Long) httpServletRequest.getAttribute(CommonUtils.USER_ID);
 		try {
-			LamsResponse lamsResponse = applicationsService.getLoanApplicationDetails(id, appTypeId);
+			LamsResponse lamsResponse = applicationsService.getLoanApplicationDetails(id, appTypeId,userId);
 			lamsResponse.setStatus(HttpStatus.OK.value());
+			logger.info("Successfully get details");
 			return new ResponseEntity<LamsResponse>(lamsResponse,HttpStatus.OK);
 		} catch (Exception e) {
 			logger.info("Throw Exception while save application by id ---------------->");

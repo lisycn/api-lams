@@ -41,6 +41,8 @@ public class ApplicationsBO extends AuditorBO implements Serializable{
 	
 	private String leadReferenceNo;
 	
+	private Long employmentType;
+	
 	public Long getId() {
 		return id;
 	}
@@ -168,6 +170,14 @@ public class ApplicationsBO extends AuditorBO implements Serializable{
 
 	public void setApplicationTypeCode(String applicationTypeCode) {
 		this.applicationTypeCode = applicationTypeCode;
+	}
+
+	public Long getEmploymentType() {
+		return employmentType;
+	}
+
+	public void setEmploymentType(Long employmentType) {
+		this.employmentType = employmentType;
 	}
 	
 	
