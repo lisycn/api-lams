@@ -16,12 +16,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lams.api.service.ApplicationsService;
+import com.lams.api.service.LenderApplicationMappingService;
 import com.lams.model.bo.ApplicationRequestBO;
 import com.lams.model.bo.ApplicationsBO;
 import com.lams.model.bo.LamsResponse;
-import com.lams.model.bo.LoginResponse;
-import com.lams.model.bo.UserBO;
+import com.lams.model.bo.master.ApplicationTypeMstrBO;
 import com.lams.model.utils.CommonUtils;
+import com.lams.model.utils.Enums;
 
 
 @RestController
@@ -29,7 +30,10 @@ import com.lams.model.utils.CommonUtils;
 public class ApplicationController {
 	
 	@Autowired
-	private ApplicationsService applicationsService; 
+	private ApplicationsService applicationsService;
+	
+	@Autowired
+	private LenderApplicationMappingService applicationMappingService;
 
 	public static final Logger logger = Logger.getLogger(ApplicationController.class);
 	
@@ -37,10 +41,22 @@ public class ApplicationController {
 	public ResponseEntity<LamsResponse> getAll (HttpServletRequest httpServletRequest){
 		logger.info("Enter in application list");
 		Long userId = (Long) httpServletRequest.getAttribute(CommonUtils.USER_ID);
+		Long userType = (Long) httpServletRequest.getAttribute(CommonUtils.USER_TYPE);
 		try {
-			List<ApplicationsBO> applicationsBO = applicationsService.getAll(userId);
-			return new ResponseEntity<LamsResponse>(new LamsResponse(HttpStatus.OK.value(), "Successfully get data", applicationsBO),
-					HttpStatus.OK);
+			if (Enums.UserType.BORROWER.getId() == userType) {
+				List<ApplicationsBO> applicationsBO = applicationsService.getAll(userId);
+				return new ResponseEntity<LamsResponse>(
+						new LamsResponse(HttpStatus.OK.value(), "Successfully get data", applicationsBO),
+						HttpStatus.OK);
+			} else if (Enums.UserType.LENDER.getId() == userType) {
+				List<ApplicationTypeMstrBO> list = applicationMappingService
+						.getApplicationTypeByUserIdAndIsActive(userId, true);
+				return new ResponseEntity<LamsResponse>(
+						new LamsResponse(HttpStatus.OK.value(), "Successfully get data", list), HttpStatus.OK);
+			} else {
+				return new ResponseEntity<LamsResponse>(new LamsResponse(HttpStatus.OK.value(), "Invalid User"),
+						HttpStatus.OK);
+			}
 		} catch (Exception e) {
 			logger.info("Throw Exception while get application list ---------------->");
 			e.printStackTrace();

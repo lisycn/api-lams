@@ -163,10 +163,11 @@ public class UserMstrServiceImpl implements UserMstrService {
 				}
 			} else if (!CommonUtils.isObjectNullOrEmpty(userType) && userType.equals(Enums.UserType.BORROWER)) {
 				user.setIsEmailVerified(false);
-				user.setIsOtpVerified(true);
+				user.setIsOtpVerified(false);
 			}
 		}
 		user.setPassword(DigestUtils.md5DigestAsHex(userBO.getPassword().getBytes()).toString());
+		user.setTempPassword(userBO.getPassword());
 		user = userMstrRepository.save(user);
 
 		// Adding Mapping
@@ -220,7 +221,7 @@ public class UserMstrServiceImpl implements UserMstrService {
 			if (user.getUserType() == Enums.UserType.BORROWER.getId()) {
 				// Set Borrower Applications
 				userBo.setApplications(applicationsService.getAll(user.getId()));
-			} else {
+			} else if (user.getUserType() == Enums.UserType.LENDER.getId()) {
 				// Set Lender Applications
 				List<ApplicationTypeMstr> list = lenderApplicationMappingRepository
 						.getApplicationTypesByUserIdAndIsActive(user.getId(), true);
@@ -247,41 +248,59 @@ public class UserMstrServiceImpl implements UserMstrService {
 			return null;
 		}
 		UserBO userBo = new UserBO();
-		BeanUtils.copyProperties(user, userBo, "password");
+		BeanUtils.copyProperties(user, userBo, "password", "tempPassword");
+		if (user.getUserType() == Enums.UserType.BORROWER.getId()) {
+			List<AddressMstr> addressMstrList = addressMstrRepository.findByUserIdAndIsActive(user.getId(), true);
+			for (AddressMstr addressMstr : addressMstrList) {
+				AddressBO addressBO = new AddressBO();
+				BeanUtils.copyProperties(addressMstr, addressBO);
+				// Copy City
+				CityMstr cityMstr = addressMstr.getCity();
+				if (!CommonUtils.isObjectNullOrEmpty(cityMstr)) {
+					CityBO cityBO = new CityBO();
+					BeanUtils.copyProperties(cityMstr, cityBO);
+					addressBO.setCity(cityBO);
 
-		List<AddressMstr> addressMstrList = addressMstrRepository.findByUserIdAndIsActive(user.getId(), true);
-		for (AddressMstr addressMstr : addressMstrList) {
-			AddressBO addressBO = new AddressBO();
-			BeanUtils.copyProperties(addressMstr, addressBO);
-			// Copy City
-			CityMstr cityMstr = addressMstr.getCity();
-			if (!CommonUtils.isObjectNullOrEmpty(cityMstr)) {
-				CityBO cityBO = new CityBO();
-				BeanUtils.copyProperties(cityMstr, cityBO);
-				addressBO.setCity(cityBO);
+					// Copy State
+					StateMstr state = cityMstr.getState();
+					if (!CommonUtils.isObjectNullOrEmpty(state)) {
+						StateBO stateBO = new StateBO();
+						BeanUtils.copyProperties(state, stateBO);
+						addressBO.setState(stateBO);
 
-				// Copy State
-				StateMstr state = cityMstr.getState();
-				if (!CommonUtils.isObjectNullOrEmpty(state)) {
-					StateBO stateBO = new StateBO();
-					BeanUtils.copyProperties(state, stateBO);
-					addressBO.setState(stateBO);
-
-					// Copy Country
-					CountryMstr country = state.getCountry();
-					if (!CommonUtils.isObjectNullOrEmpty(country)) {
-						CountryBO coutryBO = new CountryBO();
-						BeanUtils.copyProperties(country, coutryBO);
-						addressBO.setCountry(coutryBO);
+						// Copy Country
+						CountryMstr country = state.getCountry();
+						if (!CommonUtils.isObjectNullOrEmpty(country)) {
+							CountryBO coutryBO = new CountryBO();
+							BeanUtils.copyProperties(country, coutryBO);
+							addressBO.setCountry(coutryBO);
+						}
 					}
 				}
+				if (addressMstr.getAddType() == CommonUtils.AddressType.PERMANENT) {
+					userBo.setPermanentAdd(addressBO);
+				} else if (addressMstr.getAddType() == CommonUtils.AddressType.COMMUNICATION) {
+					userBo.setCommunicationAdd(addressBO);
+				}
 			}
-			if (addressMstr.getAddType() == CommonUtils.AddressType.PERMANENT) {
-				userBo.setPermanentAdd(addressBO);
-			} else if (addressMstr.getAddType() == CommonUtils.AddressType.COMMUNICATION) {
-				userBo.setCommunicationAdd(addressBO);
+			userBo.setApplications(applicationsService.getAll(user.getId()));
+		} else if (user.getUserType() == Enums.UserType.LENDER.getId()) {
+			// Set Lender Applications
+			List<ApplicationTypeMstr> list = lenderApplicationMappingRepository
+					.getApplicationTypesByUserIdAndIsActive(user.getId(), true);
+			List<ApplicationsBO> apps = new ArrayList<>(list.size());
+			for (ApplicationTypeMstr mstr : list) {
+				ApplicationsBO bo = new ApplicationsBO();
+				bo.setApplicationTypeId(mstr.getId());
+				bo.setApplicationTypeName(mstr.getName());
+				apps.add(bo);
 			}
-
+			if (!CommonUtils.isObjectNullOrEmpty(user.getBank())) {
+				BankBO bankBO = new BankBO();
+				BeanUtils.copyProperties(user.getBank(), bankBO);
+				userBo.setBank(bankBO);
+			}
+			userBo.setApplications(apps);
 		}
 		return userBo;
 	}
@@ -293,27 +312,26 @@ public class UserMstrServiceImpl implements UserMstrService {
 			logger.log(Level.INFO, "Invalid User Id while getting Object by Id==>{}", userBO.getId());
 			return new LamsResponse(HttpStatus.BAD_REQUEST.value(), "User not Found");
 		}
-		BeanUtils.copyProperties(userBO, user, "password");
-		if (!CommonUtils.isObjectNullOrEmpty(userBO.getUserType())) {
-			UserType userType = Enums.UserType.getType(userBO.getUserType().intValue());
-			if (CommonUtils.isObjectNullOrEmpty(userType) && userType.equals(Enums.UserType.LENDER)) {
-				if (!CommonUtils.isObjectNullOrEmpty(userBO.getBank())) {
-					user.setBank(bankMstrRepository.findOne(userBO.getBank().getId()));
-				}
+		if (user.getUserType() == Enums.UserType.LENDER.getId()) {
+			user.setFirstName(userBO.getFirstName());
+			user.setMiddleName(userBO.getMiddleName());
+			user.setLastName(userBO.getLastName());
+			user.setSalutation(userBO.getSalutation());
+			
+		} else if (user.getUserType() == Enums.UserType.BORROWER.getId()) {
+			BeanUtils.copyProperties(userBO, user, "password", "tempPassword");
+			if (!CommonUtils.isObjectNullOrEmpty(userBO.getPermanentAdd())) {
+				addressService.saveAddress(userBO.getPermanentAdd(), userBO.getId(), CommonUtils.AddressType.PERMANENT);
+			}
+			if (!CommonUtils.isObjectNullOrEmpty(userBO.getCommunicationAdd())) {
+				addressService.saveAddress(userBO.getCommunicationAdd(), userBO.getId(),
+						CommonUtils.AddressType.COMMUNICATION);
 			}
 		}
 		user.setModifiedDate(new Date());
 		user.setModifiedBy(userBO.getId());
 		user = userMstrRepository.save(user);
 		// Setting Address
-		if (!CommonUtils.isObjectNullOrEmpty(userBO.getPermanentAdd())) {
-			addressService.saveAddress(userBO.getPermanentAdd(), userBO.getId(), CommonUtils.AddressType.PERMANENT);
-		}
-		if (!CommonUtils.isObjectNullOrEmpty(userBO.getCommunicationAdd())) {
-			addressService.saveAddress(userBO.getCommunicationAdd(), userBO.getId(),
-					CommonUtils.AddressType.COMMUNICATION);
-		}
-
 		logger.log(Level.INFO, "Successfully updated User Details for ID----" + user.getId());
 		return new LamsResponse(HttpStatus.OK.value(), "Success", getUserById(user.getId()));
 	}
@@ -428,6 +446,7 @@ public class UserMstrServiceImpl implements UserMstrService {
 			return new LamsResponse(HttpStatus.BAD_REQUEST.value(),
 					"Current Password And New Password Must not be Same!");
 		}
+		user.setTempPassword(userBO.getPassword());
 		user.setPassword(newPass);
 		user = userMstrRepository.save(user);
 		BeanUtils.copyProperties(user, userBO, "password", "tempPassword");
