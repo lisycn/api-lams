@@ -1,21 +1,16 @@
 package com.lams.api.service.impl;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.lams.api.domain.Applications;
 import com.lams.api.repository.ApplicationsRepository;
-import com.lams.api.repository.master.ApplicationTypeMstrRepository;
-import com.lams.api.repository.master.LoanTypeMstrRepository;
+import com.lams.api.repository.UserMstrRepository;
 import com.lams.api.service.ApplicationsService;
-import com.lams.api.service.impl.loan.CCFacilitiesLoanDetailsServiceImpl;
 import com.lams.api.service.loan.BankGuaranteeLoanDetailsService;
 import com.lams.api.service.loan.CCFacilitiesLoanDetailsService;
 import com.lams.api.service.loan.CarLoanDetailsService;
@@ -69,12 +64,8 @@ public class ApplicationsServiceImpl implements ApplicationsService{
 	private ApplicationsRepository applicationsRepository;
 	
 	@Autowired
-	private ApplicationTypeMstrRepository applicationTypeMstrRepository;
-	
-	@Autowired
-	private LoanTypeMstrRepository loanTypeMstrRepository;
+	private UserMstrRepository userMstrRepository;
 
-	
 	@Autowired
 	private BankGuaranteeLoanDetailsService bankGuaranteeLoanDetailsService;
 	
@@ -304,81 +295,117 @@ public class ApplicationsServiceImpl implements ApplicationsService{
 		return applicationsBO;
 	}
 	
-	public LamsResponse getLoanApplicationDetails(Long id,Long applicationTypeId){
+	public LamsResponse getLoanApplicationDetails(Long id,Long applicationTypeId,Long userId){
 		
 		LamsResponse lamsResponse = new LamsResponse();
-		
+		Long employmentType = userMstrRepository.getEmpTypeById(userId);
 		switch (applicationTypeId.intValue()) {
 		
 		case ApplicationType.HOME_LOAN:
-			lamsResponse.setData(homeLoanDetailsService.get(id));
+			HomeLoanDetailsBO homeLoanDetailsBO = homeLoanDetailsService.get(id);
+			homeLoanDetailsBO.setEmploymentType(employmentType);
+			lamsResponse.setData(homeLoanDetailsBO);
 			break;
 			
 		case ApplicationType.LOAN_AGAINST_PROPERTY:
-			lamsResponse.setData(loanAgainstPropertyDetailsService.get(id));
+			LoanAgainstPropertyDetailsBO loanAgainstPropertyDetailsBO = loanAgainstPropertyDetailsService.get(id);
+			loanAgainstPropertyDetailsBO.setEmploymentType(employmentType);
+			lamsResponse.setData(loanAgainstPropertyDetailsBO);
 			break;
 			
 		case ApplicationType.SECURED_BUSINESS_LOAN:
-			lamsResponse.setData(securedBusinessLoanDetailsService.get(id));
+			SecuredBusinessLoanDetailsBO securedBusinessLoanDetailsBO = securedBusinessLoanDetailsService.get(id);
+			securedBusinessLoanDetailsBO.setEmploymentType(employmentType);
+			lamsResponse.setData(securedBusinessLoanDetailsBO);
 			break;
 			
 		case ApplicationType.WORKING_CAPITAL_LOAN:
-			lamsResponse.setData(workingCapitalLoanDetailsService.get(id));
+			WorkingCapitalLoanDetailsBO workingCapitalLoanDetailsBO = workingCapitalLoanDetailsService.get(id);
+			workingCapitalLoanDetailsBO.setEmploymentType(employmentType);
+			lamsResponse.setData(workingCapitalLoanDetailsBO);
 			break;
 			
 		case ApplicationType.EDUCATION_LOAN:
-			lamsResponse.setData(educationLoanDetailsService.get(id));
+			EducationLoanDetailsBO educationLoanDetailsBO = educationLoanDetailsService.get(id);
+			educationLoanDetailsBO.setEmploymentType(employmentType);
+			lamsResponse.setData(educationLoanDetailsBO);
 			break;
 			
 		case ApplicationType.CAR_LOAN:
-			lamsResponse.setData(carLoanDetailsService.get(id));
+			CarLoanDetailsBO carLoanDetailsBO = carLoanDetailsService.get(id);
+			carLoanDetailsBO.setEmploymentType(employmentType);
+			lamsResponse.setData(carLoanDetailsBO);
 			break;
 			
 		case ApplicationType.OVERDRAFT_FACILITIES_LOAN:
-			lamsResponse.setData(overDraftFacilitiesLoanDetailsService.get(id));
+			OverDraftFacilitiesLoanDetailsBO overDraftFacilitiesLoanDetailsBO = overDraftFacilitiesLoanDetailsService.get(id);
+			overDraftFacilitiesLoanDetailsBO.setEmploymentType(employmentType);
+			lamsResponse.setData(overDraftFacilitiesLoanDetailsBO);
 			break;
 			
 		case ApplicationType.DROPLINE_OVERDRAFT_FACILITIES_LOAN:
-			lamsResponse.setData(dropLineOdFacilitiesLoanDetailsService.get(id));
+			DropLineOdFacilitiesLoanDetailsBO dropLineOdFacilitiesLoanDetailsBO = dropLineOdFacilitiesLoanDetailsService.get(id);
+			dropLineOdFacilitiesLoanDetailsBO.setEmploymentType(employmentType);
+			lamsResponse.setData(dropLineOdFacilitiesLoanDetailsBO);
 			break;
 			
 		case ApplicationType.BANK_GUARANTEE_LOAN:
-			lamsResponse.setData(bankGuaranteeLoanDetailsService.get(id));
+			BankGuaranteeLoanDetailsBO bankGuaranteeLoanDetailsBO = bankGuaranteeLoanDetailsService.get(id);
+			bankGuaranteeLoanDetailsBO.setEmploymentType(employmentType);
+			lamsResponse.setData(bankGuaranteeLoanDetailsBO);
 			break;
 			
 		case ApplicationType.CC_FACILITIES_LOAN:
-			lamsResponse.setData(ccFacilitiesLoanDetailsService.get(id));
+			CCFacilitiesLoanDetailsBO ccFacilitiesLoanDetailsBO = ccFacilitiesLoanDetailsService.get(id);
+			ccFacilitiesLoanDetailsBO.setEmploymentType(employmentType);
+			lamsResponse.setData(ccFacilitiesLoanDetailsBO);
 			break;
 			
 		case ApplicationType.TERM_LOAN:
-			lamsResponse.setData(termLoanDetailsService.get(id));
+			TermLoanDetailsBO termLoanDetailsBO = termLoanDetailsService.get(id);
+			termLoanDetailsBO.setEmploymentType(employmentType);
+			lamsResponse.setData(termLoanDetailsBO);
 			break;
 			
 		case ApplicationType.LOAN_AGAINST_FDS:
-			lamsResponse.setData(loanAgainstFDsDetailsService.get(id));
+			LoanAgainstFDsDetailsBO loanAgainstFDsDetailsBO = loanAgainstFDsDetailsService.get(id);
+			loanAgainstFDsDetailsBO.setEmploymentType(employmentType);
+			lamsResponse.setData(loanAgainstFDsDetailsBO);
 			break;
 			
 		case ApplicationType.LOAN_AGAINST_SECURITIS:
-			lamsResponse.setData(loanAgainstSecuritiesLoanDetailsService.get(id));
+			LoanAgainstSecuritiesLoanDetailsBO loanAgainstSecuritiesLoanDetailsBO = loanAgainstSecuritiesLoanDetailsService.get(id);
+			loanAgainstSecuritiesLoanDetailsBO.setEmploymentType(employmentType);
+			lamsResponse.setData(loanAgainstSecuritiesLoanDetailsBO);
 			break;
 			
 		case ApplicationType.PROJECT_FINANCE_LOAN:
-			lamsResponse.setData(projectFinanceLoanDetailsService.get(id));
+			ProjectFinanceLoanDetailsBO projectFinanceLoanDetailsBO = projectFinanceLoanDetailsService.get(id);
+			projectFinanceLoanDetailsBO.setEmploymentType(employmentType);
+			lamsResponse.setData(projectFinanceLoanDetailsBO);
 			break;
 			
 		case ApplicationType.PRIVATE_EQUITY_FINANCE_LOAN:
-			lamsResponse.setData(privateEquityFinanceLoanDetailsService.get(id));
+			PrivateEquityFinanceLoanDetailsBO privateEquityFinanceLoanDetailsBO = privateEquityFinanceLoanDetailsService.get(id);
+			privateEquityFinanceLoanDetailsBO.setEmploymentType(employmentType);
+			lamsResponse.setData(privateEquityFinanceLoanDetailsBO);
 			break;
 			
 		case ApplicationType.GOLD_LOAN:
-			lamsResponse.setData(goldLoanDetailsService.get(id));
+			GoldLoanDetailsBO goldLoanDetailsBO = goldLoanDetailsService.get(id);
+			goldLoanDetailsBO.setEmploymentType(employmentType);
+			lamsResponse.setData(goldLoanDetailsBO);
 			break;
 			
 		case ApplicationType.OTHER_LOAN:
-			lamsResponse.setData(othersLoanDetailsService.get(id));
+			OthersLoanDetailsBO othersLoanDetailsBO = othersLoanDetailsService.get(id);
+			othersLoanDetailsBO.setEmploymentType(employmentType);
+			lamsResponse.setData(othersLoanDetailsBO);
 			break;
 		case ApplicationType.PERSONAL_LOAN:
-			lamsResponse.setData(personalLoanDetailsService.get(id));
+			PersonalLoanDetailsBO personalLoanDetailsBO = personalLoanDetailsService.get(id);
+			personalLoanDetailsBO.setEmploymentType(employmentType);
+			lamsResponse.setData(personalLoanDetailsBO);
 			break;
 		default:
 			lamsResponse.setMessage("Invalid Application Type Id");

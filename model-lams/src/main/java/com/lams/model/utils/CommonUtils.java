@@ -214,5 +214,59 @@ public class CommonUtils {
 		}
 		return VSCP + "-" + applicationCode + "-" + String.format("%06d", 1);
 	}
+	
+	public enum DocumentType {
+		
+		PAN_CARD(1l,"Pan Card"),
+		AADHAR_CARD(2l,"Aadhar Card"),
+		LAST_3_MONTH_SALARY_SLIP(3l,"Last 3 Month Salary Slip"),
+		LAST_6_MONTHS_BANK_ACCOUNT_STATEMENT(4l,"Last 6 Months Bank Account Statement"),
+		FORM_16_OR_APPOIMENT_LETTER(5l,"Form 16 pr Appoiment Letter"),
+		INVESTMENT_PROOFS(6l,"Investment Proofs"),
+		EXISTING_LOAN_DOCUMENT(7l,"Existing Loan Document"),
+		OTHER_DOCUMENT(8l,"Others Documemnts");
+		
+		
+		private Long id;
+		private String name;
+		
+		private DocumentType(Long id, String name){
+			this.id = id;
+			this.name = name;
+		}
+		
+		public Long getId() {
+			return id;
+		}
+		public String getName() {
+			return name;
+		}
+		
+		public static DocumentType getDocumentType(Long id) {
+			if(id == PAN_CARD.getId()) {
+				return DocumentType.PAN_CARD;
+			} else if(id == AADHAR_CARD.getId()) {
+				return DocumentType.AADHAR_CARD;
+			} else if(id == LAST_3_MONTH_SALARY_SLIP.getId()) {
+				return DocumentType.LAST_3_MONTH_SALARY_SLIP;
+			} else if(id == LAST_6_MONTHS_BANK_ACCOUNT_STATEMENT.getId()) {
+				return DocumentType.LAST_6_MONTHS_BANK_ACCOUNT_STATEMENT;
+			} else if(id == FORM_16_OR_APPOIMENT_LETTER.getId()) {
+				return DocumentType.FORM_16_OR_APPOIMENT_LETTER;
+			} else if(id == INVESTMENT_PROOFS.getId()) {
+				return DocumentType.INVESTMENT_PROOFS;
+			} else if(id == EXISTING_LOAN_DOCUMENT.getId()) {
+				return DocumentType.EXISTING_LOAN_DOCUMENT;
+			} else if(id == OTHER_DOCUMENT.getId()) {
+				return DocumentType.OTHER_DOCUMENT;
+			}
+			return null;
+		}
+		
+		public static DocumentType[] getAll() {
+			return DocumentType.values();
+		}
+		
+	}
 
 }

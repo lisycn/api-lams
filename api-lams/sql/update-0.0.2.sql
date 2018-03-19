@@ -242,11 +242,12 @@ CREATE TABLE `lams`.`others_details` (
 
 
 INSERT INTO `lams`.`mstr_base` (`id`,`name`, `code`, `is_active`, `created_by`, `created_date`, `modified_by`, `modified_date`) 
-VALUES (27,'Personal Loan', 'PL', 1, 1, '2018-03-11 23:26:49', 1, '2018-03-11 23:26:49');
+VALUES (26,'Personal Loan', 'PL', 1, 1, '2018-03-11 23:26:49', 1, '2018-03-11 23:26:49');
 
-INSERT INTO `lams`.`application_type_mstr` (`id`) VALUES ('27');
+INSERT INTO `lams`.`application_type_mstr` (`id`) VALUES ('26');
 
 UPDATE `lams`.`mstr_base` SET `name`='New Loan' WHERE `id`='23';
+
 
 
 
