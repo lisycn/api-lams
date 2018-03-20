@@ -5,10 +5,13 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.lams.api.domain.Applications;
+import com.lams.api.domain.User;
 import com.lams.api.repository.ApplicationsRepository;
+import com.lams.api.repository.LenderApplicationMappingRepository;
 import com.lams.api.repository.UserMstrRepository;
 import com.lams.api.service.ApplicationsService;
 import com.lams.api.service.loan.BankGuaranteeLoanDetailsService;
@@ -32,6 +35,7 @@ import com.lams.api.service.loan.WorkingCapitalLoanDetailsService;
 import com.lams.model.bo.ApplicationRequestBO;
 import com.lams.model.bo.ApplicationsBO;
 import com.lams.model.bo.LamsResponse;
+import com.lams.model.bo.UserBO;
 import com.lams.model.loan.bo.BankGuaranteeLoanDetailsBO;
 import com.lams.model.loan.bo.CCFacilitiesLoanDetailsBO;
 import com.lams.model.loan.bo.CarLoanDetailsBO;
@@ -56,211 +60,241 @@ import com.lams.model.utils.CommonUtils.ApplicationType;
 
 @Service
 @Transactional
-public class ApplicationsServiceImpl implements ApplicationsService{
+public class ApplicationsServiceImpl implements ApplicationsService {
 
 	public static final Logger logger = Logger.getLogger(ApplicationsServiceImpl.class);
-	
+
 	@Autowired
 	private ApplicationsRepository applicationsRepository;
-	
+
 	@Autowired
 	private UserMstrRepository userMstrRepository;
 
 	@Autowired
 	private BankGuaranteeLoanDetailsService bankGuaranteeLoanDetailsService;
-	
+
 	@Autowired
 	private CarLoanDetailsService carLoanDetailsService;
-	
+
 	@Autowired
 	private CCFacilitiesLoanDetailsService ccFacilitiesLoanDetailsService;
-	
+
 	@Autowired
 	private DropLineOdFacilitiesLoanDetailsService dropLineOdFacilitiesLoanDetailsService;
-	
+
 	@Autowired
 	private EducationLoanDetailsService educationLoanDetailsService;
-	
+
 	@Autowired
 	private GoldLoanDetailsService goldLoanDetailsService;
-	
+
 	@Autowired
 	private HomeLoanDetailsService homeLoanDetailsService;
-	
+
 	@Autowired
 	private LoanAgainstFDsDetailsService loanAgainstFDsDetailsService;
-	
+
 	@Autowired
 	private LoanAgainstPropertyDetailsService loanAgainstPropertyDetailsService;
-	
+
 	@Autowired
 	private LoanAgainstSecuritiesLoanDetailsService loanAgainstSecuritiesLoanDetailsService;
-	
+
 	@Autowired
 	private OthersLoanDetailsService othersLoanDetailsService;
-	
+
 	@Autowired
 	private OverDraftFacilitiesLoanDetailsService overDraftFacilitiesLoanDetailsService;
-	
+
 	@Autowired
 	private PersonalLoanDetailsService personalLoanDetailsService;
-	
+
 	@Autowired
 	private PrivateEquityFinanceLoanDetailsService privateEquityFinanceLoanDetailsService;
-	
+
 	@Autowired
 	private ProjectFinanceLoanDetailsService projectFinanceLoanDetailsService;
-	
+
 	@Autowired
 	private SecuredBusinessLoanDetailsService securedBusinessLoanDetailsService;
-	
+
 	@Autowired
 	private TermLoanDetailsService termLoanDetailsService;
-	
+
 	@Autowired
 	private WorkingCapitalLoanDetailsService workingCapitalLoanDetailsService;
-	
-	
-	
+
+	@Autowired
+	private LenderApplicationMappingRepository lenderApplicationMappingRepository;
+
 	/*
-	 *GET ALL APPLICATIONS BY USER ID AND IS ACTIVE TRUE 
+	 * GET ALL APPLICATIONS BY USER ID AND IS ACTIVE TRUE
 	 */
 	@Override
-	public List<ApplicationsBO> getAll(Long userId){
+	public List<ApplicationsBO> getAll(Long userId) {
 		List<Applications> applicationsList = applicationsRepository.findByUserIdAndIsActive(userId, true);
 		List<ApplicationsBO> applicationsBOList = new ArrayList<>(applicationsList.size());
-		for(Applications applications : applicationsList) {
+		for (Applications applications : applicationsList) {
 			applicationsBOList.add(convertDomainToBO(applications));
 		}
 		return applicationsBOList;
 	}
-	
+
 	/**
 	 * GET APPLICATION DETAILS BY APPLICATION ID
 	 */
 	@Override
-	public ApplicationsBO get(Long id){
+	public ApplicationsBO get(Long id) {
 		Applications applications = applicationsRepository.findByIdAndIsActive(id, true);
 		return convertDomainToBO(applications);
 	}
-	
+
 	/**
 	 * SAVE AND UPDATE APPLICATION DATA
 	 */
 	@Override
-	public Long save(ApplicationRequestBO applicationRequestBO){
-		logger.info("Enter in Save Application Sevice Impl--------------type----> "+ applicationRequestBO.getApplicationTypeId());
+	public Long save(ApplicationRequestBO applicationRequestBO) {
+		logger.info("Enter in Save Application Sevice Impl--------------type----> "
+				+ applicationRequestBO.getApplicationTypeId());
 		try {
 			switch (applicationRequestBO.getApplicationTypeId().intValue()) {
-			
+
 			case ApplicationType.HOME_LOAN:
-				HomeLoanDetailsBO  homeLoanDetailsBO = (HomeLoanDetailsBO) MultipleJSONObjectHelper.getObjectFromString(applicationRequestBO.getData().toString(),HomeLoanDetailsBO.class);
+				HomeLoanDetailsBO homeLoanDetailsBO = (HomeLoanDetailsBO) MultipleJSONObjectHelper
+						.getObjectFromString(applicationRequestBO.getData().toString(), HomeLoanDetailsBO.class);
 				homeLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
 				homeLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
 				return homeLoanDetailsService.save(homeLoanDetailsBO);
-				
+
 			case ApplicationType.LOAN_AGAINST_PROPERTY:
-				LoanAgainstPropertyDetailsBO loanAgainstPropertyDetailsBO = (LoanAgainstPropertyDetailsBO) MultipleJSONObjectHelper.getObjectFromString(applicationRequestBO.getData().toString(),LoanAgainstPropertyDetailsBO.class);
+				LoanAgainstPropertyDetailsBO loanAgainstPropertyDetailsBO = (LoanAgainstPropertyDetailsBO) MultipleJSONObjectHelper
+						.getObjectFromString(applicationRequestBO.getData().toString(),
+								LoanAgainstPropertyDetailsBO.class);
 				loanAgainstPropertyDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
 				loanAgainstPropertyDetailsBO.setUserId(applicationRequestBO.getUserId());
 				return loanAgainstPropertyDetailsService.save(loanAgainstPropertyDetailsBO);
-				
+
 			case ApplicationType.SECURED_BUSINESS_LOAN:
-				SecuredBusinessLoanDetailsBO securedBusinessLoanDetailsBO = (SecuredBusinessLoanDetailsBO) MultipleJSONObjectHelper.getObjectFromString(applicationRequestBO.getData().toString(),SecuredBusinessLoanDetailsBO.class);
+				SecuredBusinessLoanDetailsBO securedBusinessLoanDetailsBO = (SecuredBusinessLoanDetailsBO) MultipleJSONObjectHelper
+						.getObjectFromString(applicationRequestBO.getData().toString(),
+								SecuredBusinessLoanDetailsBO.class);
 				securedBusinessLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
 				securedBusinessLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
 				return securedBusinessLoanDetailsService.save(securedBusinessLoanDetailsBO);
-				
+
 			case ApplicationType.WORKING_CAPITAL_LOAN:
-				WorkingCapitalLoanDetailsBO workingCapitalLoanDetailsBO = (WorkingCapitalLoanDetailsBO) MultipleJSONObjectHelper.getObjectFromString(applicationRequestBO.getData().toString(),WorkingCapitalLoanDetailsBO.class);
+				WorkingCapitalLoanDetailsBO workingCapitalLoanDetailsBO = (WorkingCapitalLoanDetailsBO) MultipleJSONObjectHelper
+						.getObjectFromString(applicationRequestBO.getData().toString(),
+								WorkingCapitalLoanDetailsBO.class);
 				workingCapitalLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
 				workingCapitalLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
 				return workingCapitalLoanDetailsService.save(workingCapitalLoanDetailsBO);
-				
+
 			case ApplicationType.EDUCATION_LOAN:
-				EducationLoanDetailsBO educationLoanDetailsBO = (EducationLoanDetailsBO) MultipleJSONObjectHelper.getObjectFromString(applicationRequestBO.getData().toString(),EducationLoanDetailsBO.class);
+				EducationLoanDetailsBO educationLoanDetailsBO = (EducationLoanDetailsBO) MultipleJSONObjectHelper
+						.getObjectFromString(applicationRequestBO.getData().toString(), EducationLoanDetailsBO.class);
 				educationLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
 				educationLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
 				return educationLoanDetailsService.save(educationLoanDetailsBO);
-				
+
 			case ApplicationType.CAR_LOAN:
-				CarLoanDetailsBO carLoanDetailsBO = (CarLoanDetailsBO) MultipleJSONObjectHelper.getObjectFromString(applicationRequestBO.getData().toString(),CarLoanDetailsBO.class);
+				CarLoanDetailsBO carLoanDetailsBO = (CarLoanDetailsBO) MultipleJSONObjectHelper
+						.getObjectFromString(applicationRequestBO.getData().toString(), CarLoanDetailsBO.class);
 				carLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
 				carLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
 				return carLoanDetailsService.save(carLoanDetailsBO);
-			
+
 			case ApplicationType.OVERDRAFT_FACILITIES_LOAN:
-				OverDraftFacilitiesLoanDetailsBO overDraftFacilitiesLoanDetailsBO = (OverDraftFacilitiesLoanDetailsBO) MultipleJSONObjectHelper.getObjectFromString(applicationRequestBO.getData().toString(),OverDraftFacilitiesLoanDetailsBO.class);
+				OverDraftFacilitiesLoanDetailsBO overDraftFacilitiesLoanDetailsBO = (OverDraftFacilitiesLoanDetailsBO) MultipleJSONObjectHelper
+						.getObjectFromString(applicationRequestBO.getData().toString(),
+								OverDraftFacilitiesLoanDetailsBO.class);
 				overDraftFacilitiesLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
 				overDraftFacilitiesLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
 				return overDraftFacilitiesLoanDetailsService.save(overDraftFacilitiesLoanDetailsBO);
-			
+
 			case ApplicationType.DROPLINE_OVERDRAFT_FACILITIES_LOAN:
-				DropLineOdFacilitiesLoanDetailsBO dropLineOdFacilitiesLoanDetailsBO = (DropLineOdFacilitiesLoanDetailsBO) MultipleJSONObjectHelper.getObjectFromString(applicationRequestBO.getData().toString(),DropLineOdFacilitiesLoanDetailsBO.class);
+				DropLineOdFacilitiesLoanDetailsBO dropLineOdFacilitiesLoanDetailsBO = (DropLineOdFacilitiesLoanDetailsBO) MultipleJSONObjectHelper
+						.getObjectFromString(applicationRequestBO.getData().toString(),
+								DropLineOdFacilitiesLoanDetailsBO.class);
 				dropLineOdFacilitiesLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
 				dropLineOdFacilitiesLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
 				return dropLineOdFacilitiesLoanDetailsService.save(dropLineOdFacilitiesLoanDetailsBO);
-			
+
 			case ApplicationType.BANK_GUARANTEE_LOAN:
-				BankGuaranteeLoanDetailsBO bankGuaranteeLoanDetailsBO = (BankGuaranteeLoanDetailsBO) MultipleJSONObjectHelper.getObjectFromString(applicationRequestBO.getData().toString(),BankGuaranteeLoanDetailsBO.class);
+				BankGuaranteeLoanDetailsBO bankGuaranteeLoanDetailsBO = (BankGuaranteeLoanDetailsBO) MultipleJSONObjectHelper
+						.getObjectFromString(applicationRequestBO.getData().toString(),
+								BankGuaranteeLoanDetailsBO.class);
 				bankGuaranteeLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
 				bankGuaranteeLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
 				return bankGuaranteeLoanDetailsService.save(bankGuaranteeLoanDetailsBO);
-				
+
 			case ApplicationType.CC_FACILITIES_LOAN:
-				CCFacilitiesLoanDetailsBO cCFacilitiesLoanDetailsBO = (CCFacilitiesLoanDetailsBO) MultipleJSONObjectHelper.getObjectFromString(applicationRequestBO.getData().toString(),CCFacilitiesLoanDetailsBO.class);
+				CCFacilitiesLoanDetailsBO cCFacilitiesLoanDetailsBO = (CCFacilitiesLoanDetailsBO) MultipleJSONObjectHelper
+						.getObjectFromString(applicationRequestBO.getData().toString(),
+								CCFacilitiesLoanDetailsBO.class);
 				cCFacilitiesLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
 				cCFacilitiesLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
 				return ccFacilitiesLoanDetailsService.save(cCFacilitiesLoanDetailsBO);
-				
+
 			case ApplicationType.TERM_LOAN:
-				TermLoanDetailsBO termLoanDetailsBO = (TermLoanDetailsBO) MultipleJSONObjectHelper.getObjectFromString(applicationRequestBO.getData().toString(),TermLoanDetailsBO.class);
+				TermLoanDetailsBO termLoanDetailsBO = (TermLoanDetailsBO) MultipleJSONObjectHelper
+						.getObjectFromString(applicationRequestBO.getData().toString(), TermLoanDetailsBO.class);
 				termLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
 				termLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
 				return termLoanDetailsService.save(termLoanDetailsBO);
-				
+
 			case ApplicationType.LOAN_AGAINST_FDS:
-				LoanAgainstFDsDetailsBO loanAgainstFDsDetailsBO = (LoanAgainstFDsDetailsBO) MultipleJSONObjectHelper.getObjectFromString(applicationRequestBO.getData().toString(),LoanAgainstFDsDetailsBO.class);
+				LoanAgainstFDsDetailsBO loanAgainstFDsDetailsBO = (LoanAgainstFDsDetailsBO) MultipleJSONObjectHelper
+						.getObjectFromString(applicationRequestBO.getData().toString(), LoanAgainstFDsDetailsBO.class);
 				loanAgainstFDsDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
 				loanAgainstFDsDetailsBO.setUserId(applicationRequestBO.getUserId());
 				return loanAgainstFDsDetailsService.save(loanAgainstFDsDetailsBO);
-				
+
 			case ApplicationType.LOAN_AGAINST_SECURITIS:
-				LoanAgainstSecuritiesLoanDetailsBO loanAgainstSecuritiesLoanDetailsBO = (LoanAgainstSecuritiesLoanDetailsBO) MultipleJSONObjectHelper.getObjectFromString(applicationRequestBO.getData().toString(),LoanAgainstSecuritiesLoanDetailsBO.class);
+				LoanAgainstSecuritiesLoanDetailsBO loanAgainstSecuritiesLoanDetailsBO = (LoanAgainstSecuritiesLoanDetailsBO) MultipleJSONObjectHelper
+						.getObjectFromString(applicationRequestBO.getData().toString(),
+								LoanAgainstSecuritiesLoanDetailsBO.class);
 				loanAgainstSecuritiesLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
 				loanAgainstSecuritiesLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
 				return loanAgainstSecuritiesLoanDetailsService.save(loanAgainstSecuritiesLoanDetailsBO);
-				
+
 			case ApplicationType.PROJECT_FINANCE_LOAN:
-				ProjectFinanceLoanDetailsBO projectFinanceLoanDetailsBO = (ProjectFinanceLoanDetailsBO) MultipleJSONObjectHelper.getObjectFromString(applicationRequestBO.getData().toString(),ProjectFinanceLoanDetailsBO.class);
+				ProjectFinanceLoanDetailsBO projectFinanceLoanDetailsBO = (ProjectFinanceLoanDetailsBO) MultipleJSONObjectHelper
+						.getObjectFromString(applicationRequestBO.getData().toString(),
+								ProjectFinanceLoanDetailsBO.class);
 				projectFinanceLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
 				projectFinanceLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
 				return projectFinanceLoanDetailsService.save(projectFinanceLoanDetailsBO);
-				
+
 			case ApplicationType.PRIVATE_EQUITY_FINANCE_LOAN:
-				PrivateEquityFinanceLoanDetailsBO privateEquityFinanceLoanDetailsBO = (PrivateEquityFinanceLoanDetailsBO) MultipleJSONObjectHelper.getObjectFromString(applicationRequestBO.getData().toString(),PrivateEquityFinanceLoanDetailsBO.class);
+				PrivateEquityFinanceLoanDetailsBO privateEquityFinanceLoanDetailsBO = (PrivateEquityFinanceLoanDetailsBO) MultipleJSONObjectHelper
+						.getObjectFromString(applicationRequestBO.getData().toString(),
+								PrivateEquityFinanceLoanDetailsBO.class);
 				privateEquityFinanceLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
 				privateEquityFinanceLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
 				return privateEquityFinanceLoanDetailsService.save(privateEquityFinanceLoanDetailsBO);
-				
+
 			case ApplicationType.GOLD_LOAN:
-				GoldLoanDetailsBO goldLoanDetailsBO = (GoldLoanDetailsBO) MultipleJSONObjectHelper.getObjectFromString(applicationRequestBO.getData().toString(),GoldLoanDetailsBO.class);
+				GoldLoanDetailsBO goldLoanDetailsBO = (GoldLoanDetailsBO) MultipleJSONObjectHelper
+						.getObjectFromString(applicationRequestBO.getData().toString(), GoldLoanDetailsBO.class);
 				goldLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
 				goldLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
 				return goldLoanDetailsService.save(goldLoanDetailsBO);
-				
+
 			case ApplicationType.OTHER_LOAN:
-				OthersLoanDetailsBO othersLoanDetailsBO = (OthersLoanDetailsBO) MultipleJSONObjectHelper.getObjectFromString(applicationRequestBO.getData().toString(),OthersLoanDetailsBO.class);
+				OthersLoanDetailsBO othersLoanDetailsBO = (OthersLoanDetailsBO) MultipleJSONObjectHelper
+						.getObjectFromString(applicationRequestBO.getData().toString(), OthersLoanDetailsBO.class);
 				othersLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
 				othersLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
 				return othersLoanDetailsService.save(othersLoanDetailsBO);
-				
+
 			case ApplicationType.PERSONAL_LOAN:
-				PersonalLoanDetailsBO personalLoanDetailsBO = (PersonalLoanDetailsBO) MultipleJSONObjectHelper.getObjectFromString(applicationRequestBO.getData().toString(),PersonalLoanDetailsBO.class);
+				PersonalLoanDetailsBO personalLoanDetailsBO = (PersonalLoanDetailsBO) MultipleJSONObjectHelper
+						.getObjectFromString(applicationRequestBO.getData().toString(), PersonalLoanDetailsBO.class);
 				personalLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
 				personalLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
 				return personalLoanDetailsService.save(personalLoanDetailsBO);
-				
+
 			default:
 				return null;
 			}
@@ -270,133 +304,137 @@ public class ApplicationsServiceImpl implements ApplicationsService{
 		}
 		return null;
 	}
-	
-	
+
 	/**
 	 * CONVERT APPLICATIONS DOMAIN OBJ TO BO OBJ
+	 * 
 	 * @param applications
 	 * @return
 	 */
 	public ApplicationsBO convertDomainToBO(Applications applications) {
 		ApplicationsBO applicationsBO = new ApplicationsBO();
-		if(CommonUtils.isObjectNullOrEmpty(applications)) {
+		if (CommonUtils.isObjectNullOrEmpty(applications)) {
 			return applicationsBO;
 		}
 		BeanUtils.copyProperties(applications, applicationsBO);
-		if(!CommonUtils.isObjectNullOrEmpty(applications.getApplicationTypeId())) {
+		if (!CommonUtils.isObjectNullOrEmpty(applications.getApplicationTypeId())) {
 			applicationsBO.setApplicationTypeId(applications.getApplicationTypeId().getId());
 			applicationsBO.setApplicationTypeName(applications.getApplicationTypeId().getName());
 			applicationsBO.setApplicationTypeCode(applications.getApplicationTypeId().getCode());
 		}
-		if(!CommonUtils.isObjectNullOrEmpty(applications.getLoanTypeId())) {
+		if (!CommonUtils.isObjectNullOrEmpty(applications.getLoanTypeId())) {
 			applicationsBO.setLoanTypeId(applications.getLoanTypeId().getId());
-			applicationsBO.setLoanTypeName(applications.getLoanTypeId().getName());	
+			applicationsBO.setLoanTypeName(applications.getLoanTypeId().getName());
 		}
 		return applicationsBO;
 	}
-	
-	public LamsResponse getLoanApplicationDetails(Long id,Long applicationTypeId,Long userId){
-		
+
+	public LamsResponse getLoanApplicationDetails(Long id, Long applicationTypeId, Long userId) {
+
 		LamsResponse lamsResponse = new LamsResponse();
 		Long employmentType = userMstrRepository.getEmpTypeById(userId);
 		switch (applicationTypeId.intValue()) {
-		
+
 		case ApplicationType.HOME_LOAN:
 			HomeLoanDetailsBO homeLoanDetailsBO = homeLoanDetailsService.get(id);
 			homeLoanDetailsBO.setEmploymentType(employmentType);
 			lamsResponse.setData(homeLoanDetailsBO);
 			break;
-			
+
 		case ApplicationType.LOAN_AGAINST_PROPERTY:
 			LoanAgainstPropertyDetailsBO loanAgainstPropertyDetailsBO = loanAgainstPropertyDetailsService.get(id);
 			loanAgainstPropertyDetailsBO.setEmploymentType(employmentType);
 			lamsResponse.setData(loanAgainstPropertyDetailsBO);
 			break;
-			
+
 		case ApplicationType.SECURED_BUSINESS_LOAN:
 			SecuredBusinessLoanDetailsBO securedBusinessLoanDetailsBO = securedBusinessLoanDetailsService.get(id);
 			securedBusinessLoanDetailsBO.setEmploymentType(employmentType);
 			lamsResponse.setData(securedBusinessLoanDetailsBO);
 			break;
-			
+
 		case ApplicationType.WORKING_CAPITAL_LOAN:
 			WorkingCapitalLoanDetailsBO workingCapitalLoanDetailsBO = workingCapitalLoanDetailsService.get(id);
 			workingCapitalLoanDetailsBO.setEmploymentType(employmentType);
 			lamsResponse.setData(workingCapitalLoanDetailsBO);
 			break;
-			
+
 		case ApplicationType.EDUCATION_LOAN:
 			EducationLoanDetailsBO educationLoanDetailsBO = educationLoanDetailsService.get(id);
 			educationLoanDetailsBO.setEmploymentType(employmentType);
 			lamsResponse.setData(educationLoanDetailsBO);
 			break;
-			
+
 		case ApplicationType.CAR_LOAN:
 			CarLoanDetailsBO carLoanDetailsBO = carLoanDetailsService.get(id);
 			carLoanDetailsBO.setEmploymentType(employmentType);
 			lamsResponse.setData(carLoanDetailsBO);
 			break;
-			
+
 		case ApplicationType.OVERDRAFT_FACILITIES_LOAN:
-			OverDraftFacilitiesLoanDetailsBO overDraftFacilitiesLoanDetailsBO = overDraftFacilitiesLoanDetailsService.get(id);
+			OverDraftFacilitiesLoanDetailsBO overDraftFacilitiesLoanDetailsBO = overDraftFacilitiesLoanDetailsService
+					.get(id);
 			overDraftFacilitiesLoanDetailsBO.setEmploymentType(employmentType);
 			lamsResponse.setData(overDraftFacilitiesLoanDetailsBO);
 			break;
-			
+
 		case ApplicationType.DROPLINE_OVERDRAFT_FACILITIES_LOAN:
-			DropLineOdFacilitiesLoanDetailsBO dropLineOdFacilitiesLoanDetailsBO = dropLineOdFacilitiesLoanDetailsService.get(id);
+			DropLineOdFacilitiesLoanDetailsBO dropLineOdFacilitiesLoanDetailsBO = dropLineOdFacilitiesLoanDetailsService
+					.get(id);
 			dropLineOdFacilitiesLoanDetailsBO.setEmploymentType(employmentType);
 			lamsResponse.setData(dropLineOdFacilitiesLoanDetailsBO);
 			break;
-			
+
 		case ApplicationType.BANK_GUARANTEE_LOAN:
 			BankGuaranteeLoanDetailsBO bankGuaranteeLoanDetailsBO = bankGuaranteeLoanDetailsService.get(id);
 			bankGuaranteeLoanDetailsBO.setEmploymentType(employmentType);
 			lamsResponse.setData(bankGuaranteeLoanDetailsBO);
 			break;
-			
+
 		case ApplicationType.CC_FACILITIES_LOAN:
 			CCFacilitiesLoanDetailsBO ccFacilitiesLoanDetailsBO = ccFacilitiesLoanDetailsService.get(id);
 			ccFacilitiesLoanDetailsBO.setEmploymentType(employmentType);
 			lamsResponse.setData(ccFacilitiesLoanDetailsBO);
 			break;
-			
+
 		case ApplicationType.TERM_LOAN:
 			TermLoanDetailsBO termLoanDetailsBO = termLoanDetailsService.get(id);
 			termLoanDetailsBO.setEmploymentType(employmentType);
 			lamsResponse.setData(termLoanDetailsBO);
 			break;
-			
+
 		case ApplicationType.LOAN_AGAINST_FDS:
 			LoanAgainstFDsDetailsBO loanAgainstFDsDetailsBO = loanAgainstFDsDetailsService.get(id);
 			loanAgainstFDsDetailsBO.setEmploymentType(employmentType);
 			lamsResponse.setData(loanAgainstFDsDetailsBO);
 			break;
-			
+
 		case ApplicationType.LOAN_AGAINST_SECURITIS:
-			LoanAgainstSecuritiesLoanDetailsBO loanAgainstSecuritiesLoanDetailsBO = loanAgainstSecuritiesLoanDetailsService.get(id);
+			LoanAgainstSecuritiesLoanDetailsBO loanAgainstSecuritiesLoanDetailsBO = loanAgainstSecuritiesLoanDetailsService
+					.get(id);
 			loanAgainstSecuritiesLoanDetailsBO.setEmploymentType(employmentType);
 			lamsResponse.setData(loanAgainstSecuritiesLoanDetailsBO);
 			break;
-			
+
 		case ApplicationType.PROJECT_FINANCE_LOAN:
 			ProjectFinanceLoanDetailsBO projectFinanceLoanDetailsBO = projectFinanceLoanDetailsService.get(id);
 			projectFinanceLoanDetailsBO.setEmploymentType(employmentType);
 			lamsResponse.setData(projectFinanceLoanDetailsBO);
 			break;
-			
+
 		case ApplicationType.PRIVATE_EQUITY_FINANCE_LOAN:
-			PrivateEquityFinanceLoanDetailsBO privateEquityFinanceLoanDetailsBO = privateEquityFinanceLoanDetailsService.get(id);
+			PrivateEquityFinanceLoanDetailsBO privateEquityFinanceLoanDetailsBO = privateEquityFinanceLoanDetailsService
+					.get(id);
 			privateEquityFinanceLoanDetailsBO.setEmploymentType(employmentType);
 			lamsResponse.setData(privateEquityFinanceLoanDetailsBO);
 			break;
-			
+
 		case ApplicationType.GOLD_LOAN:
 			GoldLoanDetailsBO goldLoanDetailsBO = goldLoanDetailsService.get(id);
 			goldLoanDetailsBO.setEmploymentType(employmentType);
 			lamsResponse.setData(goldLoanDetailsBO);
 			break;
-			
+
 		case ApplicationType.OTHER_LOAN:
 			OthersLoanDetailsBO othersLoanDetailsBO = othersLoanDetailsService.get(id);
 			othersLoanDetailsBO.setEmploymentType(employmentType);
@@ -409,10 +447,177 @@ public class ApplicationsServiceImpl implements ApplicationsService{
 			break;
 		default:
 			lamsResponse.setMessage("Invalid Application Type Id");
-			return lamsResponse; 
+			return lamsResponse;
 		}
 		lamsResponse.setMessage("Successfully get data");
 		return lamsResponse;
 	}
-	
+
+	@Override
+	public LamsResponse getApplicationsForLender(Long userId) {
+		List<Long> applicationTypesByUserId = lenderApplicationMappingRepository.getApplicationTypesByUserId(userId,
+				true);
+		logger.info("applicationTypesByUserId===="+ applicationTypesByUserId  + " usrId====>." + userId);
+		if(CommonUtils.isListNullOrEmpty(applicationTypesByUserId)) {
+			return new LamsResponse(HttpStatus.OK.value(),"No ApplicationType found for User");
+		}
+		List<Long> borrwersIds = applicationsRepository.getUserIdByApplicationTypeId(applicationTypesByUserId);
+		if(CommonUtils.isListNullOrEmpty(borrwersIds)) {
+			return new LamsResponse(HttpStatus.OK.value(),"No Borrower found for ApplicationType");
+		}
+		
+		List<User> list = userMstrRepository.findByIdInAndIsActive(borrwersIds, true);
+		List<UserBO> response = new ArrayList<>(list.size());
+		for (User user : list) {
+			UserBO userBo = new UserBO();
+			BeanUtils.copyProperties(user, userBo);
+			List<Applications> apps = applicationsRepository.findByUserIdAndIsActiveAndApplicationTypeIdIdIn(user.getId(),
+					true, applicationTypesByUserId);
+			List<ApplicationsBO> appResponse = new ArrayList<>(apps.size());
+			Long employmentType = userMstrRepository.getEmpTypeById(user.getId());
+			for (Applications app : apps) {
+				switch (app.getApplicationTypeId().getId().intValue()) {
+
+				case ApplicationType.HOME_LOAN:
+					HomeLoanDetailsBO homeLoanDetailsBO = homeLoanDetailsService.get(app.getId());
+					BeanUtils.copyProperties(app, homeLoanDetailsBO);
+					homeLoanDetailsBO.setEmploymentType(employmentType);
+					appResponse.add(homeLoanDetailsBO);
+					break;
+
+				case ApplicationType.LOAN_AGAINST_PROPERTY:
+					LoanAgainstPropertyDetailsBO loanAgainstPropertyDetailsBO = loanAgainstPropertyDetailsService
+							.get(app.getId());
+					BeanUtils.copyProperties(app, loanAgainstPropertyDetailsBO);
+					loanAgainstPropertyDetailsBO.setEmploymentType(employmentType);
+					appResponse.add(loanAgainstPropertyDetailsBO);
+					break;
+
+				case ApplicationType.SECURED_BUSINESS_LOAN:
+					SecuredBusinessLoanDetailsBO securedBusinessLoanDetailsBO = securedBusinessLoanDetailsService
+							.get(app.getId());
+					BeanUtils.copyProperties(app, securedBusinessLoanDetailsBO);
+					securedBusinessLoanDetailsBO.setEmploymentType(employmentType);
+					appResponse.add(securedBusinessLoanDetailsBO);
+					break;
+
+				case ApplicationType.WORKING_CAPITAL_LOAN:
+					WorkingCapitalLoanDetailsBO workingCapitalLoanDetailsBO = workingCapitalLoanDetailsService
+							.get(app.getId());
+					BeanUtils.copyProperties(app, workingCapitalLoanDetailsBO);
+					workingCapitalLoanDetailsBO.setEmploymentType(employmentType);
+					appResponse.add(workingCapitalLoanDetailsBO);
+					break;
+
+				case ApplicationType.EDUCATION_LOAN:
+					EducationLoanDetailsBO educationLoanDetailsBO = educationLoanDetailsService.get(app.getId());
+					BeanUtils.copyProperties(app, educationLoanDetailsBO);
+					educationLoanDetailsBO.setEmploymentType(employmentType);
+					appResponse.add(educationLoanDetailsBO);
+					break;
+
+				case ApplicationType.CAR_LOAN:
+					CarLoanDetailsBO carLoanDetailsBO = carLoanDetailsService.get(app.getId());
+					BeanUtils.copyProperties(app, carLoanDetailsBO);
+					carLoanDetailsBO.setEmploymentType(employmentType);
+					appResponse.add(carLoanDetailsBO);
+					break;
+
+				case ApplicationType.OVERDRAFT_FACILITIES_LOAN:
+					OverDraftFacilitiesLoanDetailsBO overDraftFacilitiesLoanDetailsBO = overDraftFacilitiesLoanDetailsService
+							.get(app.getId());
+					BeanUtils.copyProperties(app, overDraftFacilitiesLoanDetailsBO);
+					overDraftFacilitiesLoanDetailsBO.setEmploymentType(employmentType);
+					appResponse.add(overDraftFacilitiesLoanDetailsBO);
+					break;
+
+				case ApplicationType.DROPLINE_OVERDRAFT_FACILITIES_LOAN:
+					DropLineOdFacilitiesLoanDetailsBO dropLineOdFacilitiesLoanDetailsBO = dropLineOdFacilitiesLoanDetailsService
+							.get(app.getId());
+					BeanUtils.copyProperties(app, dropLineOdFacilitiesLoanDetailsBO);
+					dropLineOdFacilitiesLoanDetailsBO.setEmploymentType(employmentType);
+					appResponse.add(dropLineOdFacilitiesLoanDetailsBO);
+					break;
+
+				case ApplicationType.BANK_GUARANTEE_LOAN:
+					BankGuaranteeLoanDetailsBO bankGuaranteeLoanDetailsBO = bankGuaranteeLoanDetailsService
+							.get(app.getId());
+					BeanUtils.copyProperties(app, bankGuaranteeLoanDetailsBO);
+					bankGuaranteeLoanDetailsBO.setEmploymentType(employmentType);
+					appResponse.add(bankGuaranteeLoanDetailsBO);
+					break;
+
+				case ApplicationType.CC_FACILITIES_LOAN:
+					CCFacilitiesLoanDetailsBO ccFacilitiesLoanDetailsBO = ccFacilitiesLoanDetailsService
+							.get(app.getId());
+					BeanUtils.copyProperties(app, ccFacilitiesLoanDetailsBO);
+					ccFacilitiesLoanDetailsBO.setEmploymentType(employmentType);
+					appResponse.add(ccFacilitiesLoanDetailsBO);
+					break;
+
+				case ApplicationType.TERM_LOAN:
+					TermLoanDetailsBO termLoanDetailsBO = termLoanDetailsService.get(app.getId());
+					BeanUtils.copyProperties(app, termLoanDetailsBO);
+					termLoanDetailsBO.setEmploymentType(employmentType);
+					appResponse.add(termLoanDetailsBO);
+					break;
+
+				case ApplicationType.LOAN_AGAINST_FDS:
+					LoanAgainstFDsDetailsBO loanAgainstFDsDetailsBO = loanAgainstFDsDetailsService.get(app.getId());
+					BeanUtils.copyProperties(app, loanAgainstFDsDetailsBO);
+					loanAgainstFDsDetailsBO.setEmploymentType(employmentType);
+					appResponse.add(loanAgainstFDsDetailsBO);
+					break;
+
+				case ApplicationType.LOAN_AGAINST_SECURITIS:
+					LoanAgainstSecuritiesLoanDetailsBO loanAgainstSecuritiesLoanDetailsBO = loanAgainstSecuritiesLoanDetailsService
+							.get(app.getId());
+					BeanUtils.copyProperties(app, loanAgainstSecuritiesLoanDetailsBO);
+					loanAgainstSecuritiesLoanDetailsBO.setEmploymentType(employmentType);
+					appResponse.add(loanAgainstSecuritiesLoanDetailsBO);
+					break;
+
+				case ApplicationType.PROJECT_FINANCE_LOAN:
+					ProjectFinanceLoanDetailsBO projectFinanceLoanDetailsBO = projectFinanceLoanDetailsService
+							.get(app.getId());
+					BeanUtils.copyProperties(app, projectFinanceLoanDetailsBO);
+					projectFinanceLoanDetailsBO.setEmploymentType(employmentType);
+					appResponse.add(projectFinanceLoanDetailsBO);
+					break;
+
+				case ApplicationType.PRIVATE_EQUITY_FINANCE_LOAN:
+					PrivateEquityFinanceLoanDetailsBO privateEquityFinanceLoanDetailsBO = privateEquityFinanceLoanDetailsService
+							.get(app.getId());
+					BeanUtils.copyProperties(app, privateEquityFinanceLoanDetailsBO);
+					privateEquityFinanceLoanDetailsBO.setEmploymentType(employmentType);
+					appResponse.add(privateEquityFinanceLoanDetailsBO);
+					break;
+
+				case ApplicationType.GOLD_LOAN:
+					GoldLoanDetailsBO goldLoanDetailsBO = goldLoanDetailsService.get(app.getId());
+					BeanUtils.copyProperties(app, goldLoanDetailsBO);
+					goldLoanDetailsBO.setEmploymentType(employmentType);
+					appResponse.add(goldLoanDetailsBO);
+					break;
+
+				case ApplicationType.OTHER_LOAN:
+					OthersLoanDetailsBO othersLoanDetailsBO = othersLoanDetailsService.get(app.getId());
+					BeanUtils.copyProperties(app, othersLoanDetailsBO);
+					othersLoanDetailsBO.setEmploymentType(employmentType);
+					appResponse.add(othersLoanDetailsBO);
+					break;
+				case ApplicationType.PERSONAL_LOAN:
+					PersonalLoanDetailsBO personalLoanDetailsBO = personalLoanDetailsService.get(app.getId());
+					BeanUtils.copyProperties(app, personalLoanDetailsBO);
+					personalLoanDetailsBO.setEmploymentType(employmentType);
+					appResponse.add(personalLoanDetailsBO);
+					break;
+				}
+				userBo.setApplications(appResponse);
+			}
+			response.add(userBo);
+		}
+		return new LamsResponse(HttpStatus.OK.value(), "Success", response);
+	}
+
 }

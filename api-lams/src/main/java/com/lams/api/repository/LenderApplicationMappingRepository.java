@@ -19,4 +19,7 @@ public interface LenderApplicationMappingRepository extends JpaRepository<Lender
 	@Modifying
 	@Query("update LenderApplicationMapping lam set lam.isActive = false,lam.modifiedDate = NOW(),lam.modifiedBy =:modifiedBy where lam.userId =:userId and lam.isActive = true")
 	public int inActiveByUserId(@Param("userId") Long userId, @Param("modifiedBy") Long modifiedBy);
+
+	@Query("select lam.applicationTypeId.id from LenderApplicationMapping lam where lam.userId =:userId and lam.isActive =:isActive")
+	public List<Long> getApplicationTypesByUserId(@Param("userId") Long userId, @Param("isActive") Boolean isActive);
 }

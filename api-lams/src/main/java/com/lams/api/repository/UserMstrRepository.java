@@ -30,6 +30,8 @@ public interface UserMstrRepository extends JpaRepository<User, Long>{
 	
 	public User findByEmailAndIsActive(String email,Boolean isActive);
 	
+	public List<User> findByIdInAndIsActive(List<Long> userIds,Boolean isActive);
+	
 	@Query("select employmentType from User us where us.id =:id and us.isActive = true")
 	public Long getEmpTypeById(@Param("id") Long id);
 }
