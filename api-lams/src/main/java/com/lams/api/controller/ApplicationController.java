@@ -132,4 +132,23 @@ public class ApplicationController {
 			return new ResponseEntity<LamsResponse>(new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Something went wrong"),HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	@RequestMapping(value="/get_borrowers_for_lender",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<LamsResponse> getBorrowerForLender(HttpServletRequest httpServletRequest){
+		logger.info("Enter in get application details");
+		Long userId = (Long)httpServletRequest.getAttribute(CommonUtils.USER_ID);
+		if(CommonUtils.isObjectNullOrEmpty(userId)) {
+			logger.info("User Id Null Or Empty");
+			return new ResponseEntity<LamsResponse>(new LamsResponse(HttpStatus.BAD_REQUEST.value(), "UnAuthorized! Please try again to Login"),
+					HttpStatus.OK);
+		}
+		try {
+			logger.info("Successfully get details");
+			return new ResponseEntity<LamsResponse>(applicationsService.getApplicationsForLender(userId),HttpStatus.OK);
+		} catch (Exception e) {
+			logger.info("Throw Exception while Getting Matches Borrowers ---------------->");
+			e.printStackTrace();
+			return new ResponseEntity<LamsResponse>(new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), CommonUtils.SOMETHING_WENT_WRONG),HttpStatus.OK);
+		}
+	}
 }

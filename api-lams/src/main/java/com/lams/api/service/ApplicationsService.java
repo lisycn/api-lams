@@ -15,4 +15,6 @@ public interface ApplicationsService {
 	public Long save(ApplicationRequestBO applicationsBO);
 	
 	public LamsResponse getLoanApplicationDetails(Long id,Long applicationTypeId,Long userId);
+	
+	public LamsResponse getApplicationsForLender(Long userId);
 }
