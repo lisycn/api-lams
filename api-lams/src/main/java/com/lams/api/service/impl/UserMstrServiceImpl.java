@@ -146,11 +146,8 @@ public class UserMstrServiceImpl implements UserMstrService {
 		if (!CommonUtils.isObjectNullOrEmpty(userBO.getUserType())) {
 			UserType userType = Enums.UserType.getType(userBO.getUserType().intValue());
 			if (!CommonUtils.isObjectNullOrEmpty(userType) && userType.equals(Enums.UserType.LENDER)) {
-				user.setIsEmailVerified(
-						!CommonUtils.isObjectNullOrEmpty(userBO.getIsEmailVerified()) ? userBO.getIsEmailVerified()
-								: true);
-				user.setIsOtpVerified(
-						!CommonUtils.isObjectNullOrEmpty(userBO.getIsOtpVerified()) ? userBO.getIsOtpVerified() : true);
+				user.setIsEmailVerified(true);
+				user.setIsOtpVerified(true);
 				if (CommonUtils.isObjectNullOrEmpty(userBO.getIsActive())) {
 					user.setIsActive(false);
 				} else {

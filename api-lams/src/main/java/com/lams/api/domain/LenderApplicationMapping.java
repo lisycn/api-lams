@@ -31,6 +31,15 @@ public class LenderApplicationMapping extends Auditor implements Serializable {
 	@Column(name = "user_id")
 	private Long userId;
 
+	public LenderApplicationMapping() {
+		super();
+	}
+
+	public LenderApplicationMapping(Long id) {
+		super();
+		this.id = id;
+	}
+
 	public Long getId() {
 		return id;
 	}
