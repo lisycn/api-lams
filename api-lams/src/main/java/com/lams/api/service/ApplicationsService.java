@@ -17,4 +17,8 @@ public interface ApplicationsService {
 	public LamsResponse getLoanApplicationDetails(Long id,Long applicationTypeId,Long userId);
 	
 	public LamsResponse getApplicationsForLender(Long userId);
+	
+	public LamsResponse getApplicationsForLenderByApplicationId(Long appId);
+	
+//	public LamsResponse getApplicationDetailsByApplicationTypeIdAndUserId(Long appId, Long userId);
 }

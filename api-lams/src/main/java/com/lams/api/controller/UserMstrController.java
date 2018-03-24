@@ -383,4 +383,23 @@ public class UserMstrController {
 					HttpStatus.OK);
 		}
 	}
+	
+	
+	@RequestMapping(value = "/get_user_details_by_id/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<LamsResponse> getUserDetailsById(@PathVariable Long userId, HttpServletRequest request) {
+//		Long userId = (Long) request.getAttribute(CommonUtils.USER_ID);
+		try {
+			UserBO userData = userMstrService.getUserById(userId);
+			return new ResponseEntity<LamsResponse>(new LamsResponse(HttpStatus.OK.value(), "Success", userData),
+					HttpStatus.OK);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "Error while Getting user Details based on UserId===>{}", userId);
+			e.printStackTrace();
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), CommonUtils.SOMETHING_WENT_WRONG),
+					HttpStatus.OK);
+		}
+	}
+	
+	
 }
