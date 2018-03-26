@@ -619,5 +619,186 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 		}
 		return new LamsResponse(HttpStatus.OK.value(), "Success", response);
 	}
+	
+	@Override
+	public LamsResponse getApplicationsForLenderByApplicationId(Long appId) {
+		List<Long> borrwersIds = applicationsRepository.getUserIdById(appId);
+		if(CommonUtils.isListNullOrEmpty(borrwersIds)) {
+			return new LamsResponse(HttpStatus.OK.value(),"No Borrower found for ApplicationType");
+		}
+		List<User> list = userMstrRepository.findByIdInAndIsActive(borrwersIds, true);
+		List<UserBO> response = new ArrayList<>(list.size());
+		for (User user : list) {
+			UserBO userBo = new UserBO();
+			BeanUtils.copyProperties(user, userBo);
+			response.add(userBo);
+		}
+		return new LamsResponse(HttpStatus.OK.value(), "Success", response);
+	}	
+	
+//	@Override
+//	public LamsResponse getApplicationDetailsByApplicationTypeIdAndUserId(Long appTypeId, Long userId) {
+//		
+//		logger.info("===============> "
+//				+ appTypeId + " | "+ userId);		
+//		
+////		List<User> list = userMstrRepository.findByIdInAndIsActive(borrwersIds, true);
+////		List<UserBO> response = new ArrayList<>(list.size());
+////		for (User user : list) {
+////			UserBO userBo = new UserBO();
+////			BeanUtils.copyProperties(user, userBo);
+////			List<Applications> apps = applicationsRepository.findByUserIdAndIsActiveAndApplicationTypeIdIdIn(user.getId(),
+////					true, appTypeId);
+//			List<ApplicationsBO> appResponse = new ArrayList<>();
+//			Long employmentType = userMstrRepository.getEmpTypeById(userId);
+////			for (Applications app : apps) {
+//				switch (appTypeId.intValue()) {
+//				
+//
+//
+//				case ApplicationType.HOME_LOAN:
+//					HomeLoanDetailsBO homeLoanDetailsBO = homeLoanDetailsService.get(appTypeId);
+////					BeanUtils.copyProperties(app, homeLoanDetailsBO);
+//					homeLoanDetailsBO.setEmploymentType(employmentType);
+//					appResponse.add(homeLoanDetailsBO);
+//					break;
+//
+//				case ApplicationType.LOAN_AGAINST_PROPERTY:
+//					LoanAgainstPropertyDetailsBO loanAgainstPropertyDetailsBO = loanAgainstPropertyDetailsService
+//							.get(appTypeId);
+////					BeanUtils.copyProperties(app, loanAgainstPropertyDetailsBO);
+//					loanAgainstPropertyDetailsBO.setEmploymentType(employmentType);
+//					appResponse.add(loanAgainstPropertyDetailsBO);
+//					break;
+//
+//				case ApplicationType.SECURED_BUSINESS_LOAN:
+//					SecuredBusinessLoanDetailsBO securedBusinessLoanDetailsBO = securedBusinessLoanDetailsService
+//							.get(appTypeId);
+////					BeanUtils.copyProperties(app, securedBusinessLoanDetailsBO);
+//					securedBusinessLoanDetailsBO.setEmploymentType(employmentType);
+//					appResponse.add(securedBusinessLoanDetailsBO);
+//					break;
+//
+//				case ApplicationType.WORKING_CAPITAL_LOAN:
+//					WorkingCapitalLoanDetailsBO workingCapitalLoanDetailsBO = workingCapitalLoanDetailsService
+//							.get(appTypeId);
+////					BeanUtils.copyProperties(app, workingCapitalLoanDetailsBO);
+//					workingCapitalLoanDetailsBO.setEmploymentType(employmentType);
+//					appResponse.add(workingCapitalLoanDetailsBO);
+//					break;
+//
+//				case ApplicationType.EDUCATION_LOAN:
+//					EducationLoanDetailsBO educationLoanDetailsBO = educationLoanDetailsService.get(appTypeId);
+////					BeanUtils.copyProperties(app, educationLoanDetailsBO);
+//					educationLoanDetailsBO.setEmploymentType(employmentType);
+//					appResponse.add(educationLoanDetailsBO);
+//					break;
+//
+//				case ApplicationType.CAR_LOAN:
+//					CarLoanDetailsBO carLoanDetailsBO = carLoanDetailsService.get(appTypeId);
+////					BeanUtils.copyProperties(app, carLoanDetailsBO);
+//					carLoanDetailsBO.setEmploymentType(employmentType);
+//					appResponse.add(carLoanDetailsBO);
+//					break;
+//
+//				case ApplicationType.OVERDRAFT_FACILITIES_LOAN:
+//					OverDraftFacilitiesLoanDetailsBO overDraftFacilitiesLoanDetailsBO = overDraftFacilitiesLoanDetailsService
+//							.get(appTypeId);
+////					BeanUtils.copyProperties(app, overDraftFacilitiesLoanDetailsBO);
+//					overDraftFacilitiesLoanDetailsBO.setEmploymentType(employmentType);
+//					appResponse.add(overDraftFacilitiesLoanDetailsBO);
+//					break;
+//
+//				case ApplicationType.DROPLINE_OVERDRAFT_FACILITIES_LOAN:
+//					DropLineOdFacilitiesLoanDetailsBO dropLineOdFacilitiesLoanDetailsBO = dropLineOdFacilitiesLoanDetailsService
+//							.get(appTypeId);
+////					BeanUtils.copyProperties(app, dropLineOdFacilitiesLoanDetailsBO);
+//					dropLineOdFacilitiesLoanDetailsBO.setEmploymentType(employmentType);
+//					appResponse.add(dropLineOdFacilitiesLoanDetailsBO);
+//					break;
+//
+//				case ApplicationType.BANK_GUARANTEE_LOAN:
+//					BankGuaranteeLoanDetailsBO bankGuaranteeLoanDetailsBO = bankGuaranteeLoanDetailsService
+//							.get(appTypeId);
+////					BeanUtils.copyProperties(app, bankGuaranteeLoanDetailsBO);
+//					bankGuaranteeLoanDetailsBO.setEmploymentType(employmentType);
+//					appResponse.add(bankGuaranteeLoanDetailsBO);
+//					break;
+//
+//				case ApplicationType.CC_FACILITIES_LOAN:
+//					CCFacilitiesLoanDetailsBO ccFacilitiesLoanDetailsBO = ccFacilitiesLoanDetailsService
+//							.get(appTypeId);
+////					BeanUtils.copyProperties(app, ccFacilitiesLoanDetailsBO);
+//					ccFacilitiesLoanDetailsBO.setEmploymentType(employmentType);
+//					appResponse.add(ccFacilitiesLoanDetailsBO);
+//					break;
+//
+//				case ApplicationType.TERM_LOAN:
+//					TermLoanDetailsBO termLoanDetailsBO = termLoanDetailsService.get(appTypeId);
+////					BeanUtils.copyProperties(app, termLoanDetailsBO);
+//					termLoanDetailsBO.setEmploymentType(employmentType);
+//					appResponse.add(termLoanDetailsBO);
+//					break;
+//
+//				case ApplicationType.LOAN_AGAINST_FDS:
+//					logger.info("===============> "
+//							+ appTypeId + " | "+ userId);
+//					LoanAgainstFDsDetailsBO loanAgainstFDsDetailsBO = loanAgainstFDsDetailsService.get(appTypeId);
+////					BeanUtils.copyProperties(app, loanAgainstFDsDetailsBO);
+//					loanAgainstFDsDetailsBO.setEmploymentType(employmentType);
+//					appResponse.add(loanAgainstFDsDetailsBO);
+//					break;
+//
+//				case ApplicationType.LOAN_AGAINST_SECURITIS:
+//					LoanAgainstSecuritiesLoanDetailsBO loanAgainstSecuritiesLoanDetailsBO = loanAgainstSecuritiesLoanDetailsService
+//							.get(appTypeId);
+////					BeanUtils.copyProperties(app, loanAgainstSecuritiesLoanDetailsBO);
+//					loanAgainstSecuritiesLoanDetailsBO.setEmploymentType(employmentType);
+//					appResponse.add(loanAgainstSecuritiesLoanDetailsBO);
+//					break;
+//
+//				case ApplicationType.PROJECT_FINANCE_LOAN:
+//					ProjectFinanceLoanDetailsBO projectFinanceLoanDetailsBO = projectFinanceLoanDetailsService
+//							.get(appTypeId);
+////					BeanUtils.copyProperties(app, projectFinanceLoanDetailsBO);
+//					projectFinanceLoanDetailsBO.setEmploymentType(employmentType);
+//					appResponse.add(projectFinanceLoanDetailsBO);
+//					break;
+//
+//				case ApplicationType.PRIVATE_EQUITY_FINANCE_LOAN:
+//					PrivateEquityFinanceLoanDetailsBO privateEquityFinanceLoanDetailsBO = privateEquityFinanceLoanDetailsService
+//							.get(appTypeId);
+////					BeanUtils.copyProperties(app, privateEquityFinanceLoanDetailsBO);
+//					privateEquityFinanceLoanDetailsBO.setEmploymentType(employmentType);
+//					appResponse.add(privateEquityFinanceLoanDetailsBO);
+//					break;
+//
+//				case ApplicationType.GOLD_LOAN:
+//					GoldLoanDetailsBO goldLoanDetailsBO = goldLoanDetailsService.get(appTypeId);
+////					BeanUtils.copyProperties(app, goldLoanDetailsBO);
+//					goldLoanDetailsBO.setEmploymentType(employmentType);
+//					appResponse.add(goldLoanDetailsBO);
+//					break;
+//
+//				case ApplicationType.OTHER_LOAN:
+//					OthersLoanDetailsBO othersLoanDetailsBO = othersLoanDetailsService.get(appTypeId);
+////					BeanUtils.copyProperties(app, othersLoanDetailsBO);
+//					othersLoanDetailsBO.setEmploymentType(employmentType);
+//					appResponse.add(othersLoanDetailsBO);
+//					break;
+//				case ApplicationType.PERSONAL_LOAN:
+//					PersonalLoanDetailsBO personalLoanDetailsBO = personalLoanDetailsService.get(appTypeId);
+////					BeanUtils.copyProperties(app, personalLoanDetailsBO);
+//					personalLoanDetailsBO.setEmploymentType(employmentType);
+//					appResponse.add(personalLoanDetailsBO);
+//					break;
+////				}
+////					response.add(appResponse);
+////			}
+////			response.add(userBo);
+//		}
+//		return new LamsResponse(HttpStatus.OK.value(), "Success", appResponse);
+//	}
+
 
 }

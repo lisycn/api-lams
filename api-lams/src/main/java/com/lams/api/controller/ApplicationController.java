@@ -151,4 +151,31 @@ public class ApplicationController {
 			return new ResponseEntity<LamsResponse>(new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), CommonUtils.SOMETHING_WENT_WRONG),HttpStatus.OK);
 		}
 	}
+	
+	@RequestMapping(value="/get_borrowers_for_lender_app_id/{id}", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<LamsResponse> getBorrowerForLenderByAppId(@PathVariable("id") Long id, HttpServletRequest httpServletRequest){
+		
+		try {
+			return new ResponseEntity<LamsResponse>(applicationsService.getApplicationsForLenderByApplicationId(id), HttpStatus.OK);
+		} catch (Exception e) {
+			logger.info("Throw Exception while Getting Matches Borrowers ---------------->");
+			e.printStackTrace();
+			return new ResponseEntity<LamsResponse>(new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), CommonUtils.SOMETHING_WENT_WRONG),HttpStatus.OK);
+		}
+	}
+	
+	
+//	@RequestMapping(value="/get_application_details_for_lender/{appId}/{userId}", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
+//	public ResponseEntity<LamsResponse> getApplicationDetailsByIdAndUserId(@PathVariable("appId") Long appId, @PathVariable("userId") Long userId, HttpServletRequest httpServletRequest){
+//		
+//		try {
+//			return new ResponseEntity<LamsResponse>(applicationsService.getApplicationDetailsByApplicationTypeIdAndUserId(appId, userId), HttpStatus.OK);
+//		} catch (Exception e) {
+//			logger.info("Throw Exception while Getting Application Details ---------------->");
+//			e.printStackTrace();
+//			return new ResponseEntity<LamsResponse>(new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), CommonUtils.SOMETHING_WENT_WRONG),HttpStatus.OK);
+//		}
+//	}
+	
+	
 }
