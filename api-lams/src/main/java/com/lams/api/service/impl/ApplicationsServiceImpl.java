@@ -164,6 +164,7 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 						.getObjectFromString(applicationRequestBO.getData().toString(), HomeLoanDetailsBO.class);
 				homeLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
 				homeLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
+				homeLoanDetailsBO.setStatus(CommonUtils.Status.OPEN);
 				return homeLoanDetailsService.save(homeLoanDetailsBO);
 
 			case ApplicationType.LOAN_AGAINST_PROPERTY:
@@ -172,6 +173,7 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 								LoanAgainstPropertyDetailsBO.class);
 				loanAgainstPropertyDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
 				loanAgainstPropertyDetailsBO.setUserId(applicationRequestBO.getUserId());
+				loanAgainstPropertyDetailsBO.setStatus(CommonUtils.Status.OPEN);
 				return loanAgainstPropertyDetailsService.save(loanAgainstPropertyDetailsBO);
 
 			case ApplicationType.SECURED_BUSINESS_LOAN:
@@ -180,6 +182,7 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 								SecuredBusinessLoanDetailsBO.class);
 				securedBusinessLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
 				securedBusinessLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
+				securedBusinessLoanDetailsBO.setStatus(CommonUtils.Status.OPEN);
 				return securedBusinessLoanDetailsService.save(securedBusinessLoanDetailsBO);
 
 			case ApplicationType.WORKING_CAPITAL_LOAN:
@@ -188,6 +191,7 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 								WorkingCapitalLoanDetailsBO.class);
 				workingCapitalLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
 				workingCapitalLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
+				workingCapitalLoanDetailsBO.setStatus(CommonUtils.Status.OPEN);
 				return workingCapitalLoanDetailsService.save(workingCapitalLoanDetailsBO);
 
 			case ApplicationType.EDUCATION_LOAN:
@@ -195,6 +199,7 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 						.getObjectFromString(applicationRequestBO.getData().toString(), EducationLoanDetailsBO.class);
 				educationLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
 				educationLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
+				educationLoanDetailsBO.setStatus(CommonUtils.Status.OPEN);
 				return educationLoanDetailsService.save(educationLoanDetailsBO);
 
 			case ApplicationType.CAR_LOAN:
@@ -202,6 +207,7 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 						.getObjectFromString(applicationRequestBO.getData().toString(), CarLoanDetailsBO.class);
 				carLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
 				carLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
+				carLoanDetailsBO.setStatus(CommonUtils.Status.OPEN);
 				return carLoanDetailsService.save(carLoanDetailsBO);
 
 			case ApplicationType.OVERDRAFT_FACILITIES_LOAN:
@@ -210,6 +216,7 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 								OverDraftFacilitiesLoanDetailsBO.class);
 				overDraftFacilitiesLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
 				overDraftFacilitiesLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
+				overDraftFacilitiesLoanDetailsBO.setStatus(CommonUtils.Status.OPEN);
 				return overDraftFacilitiesLoanDetailsService.save(overDraftFacilitiesLoanDetailsBO);
 
 			case ApplicationType.DROPLINE_OVERDRAFT_FACILITIES_LOAN:
@@ -218,6 +225,7 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 								DropLineOdFacilitiesLoanDetailsBO.class);
 				dropLineOdFacilitiesLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
 				dropLineOdFacilitiesLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
+				dropLineOdFacilitiesLoanDetailsBO.setStatus(CommonUtils.Status.OPEN);
 				return dropLineOdFacilitiesLoanDetailsService.save(dropLineOdFacilitiesLoanDetailsBO);
 
 			case ApplicationType.BANK_GUARANTEE_LOAN:
@@ -226,6 +234,7 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 								BankGuaranteeLoanDetailsBO.class);
 				bankGuaranteeLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
 				bankGuaranteeLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
+				bankGuaranteeLoanDetailsBO.setStatus(CommonUtils.Status.OPEN);
 				return bankGuaranteeLoanDetailsService.save(bankGuaranteeLoanDetailsBO);
 
 			case ApplicationType.CC_FACILITIES_LOAN:
@@ -234,6 +243,7 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 								CCFacilitiesLoanDetailsBO.class);
 				cCFacilitiesLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
 				cCFacilitiesLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
+				cCFacilitiesLoanDetailsBO.setStatus(CommonUtils.Status.OPEN);
 				return ccFacilitiesLoanDetailsService.save(cCFacilitiesLoanDetailsBO);
 
 			case ApplicationType.TERM_LOAN:
@@ -241,6 +251,7 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 						.getObjectFromString(applicationRequestBO.getData().toString(), TermLoanDetailsBO.class);
 				termLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
 				termLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
+				termLoanDetailsBO.setStatus(CommonUtils.Status.OPEN);
 				return termLoanDetailsService.save(termLoanDetailsBO);
 
 			case ApplicationType.LOAN_AGAINST_FDS:
@@ -248,6 +259,7 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 						.getObjectFromString(applicationRequestBO.getData().toString(), LoanAgainstFDsDetailsBO.class);
 				loanAgainstFDsDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
 				loanAgainstFDsDetailsBO.setUserId(applicationRequestBO.getUserId());
+				loanAgainstFDsDetailsBO.setStatus(CommonUtils.Status.OPEN);
 				return loanAgainstFDsDetailsService.save(loanAgainstFDsDetailsBO);
 
 			case ApplicationType.LOAN_AGAINST_SECURITIS:
@@ -256,6 +268,7 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 								LoanAgainstSecuritiesLoanDetailsBO.class);
 				loanAgainstSecuritiesLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
 				loanAgainstSecuritiesLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
+				loanAgainstSecuritiesLoanDetailsBO.setStatus(CommonUtils.Status.OPEN);
 				return loanAgainstSecuritiesLoanDetailsService.save(loanAgainstSecuritiesLoanDetailsBO);
 
 			case ApplicationType.PROJECT_FINANCE_LOAN:
@@ -264,6 +277,7 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 								ProjectFinanceLoanDetailsBO.class);
 				projectFinanceLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
 				projectFinanceLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
+				projectFinanceLoanDetailsBO.setStatus(CommonUtils.Status.OPEN);
 				return projectFinanceLoanDetailsService.save(projectFinanceLoanDetailsBO);
 
 			case ApplicationType.PRIVATE_EQUITY_FINANCE_LOAN:
@@ -272,6 +286,7 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 								PrivateEquityFinanceLoanDetailsBO.class);
 				privateEquityFinanceLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
 				privateEquityFinanceLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
+				privateEquityFinanceLoanDetailsBO.setStatus(CommonUtils.Status.OPEN);
 				return privateEquityFinanceLoanDetailsService.save(privateEquityFinanceLoanDetailsBO);
 
 			case ApplicationType.GOLD_LOAN:
@@ -279,6 +294,7 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 						.getObjectFromString(applicationRequestBO.getData().toString(), GoldLoanDetailsBO.class);
 				goldLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
 				goldLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
+				goldLoanDetailsBO.setStatus(CommonUtils.Status.OPEN);
 				return goldLoanDetailsService.save(goldLoanDetailsBO);
 
 			case ApplicationType.OTHER_LOAN:
@@ -286,6 +302,7 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 						.getObjectFromString(applicationRequestBO.getData().toString(), OthersLoanDetailsBO.class);
 				othersLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
 				othersLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
+				othersLoanDetailsBO.setStatus(CommonUtils.Status.OPEN);
 				return othersLoanDetailsService.save(othersLoanDetailsBO);
 
 			case ApplicationType.PERSONAL_LOAN:
@@ -293,6 +310,7 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 						.getObjectFromString(applicationRequestBO.getData().toString(), PersonalLoanDetailsBO.class);
 				personalLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
 				personalLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
+				personalLoanDetailsBO.setStatus(CommonUtils.Status.OPEN);
 				return personalLoanDetailsService.save(personalLoanDetailsBO);
 
 			default:
@@ -634,7 +652,15 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 			response.add(userBo);
 		}
 		return new LamsResponse(HttpStatus.OK.value(), "Success", response);
-	}	
+	}
+	
+	public Boolean updateStatus(Long applicationId, String status) {
+		Applications app = applicationsRepository.findOne(applicationId);
+		app.setStatus(CommonUtils.Status.RESPONDED);
+		applicationsRepository.save(app);
+		return Boolean.TRUE;
+	}
+	
 	
 //	@Override
 //	public LamsResponse getApplicationDetailsByApplicationTypeIdAndUserId(Long appTypeId, Long userId) {
@@ -799,6 +825,6 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 //		}
 //		return new LamsResponse(HttpStatus.OK.value(), "Success", appResponse);
 //	}
-
+	
 
 }

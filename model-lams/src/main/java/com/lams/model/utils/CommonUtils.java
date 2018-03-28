@@ -19,6 +19,13 @@ public class CommonUtils {
 	public static final String SOMETHING_WENT_WRONG = "Something Went Wrong !";
 	public static final String INVALID_REQUEST = "Invalid Request !";
 	public static final String DEFAULT_FORMATE = "MM/dd/yyyy HH:mm:ss";
+	
+	public interface Status {
+		public static final String OPEN = "OPEN";
+		public static final String RESPONDED = "RESPONDED";
+		public static final String ACCEPTED = "ACCEPTED";
+		public static final String REJECTED = "REJECTED";
+	}
 
 	static {
 		lamsUrls = new ArrayList<String>();

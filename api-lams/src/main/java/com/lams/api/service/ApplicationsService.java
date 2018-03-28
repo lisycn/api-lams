@@ -2,9 +2,11 @@ package com.lams.api.service;
 
 import java.util.List;
 
+
 import com.lams.model.bo.ApplicationRequestBO;
 import com.lams.model.bo.ApplicationsBO;
 import com.lams.model.bo.LamsResponse;
+import com.lams.model.bo.LenderBorrowerConnectionBO;
 
 public interface ApplicationsService {
 
@@ -20,5 +22,6 @@ public interface ApplicationsService {
 	
 	public LamsResponse getApplicationsForLenderByApplicationId(Long appId);
 	
+	public Boolean updateStatus(Long applicationId, String status);
 //	public LamsResponse getApplicationDetailsByApplicationTypeIdAndUserId(Long appId, Long userId);
 }
