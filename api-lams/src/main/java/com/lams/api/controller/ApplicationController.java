@@ -17,9 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.lams.api.service.ApplicationsService;
 import com.lams.api.service.LenderApplicationMappingService;
+import com.lams.api.service.LenderBorrowerConnectionService;
 import com.lams.model.bo.ApplicationRequestBO;
 import com.lams.model.bo.ApplicationsBO;
 import com.lams.model.bo.LamsResponse;
+import com.lams.model.bo.LenderBorrowerConnectionBO;
 import com.lams.model.bo.master.ApplicationTypeMstrBO;
 import com.lams.model.utils.CommonUtils;
 import com.lams.model.utils.Enums;
@@ -34,6 +36,9 @@ public class ApplicationController {
 	
 	@Autowired
 	private LenderApplicationMappingService applicationMappingService;
+	
+	@Autowired
+	private LenderBorrowerConnectionService lenderBorrowerService;
 
 	public static final Logger logger = Logger.getLogger(ApplicationController.class);
 	
@@ -177,5 +182,31 @@ public class ApplicationController {
 //		}
 //	}
 	
-	
+	@RequestMapping(value="/save_approval_request",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<LamsResponse> saveApprovalRequest (@RequestBody LenderBorrowerConnectionBO connectionBo,HttpServletRequest httpServletRequest){
+		
+		Long userId = (Long) httpServletRequest.getAttribute(CommonUtils.USER_ID);
+		logger.info("User ID-----------> "+userId);
+		if(CommonUtils.isObjectNullOrEmpty(connectionBo.getApplication())) {
+			return new ResponseEntity<LamsResponse>(new LamsResponse(HttpStatus.BAD_REQUEST.value(), "Application Type Null Or Empty"),
+					HttpStatus.OK);
+		}
+		
+		connectionBo.setCreatedBy(userId);
+		
+		try {
+			Long id = lenderBorrowerService.save(connectionBo);
+			if(!CommonUtils.isObjectNullOrEmpty(id)) {
+				return new ResponseEntity<LamsResponse>(new LamsResponse(HttpStatus.OK.value(), "Successfully save data", id),
+						HttpStatus.OK);	
+			} else {
+				return new ResponseEntity<LamsResponse>(new LamsResponse(HttpStatus.BAD_REQUEST.value(), "Invalid Request"),
+						HttpStatus.OK);
+			}
+		} catch (Exception e) {
+			logger.info("Throw Exception while save application by id ---------------->");
+			e.printStackTrace();
+			return new ResponseEntity<LamsResponse>(new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Something went wrong"),HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }

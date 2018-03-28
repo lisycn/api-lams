@@ -64,6 +64,8 @@ public class Applications extends Auditor implements Serializable {
 	@Column(name="lead_reference_no")
 	private String leadReferenceNo;
 	
+	private String status;
+	
 	public Long getId() {
 		return id;
 	}
@@ -169,7 +171,13 @@ public class Applications extends Auditor implements Serializable {
 		this.leadReferenceNo = leadReferenceNo;
 	}
 
-	
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
 	
 	
 

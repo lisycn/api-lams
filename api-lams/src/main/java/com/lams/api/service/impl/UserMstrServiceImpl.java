@@ -67,9 +67,6 @@ public class UserMstrServiceImpl implements UserMstrService {
 	private UserMstrRepository userMstrRepository;
 
 	@Autowired
-	private BankMstrRepository bankMstrRepository;
-
-	@Autowired
 	private AddressService addressService;
 
 	@Autowired

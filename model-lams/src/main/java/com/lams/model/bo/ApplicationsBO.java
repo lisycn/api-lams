@@ -43,6 +43,8 @@ public class ApplicationsBO extends AuditorBO implements Serializable{
 	
 	private Long employmentType;
 	
+	private String status;
+	
 	public Long getId() {
 		return id;
 	}
@@ -180,6 +182,11 @@ public class ApplicationsBO extends AuditorBO implements Serializable{
 		this.employmentType = employmentType;
 	}
 	
+	public String getStatus() {
+		return this.status;
+	}
 	
-	
+	public void setStatus(String status) {
+		this.status = status;
+	}
 }
