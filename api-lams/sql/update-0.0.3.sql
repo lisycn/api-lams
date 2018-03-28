@@ -67,3 +67,44 @@ ADD COLUMN `original_name` VARCHAR(100) NULL AFTER `is_active`;
 
 
 
+INSERT INTO `lams`.`document_mstr` (`id`,`name`, `type`, `size`, `created_date`, `created_by`, `modified_date`, `modified_by`, `is_active`) 
+VALUES (9,'PHOTO_GRAPH', 'pdf,jpg,jpeg,png', '5', '2018-03-26 15:51:07', '1', '2018-03-26 15:51:07', '1', 1);
+
+
+INSERT INTO `lams`.`document_mstr` (`id`,`name`, `type`, `size`, `created_date`, `created_by`, `modified_date`, `modified_by`, `is_active`) 
+VALUES (10,'CORPORATE_ITR_SET_YEAR1', 'pdf,jpg,jpeg,png', '5', '2018-03-26 15:51:07', '1', '2018-03-26 15:51:07', '1', 1);
+
+
+INSERT INTO `lams`.`document_mstr` (`id`,`name`, `type`, `size`, `created_date`, `created_by`, `modified_date`, `modified_by`, `is_active`) 
+VALUES (11,'CORPORATE_ITR_SET_YEAR2', 'pdf,jpg,jpeg,png', '5', '2018-03-26 15:51:07', '1', '2018-03-26 15:51:07', '1', 1);
+
+
+INSERT INTO `lams`.`document_mstr` (`id`,`name`, `type`, `size`, `created_date`, `created_by`, `modified_date`, `modified_by`, `is_active`) 
+VALUES (12,'CORPORATE_ITR_SET_YEAR3', 'pdf,jpg,jpeg,png', '5', '2018-03-26 15:51:07', '1', '2018-03-26 15:51:07', '1', 1);
+
+
+
+INSERT INTO `lams`.`document_mstr` (`id`,`name`, `type`, `size`, `created_date`, `created_by`, `modified_date`, `modified_by`, `is_active`) 
+VALUES (13,'CORPORATE_BANK_ACCOUNT_STATEMENT', 'pdf,jpg,jpeg,png', '5', '2018-03-26 15:51:07', '1', '2018-03-26 15:51:07', '1', 1);
+
+
+
+INSERT INTO `lams`.`document_mstr` (`id`,`name`, `type`, `size`, `created_date`, `created_by`, `modified_date`, `modified_by`, `is_active`) 
+VALUES (14,'INDIVIDUAL_ITR_SET_YEAR1', 'pdf,jpg,jpeg,png', '5', '2018-03-26 15:51:07', '1', '2018-03-26 15:51:07', '1', 1);
+
+
+INSERT INTO `lams`.`document_mstr` (`id`,`name`, `type`, `size`, `created_date`, `created_by`, `modified_date`, `modified_by`, `is_active`) 
+VALUES (15,'INDIVIDUAL_ITR_SET_YEAR2', 'pdf,jpg,jpeg,png', '5', '2018-03-26 15:51:07', '1', '2018-03-26 15:51:07', '1', 1);
+
+
+INSERT INTO `lams`.`document_mstr` (`id`,`name`, `type`, `size`, `created_date`, `created_by`, `modified_date`, `modified_by`, `is_active`) 
+VALUES (16,'INDIVIDUAL_ITR_SET_YEAR3', 'pdf,jpg,jpeg,png', '5', '2018-03-26 15:51:07', '1', '2018-03-26 15:51:07', '1', 1);
+
+
+INSERT INTO `lams`.`document_mstr` (`id`,`name`, `type`, `size`, `created_date`, `created_by`, `modified_date`, `modified_by`, `is_active`) 
+VALUES (17,'INDIVIDUAL_BANK_ACCOUNT_STATEMENT', 'pdf,jpg,jpeg,png', '5', '2018-03-26 15:51:07', '1', '2018-03-26 15:51:07', '1', 1);
+
+
+
+
+

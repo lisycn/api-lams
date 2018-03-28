@@ -188,7 +188,6 @@ public class CommonUtils {
 		return result;
 	}
 
-
 	public interface ApplicationTypeCode {
 
 		public static final String HOME_LOAN = "HL";
@@ -222,58 +221,141 @@ public class CommonUtils {
 		return VSCP + "-" + applicationCode + "-" + String.format("%06d", 1);
 	}
 	
+	public interface EmploymentType {
+		public static final Long SALARIED = 1l;
+		public static final Long SELF_EMPLOYED = 2l;
+	}
+
 	public enum DocumentType {
-		
-		PAN_CARD(1l,"Pan Card"),
-		AADHAR_CARD(2l,"Aadhar Card"),
-		LAST_3_MONTH_SALARY_SLIP(3l,"Last 3 Month Salary Slip"),
-		LAST_6_MONTHS_BANK_ACCOUNT_STATEMENT(4l,"Last 6 Months Bank Account Statement"),
-		FORM_16_OR_APPOIMENT_LETTER(5l,"Form 16 pr Appoiment Letter"),
-		INVESTMENT_PROOFS(6l,"Investment Proofs"),
-		EXISTING_LOAN_DOCUMENT(7l,"Existing Loan Document"),
-		OTHER_DOCUMENT(8l,"Others Documemnts");
-		
-		
+
+		PAN_CARD(1l, "Pan Card"), AADHAR_CARD(2l, "Aadhar Card"), 
+		LAST_3_MONTH_SALARY_SLIP(3l,"Last 3 Month Salary Slip"), 
+		LAST_6_MONTHS_BANK_ACCOUNT_STATEMENT(4l,
+						"Last 6 Months Bank Account Statement"), FORM_16_OR_APPOIMENT_LETTER(5l,
+								"Form 16 pr Appoiment Letter"), INVESTMENT_PROOFS(6l,
+										"Investment Proofs"), EXISTING_LOAN_DOCUMENT(7l,
+												"Existing Loan Document"), OTHER_DOCUMENT(8l,
+														"Others Documemnts"), PHOTO_GRAPH(9l,
+																"Photo Graph"), CORPORATE_ITR_SET_YEAR1(10l,
+																		"Corporate Income Tax Return Set Year 1 ( ITR / Computation of Income / Financials )"), CORPORATE_ITR_SET_YEAR2(
+																				11l,
+																				"Corporate Income Tax Return Set Year 2 ( ITR / Computation of Income / Financials )"), CORPORATE_ITR_SET_YEAR3(
+																						12l,
+																						"Corporate Income Tax Return Set Year 3 ( ITR / Computation of Income / Financials )"), CORPORATE_BANK_ACCOUNT_STATEMENT(
+																								13l,
+																								"Corporate Bank Account Statements"), INDIVIDUAL_ITR_SET_YEAR1(
+																										14l,
+																										"Individual Income Tax Return Set Year 1 ( ITR / Computation of Income / Financials )"), INDIVIDUAL_ITR_SET_YEAR2(
+																												15l,
+																												"Individual Income Tax Return Set Year 2 ( ITR / Computation of Income / Financials )"), INDIVIDUAL_ITR_SET_YEAR3(
+																														16l,
+																														"Individual Income Tax Return Set Year 3 ( ITR / Computation of Income / Financials )"), INDIVIDUAL_BANK_ACCOUNT_STATEMENT(
+																																17l,
+																																"Individual Bank Account Statements");
+
 		private Long id;
 		private String name;
-		
-		private DocumentType(Long id, String name){
+
+		private DocumentType(Long id, String name) {
 			this.id = id;
 			this.name = name;
 		}
-		
+
 		public Long getId() {
 			return id;
 		}
+
 		public String getName() {
 			return name;
 		}
-		
+
 		public static DocumentType getDocumentType(Long id) {
-			if(id == PAN_CARD.getId()) {
+			if (id == PAN_CARD.getId()) {
 				return DocumentType.PAN_CARD;
-			} else if(id == AADHAR_CARD.getId()) {
+			} else if (id == AADHAR_CARD.getId()) {
 				return DocumentType.AADHAR_CARD;
-			} else if(id == LAST_3_MONTH_SALARY_SLIP.getId()) {
+			} else if (id == LAST_3_MONTH_SALARY_SLIP.getId()) {
 				return DocumentType.LAST_3_MONTH_SALARY_SLIP;
-			} else if(id == LAST_6_MONTHS_BANK_ACCOUNT_STATEMENT.getId()) {
+			} else if (id == LAST_6_MONTHS_BANK_ACCOUNT_STATEMENT.getId()) {
 				return DocumentType.LAST_6_MONTHS_BANK_ACCOUNT_STATEMENT;
-			} else if(id == FORM_16_OR_APPOIMENT_LETTER.getId()) {
+			} else if (id == FORM_16_OR_APPOIMENT_LETTER.getId()) {
 				return DocumentType.FORM_16_OR_APPOIMENT_LETTER;
-			} else if(id == INVESTMENT_PROOFS.getId()) {
+			} else if (id == INVESTMENT_PROOFS.getId()) {
 				return DocumentType.INVESTMENT_PROOFS;
-			} else if(id == EXISTING_LOAN_DOCUMENT.getId()) {
+			} else if (id == EXISTING_LOAN_DOCUMENT.getId()) {
 				return DocumentType.EXISTING_LOAN_DOCUMENT;
-			} else if(id == OTHER_DOCUMENT.getId()) {
+			} else if (id == OTHER_DOCUMENT.getId()) {
 				return DocumentType.OTHER_DOCUMENT;
+			} else if (id == PHOTO_GRAPH.getId()) {
+				return DocumentType.PHOTO_GRAPH;
+			} else if (id == CORPORATE_ITR_SET_YEAR1.getId()) {
+				return DocumentType.CORPORATE_ITR_SET_YEAR1;
+			} else if (id == CORPORATE_ITR_SET_YEAR2.getId()) {
+				return DocumentType.CORPORATE_ITR_SET_YEAR2;
+			} else if (id == CORPORATE_ITR_SET_YEAR3.getId()) {
+				return DocumentType.CORPORATE_ITR_SET_YEAR3;
+			} else if (id == CORPORATE_BANK_ACCOUNT_STATEMENT.getId()) {
+				return DocumentType.CORPORATE_BANK_ACCOUNT_STATEMENT;
+			} else if (id == INDIVIDUAL_ITR_SET_YEAR1.getId()) {
+				return DocumentType.INDIVIDUAL_ITR_SET_YEAR1;
+			} else if (id == INDIVIDUAL_ITR_SET_YEAR2.getId()) {
+				return DocumentType.INDIVIDUAL_ITR_SET_YEAR2;
+			} else if (id == INDIVIDUAL_ITR_SET_YEAR3.getId()) {
+				return DocumentType.INDIVIDUAL_ITR_SET_YEAR3;
+			} else if (id == INDIVIDUAL_BANK_ACCOUNT_STATEMENT.getId()) {
+				return DocumentType.INDIVIDUAL_BANK_ACCOUNT_STATEMENT;
 			}
+
 			return null;
 		}
-		
+
 		public static DocumentType[] getAll() {
 			return DocumentType.values();
 		}
 		
+		public static List<DocumentType> getAllByEmpType(Long employmentType) {
+			List<DocumentType> docList = new ArrayList<>();
+			if(EmploymentType.SALARIED == employmentType) {
+				docList.add(PHOTO_GRAPH);
+				docList.add(PAN_CARD);
+				docList.add(AADHAR_CARD);
+				docList.add(LAST_3_MONTH_SALARY_SLIP);
+				docList.add(LAST_6_MONTHS_BANK_ACCOUNT_STATEMENT);
+				docList.add(FORM_16_OR_APPOIMENT_LETTER);
+				docList.add(INVESTMENT_PROOFS);
+				docList.add(EXISTING_LOAN_DOCUMENT);
+				docList.add(OTHER_DOCUMENT);
+			} else if(EmploymentType.SELF_EMPLOYED == employmentType) {
+				docList.add(PHOTO_GRAPH);
+				docList.add(PAN_CARD);
+				docList.add(AADHAR_CARD);
+				docList.add(CORPORATE_ITR_SET_YEAR1);
+				docList.add(CORPORATE_ITR_SET_YEAR2);
+				docList.add(CORPORATE_ITR_SET_YEAR3);
+				docList.add(CORPORATE_BANK_ACCOUNT_STATEMENT);
+				docList.add(INDIVIDUAL_ITR_SET_YEAR1);
+				docList.add(INDIVIDUAL_ITR_SET_YEAR2);
+				docList.add(INDIVIDUAL_ITR_SET_YEAR3);
+				docList.add(INDIVIDUAL_BANK_ACCOUNT_STATEMENT);
+			}
+			return docList;
+		}
+
 	}
 
+	public interface PaymentStatus {
+		public static final String SUCCESS = "Success";
+		public static final String PENDING = "Pending";
+		public static final String FAILED = "Failed";
+
+	}
+
+	public interface PaymentType {
+
+		public static final String CASH = "Cash";
+		public static final String CHEQUE = "Cheque";
+		public static final String ONLINE = "Online";
+		public static final Long PAYMENTTO = 1L;
+		public static final Long SERVICE_PROVIDER = 1L;
+	}
 }
