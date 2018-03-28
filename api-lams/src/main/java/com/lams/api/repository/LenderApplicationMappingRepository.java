@@ -22,4 +22,8 @@ public interface LenderApplicationMappingRepository extends JpaRepository<Lender
 
 	@Query("select lam.applicationTypeId.id from LenderApplicationMapping lam where lam.userId =:userId and lam.isActive =:isActive")
 	public List<Long> getApplicationTypesByUserId(@Param("userId") Long userId, @Param("isActive") Boolean isActive);
+	
+	@Query("select lam.id from LenderApplicationMapping lam where lam.userId =:userId and lam.applicationTypeId.id =:applicationTypeId")
+	public List<Long> findByUserIdAndApplicationTypeId(@Param("userId") Long userId, @Param("applicationTypeId") Long applicationTypeId);
+	
 }

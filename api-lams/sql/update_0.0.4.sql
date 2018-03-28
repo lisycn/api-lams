@@ -48,3 +48,34 @@ ADD CONSTRAINT `fk_lender_borrower_connection_2`
 
   ALTER TABLE `lams`.`lender_borrower_connection` 
 ADD COLUMN `lender_application_mapping_id` BIGINT(20) UNSIGNED NULL AFTER `application_id`;
+
+
+Rahul --------------------
+
+
+CREATE TABLE `lender_borrower_connection` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '	',
+  `loan_possible_amount` double unsigned DEFAULT NULL,
+  `tenure` int(10) unsigned DEFAULT NULL,
+  `roi` double unsigned DEFAULT NULL,
+  `processing_fees` double unsigned DEFAULT NULL,
+  `term_and_condition` longtext,
+  `comments` longtext,
+  `created_by` bigint(20) unsigned DEFAULT NULL,
+  `created_date` datetime DEFAULT CURRENT_TIMESTAMP,
+  `modified_by` bigint(20) unsigned DEFAULT NULL,
+  `modified_date` datetime DEFAULT NULL,
+  `is_active` bit(1) DEFAULT b'1',
+  `application_id` bigint(20) unsigned DEFAULT NULL,
+  `lender_application_mapping_id` bigint(20) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_application_id_idx` (`application_id`),
+  KEY `fk_lender_product_mapping_id_idx` (`lender_application_mapping_id`),
+  CONSTRAINT `fk_application_id` FOREIGN KEY (`application_id`) REFERENCES `applications` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_lender_product_mapping_id` FOREIGN KEY (`lender_application_mapping_id`) REFERENCES `lender_product_mapping` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+
+
+ALTER TABLE `lams`.`applications` 
+ADD COLUMN `status` VARCHAR(45) NULL AFTER `lead_reference_no`;
+

@@ -20,5 +20,5 @@ public interface LenderBorrowerConnectionService {
 	 * 
 	 * @param lenderBorrowerConnectionBO
 	 */
-	public void save(LenderBorrowerConnectionBO lenderBorrowerConnectionBO);
+	public Long save(LenderBorrowerConnectionBO lenderBorrowerConnectionBO);
 }

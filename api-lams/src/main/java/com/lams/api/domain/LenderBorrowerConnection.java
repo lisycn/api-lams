@@ -14,7 +14,7 @@ import javax.persistence.Table;
 import com.lams.api.domain.master.Auditor;
 
 @Entity
-@Table(name = "lender_product_mapping")
+@Table(name = "lender_borrower_connection")
 public class LenderBorrowerConnection extends Auditor implements Serializable {
 
 	/**
@@ -26,10 +26,7 @@ public class LenderBorrowerConnection extends Auditor implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne
-	@JoinColumn(name = "application_id")
-	private Applications application;
-
+	
 	@Column(name = "loan_possible_amount")
 	private Double loanPossibleAmount;
 
@@ -44,6 +41,11 @@ public class LenderBorrowerConnection extends Auditor implements Serializable {
 	private String termAndCondition;
 
 	private String comments;
+	
+	@ManyToOne
+	@JoinColumn(name = "application_id")
+	private Applications application;
+
 	
 	@ManyToOne
 	@JoinColumn(name = "lender_application_mapping_id")
