@@ -213,11 +213,17 @@ public class CommonUtils {
 		}
 		return VSCP + "-" + applicationCode + "-" + String.format("%06d", 1);
 	}
+	
+	public interface EmploymentType {
+		public static final Long SALARIED = 1l;
+		public static final Long SELF_EMPLOYED = 2l;
+	}
 
 	public enum DocumentType {
 
-		PAN_CARD(1l, "Pan Card"), AADHAR_CARD(2l, "Aadhar Card"), LAST_3_MONTH_SALARY_SLIP(3l,
-				"Last 3 Month Salary Slip"), LAST_6_MONTHS_BANK_ACCOUNT_STATEMENT(4l,
+		PAN_CARD(1l, "Pan Card"), AADHAR_CARD(2l, "Aadhar Card"), 
+		LAST_3_MONTH_SALARY_SLIP(3l,"Last 3 Month Salary Slip"), 
+		LAST_6_MONTHS_BANK_ACCOUNT_STATEMENT(4l,
 						"Last 6 Months Bank Account Statement"), FORM_16_OR_APPOIMENT_LETTER(5l,
 								"Form 16 pr Appoiment Letter"), INVESTMENT_PROOFS(6l,
 										"Investment Proofs"), EXISTING_LOAN_DOCUMENT(7l,
@@ -298,6 +304,34 @@ public class CommonUtils {
 
 		public static DocumentType[] getAll() {
 			return DocumentType.values();
+		}
+		
+		public static List<DocumentType> getAllByEmpType(Long employmentType) {
+			List<DocumentType> docList = new ArrayList<>();
+			if(EmploymentType.SALARIED == employmentType) {
+				docList.add(PHOTO_GRAPH);
+				docList.add(PAN_CARD);
+				docList.add(AADHAR_CARD);
+				docList.add(LAST_3_MONTH_SALARY_SLIP);
+				docList.add(LAST_6_MONTHS_BANK_ACCOUNT_STATEMENT);
+				docList.add(FORM_16_OR_APPOIMENT_LETTER);
+				docList.add(INVESTMENT_PROOFS);
+				docList.add(EXISTING_LOAN_DOCUMENT);
+				docList.add(OTHER_DOCUMENT);
+			} else if(EmploymentType.SELF_EMPLOYED == employmentType) {
+				docList.add(PHOTO_GRAPH);
+				docList.add(PAN_CARD);
+				docList.add(AADHAR_CARD);
+				docList.add(CORPORATE_ITR_SET_YEAR1);
+				docList.add(CORPORATE_ITR_SET_YEAR2);
+				docList.add(CORPORATE_ITR_SET_YEAR3);
+				docList.add(CORPORATE_BANK_ACCOUNT_STATEMENT);
+				docList.add(INDIVIDUAL_ITR_SET_YEAR1);
+				docList.add(INDIVIDUAL_ITR_SET_YEAR2);
+				docList.add(INDIVIDUAL_ITR_SET_YEAR3);
+				docList.add(INDIVIDUAL_BANK_ACCOUNT_STATEMENT);
+			}
+			return docList;
 		}
 
 	}

@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -22,7 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.lams.api.controller.DocumentUploadController;
 import com.lams.api.domain.DocumentMappingMstr;
 import com.lams.api.domain.DocumentMstr;
+import com.lams.api.repository.ApplicationsRepository;
 import com.lams.api.repository.DocumentMappingMstrRepository;
+import com.lams.api.repository.UserMstrRepository;
 import com.lams.api.service.DocumentUploadService;
 import com.lams.model.bo.DocumentRequest;
 import com.lams.model.bo.DocumentResponse;
@@ -37,6 +40,12 @@ public class DocumentUploadServiceImpl implements DocumentUploadService {
 	
 	@Autowired
 	private DocumentMappingMstrRepository documentMappingMstrRepository;
+	
+	@Autowired
+	private UserMstrRepository userMstrRepository;
+	
+	@Autowired
+	private ApplicationsRepository applicationsRepository;
 
 	
 	@Override
@@ -82,8 +91,16 @@ public class DocumentUploadServiceImpl implements DocumentUploadService {
 	@Override
 	public List<DocumentResponse> getDocumentList(Long applicationId,List<Long> docId){
 		
-		DocumentType[] all = DocumentType.getAll();
-		List<DocumentResponse> docResponseList = new ArrayList<>(all.length);
+		Long userId = applicationsRepository.getUserIdByAppId(applicationId);
+		Long employmentType = userMstrRepository.getEmpTypeById(userId);
+		
+		if(CommonUtils.isObjectNullOrEmpty(employmentType)) {
+			logger.info("Employment Type is null or Empty !!");
+			return Collections.EMPTY_LIST;
+		}
+		
+		List<DocumentType> all = DocumentType.getAllByEmpType(employmentType);
+		List<DocumentResponse> docResponseList = new ArrayList<>(all.size());
 		DocumentResponse documentResponse = null;
 		for(DocumentType documentType : all) {
 			documentResponse = new DocumentResponse();

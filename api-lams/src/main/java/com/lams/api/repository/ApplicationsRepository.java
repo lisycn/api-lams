@@ -24,4 +24,7 @@ public interface ApplicationsRepository  extends JpaRepository<Applications, Lon
 	public List<Long> getUserIdById(@Param("id")Long appId);
 	
 	public List<Applications> findByUserIdAndIsActiveAndApplicationTypeIdIdIn(Long userId,Boolean isActive,List<Long> applicationTypeIds);
+	
+	@Query(value = "SELECT app.userId from Applications app where app.id =:id and app.isActive = true")
+	public Long getUserIdByAppId(@Param("id")Long appId);
 }
