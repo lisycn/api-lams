@@ -17,6 +17,7 @@ import java.util.StringTokenizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,17 +48,22 @@ public class DocumentUploadServiceImpl implements DocumentUploadService {
 	@Autowired
 	private ApplicationsRepository applicationsRepository;
 
+	@Autowired
+	private Environment environment;
+	
+	private static final String SERVER_PATH = "com.lams.server.path";
+
 	
 	@Override
 	public DocumentResponse upload(String fileName, byte[] bytes, DocumentRequest documentRequest) {
 		
 		String originalName = fileName;
-		String localPath = System.getProperty("user.dir") + "/src/main/resources/upload/";
+		String localPath = System.getProperty("user.dir") + "/src/main/resources/static/image/";
 		DocumentResponse documentResponse = new DocumentResponse();
 		fileName = encryptFileName(fileName);
         String storeFileName = null;
         String extension = null;
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
         StringTokenizer tokenizer = new StringTokenizer(fileName,".");
         File file = new File(localPath);
         if (!file.exists()) {
@@ -69,15 +75,16 @@ public class DocumentUploadServiceImpl implements DocumentUploadService {
         date = date.replaceAll("-", "_");
         date = date.replaceAll(":", "-");
         date = date.trim();
-        storeFileName += "_"+date+"."+extension;
+        storeFileName += "_" + date + "." + extension;
         storeFileName = storeFileName.trim();
         try {
             Path path = Paths.get(localPath + storeFileName);
             Files.write(path, bytes);
             documentResponse.setIsFileUpload(true);
-            documentResponse.setFilePath(localPath + storeFileName);
+            String storedFilePath = environment.getRequiredProperty(SERVER_PATH) + "image/" + storeFileName;
+            documentResponse.setFilePath(storedFilePath);
             documentResponse.setOriginalName(originalName);
-            documentResponse.setDocumentMappingId(updateDocMappingTable(documentRequest.getDocumentId(), documentRequest.getApplicationId(), documentRequest.getUserId(), localPath + storeFileName,originalName));
+            documentResponse.setDocumentMappingId(updateDocMappingTable(documentRequest.getDocumentId(), documentRequest.getApplicationId(), documentRequest.getUserId(), storedFilePath,originalName));
             logger.info("file saved in local! {}");
         } catch (IOException e) {
             logger.error("file not saved in local! because : ->", e);
@@ -87,6 +94,7 @@ public class DocumentUploadServiceImpl implements DocumentUploadService {
         logger.info("Exit with saveFileOnLocal() {}");
 		return documentResponse;	
 	}
+	
 	
 	@Override
 	public List<DocumentResponse> getDocumentList(Long applicationId,List<Long> docId){
