@@ -28,8 +28,8 @@ public class LenderBorrowerConnectionBO extends AuditorBO implements Serializabl
 
 	private String comments;
 
-	private Long lenderApplicationId;
-
+	private LenderApplicationMappingBO applicationMappingBO;
+	
 	public LenderBorrowerConnectionBO() {
 		super();
 	}
@@ -103,20 +103,20 @@ public class LenderBorrowerConnectionBO extends AuditorBO implements Serializabl
 		this.comments = comments;
 	}
 
-	public Long getLenderApplicationId() {
-		return lenderApplicationId;
+	public LenderApplicationMappingBO getApplicationMappingBO() {
+		return applicationMappingBO;
 	}
 
-	public void setLenderApplicationId(Long lenderApplicationId) {
-		this.lenderApplicationId = lenderApplicationId;
+	public void setApplicationMappingBO(LenderApplicationMappingBO applicationMappingBO) {
+		this.applicationMappingBO = applicationMappingBO;
 	}
 
 	@Override
 	public String toString() {
 		return "LenderBorrowerConnectionBO [id=" + id + ", application=" + application + ", loanPossibleAmount="
 				+ loanPossibleAmount + ", tenure=" + tenure + ", roi=" + roi + ", processingFees=" + processingFees
-				+ ", termAndCondition=" + termAndCondition + ", comments=" + comments + ", lenderApplicationId="
-				+ lenderApplicationId + "]";
+				+ ", termAndCondition=" + termAndCondition + ", comments=" + comments + ", applicationMappingBO="
+				+ applicationMappingBO + "]";
 	}
 
 }

@@ -12,7 +12,7 @@ public interface LenderBorrowerConnectionService {
 	 * @param isActive
 	 * @return
 	 */
-	public List<LenderBorrowerConnectionBO> getConnections(Long userId, Boolean isActive);
+	public List<LenderBorrowerConnectionBO> getConnections(Long applicationId,String status);
 	
 	public List<LenderBorrowerConnectionBO> getConnections(Long userId,Long applicationId, Boolean isActive);
 
