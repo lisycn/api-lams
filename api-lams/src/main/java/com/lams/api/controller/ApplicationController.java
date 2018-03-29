@@ -237,37 +237,79 @@ public class ApplicationController {
 		}
 	}
 
-	@RequestMapping(value="/get_connections/{appId}/{status}",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<LamsResponse> getConnections(@PathVariable("appId")Long appId,@PathVariable("status")String status,HttpServletRequest httpServletRequest){
+	@RequestMapping(value = "/get_connections/{appId}/{status}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<LamsResponse> getConnections(@PathVariable("appId") Long appId,
+			@PathVariable("status") String status, HttpServletRequest httpServletRequest) {
 		logger.info("Enter in get getConnections");
-		Long userId = (Long)httpServletRequest.getAttribute(CommonUtils.USER_ID);
-		if(CommonUtils.isObjectNullOrEmpty(userId)) {
+		Long userId = (Long) httpServletRequest.getAttribute(CommonUtils.USER_ID);
+		if (CommonUtils.isObjectNullOrEmpty(userId)) {
 			logger.info("User Id Null Or Empty");
-			return new ResponseEntity<LamsResponse>(new LamsResponse(HttpStatus.BAD_REQUEST.value(), "UnAuthorized! Please try again to Login"),
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.BAD_REQUEST.value(), "UnAuthorized! Please try again to Login"),
 					HttpStatus.OK);
 		}
-		
-		if(CommonUtils.isObjectNullOrEmpty(appId)) {
+
+		if (CommonUtils.isObjectNullOrEmpty(appId)) {
 			logger.info("Application Id Null Or Empty");
-			return new ResponseEntity<LamsResponse>(new LamsResponse(HttpStatus.BAD_REQUEST.value(), CommonUtils.INVALID_REQUEST),
-					HttpStatus.OK);
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.BAD_REQUEST.value(), CommonUtils.INVALID_REQUEST), HttpStatus.OK);
 		}
-		
-		if(CommonUtils.isObjectNullOrEmpty(status)) {
+
+		if (CommonUtils.isObjectNullOrEmpty(status)) {
 			logger.info("StatusId Null Or Empty");
-			return new ResponseEntity<LamsResponse>(new LamsResponse(HttpStatus.BAD_REQUEST.value(), CommonUtils.INVALID_REQUEST),
-					HttpStatus.OK);
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.BAD_REQUEST.value(), CommonUtils.INVALID_REQUEST), HttpStatus.OK);
 		}
 		try {
-			
+
 			logger.info("Successfully get details");
-			List<LenderBorrowerConnectionBO> connections = lenderBorrowerService.getConnections(appId,status);
+			List<LenderBorrowerConnectionBO> connections = lenderBorrowerService.getConnections(appId, status);
 			LamsResponse lamsResponse = new LamsResponse(HttpStatus.OK.value(), "Success", connections);
-			return new ResponseEntity<LamsResponse>(lamsResponse,HttpStatus.OK);
+			return new ResponseEntity<LamsResponse>(lamsResponse, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.info("Throw Exception while Getting Matches Borrowers ---------------->");
 			e.printStackTrace();
-			return new ResponseEntity<LamsResponse>(new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), CommonUtils.SOMETHING_WENT_WRONG),HttpStatus.OK);
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), CommonUtils.SOMETHING_WENT_WRONG),
+					HttpStatus.OK);
+		}
+	}
+
+	@RequestMapping(value = "/update_status/{appId}/{status}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<LamsResponse> updateStatus(@PathVariable("appId") Long appId,
+			@PathVariable("status") String status, HttpServletRequest httpServletRequest) {
+		logger.info("Enter in get updateStatus");
+		Long userId = (Long) httpServletRequest.getAttribute(CommonUtils.USER_ID);
+		if (CommonUtils.isObjectNullOrEmpty(userId)) {
+			logger.info("User Id Null Or Empty");
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.BAD_REQUEST.value(), "UnAuthorized! Please try again to Login"),
+					HttpStatus.OK);
+		}
+
+		if (CommonUtils.isObjectNullOrEmpty(appId)) {
+			logger.info("Application Id Null Or Empty");
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.BAD_REQUEST.value(), CommonUtils.INVALID_REQUEST), HttpStatus.OK);
+		}
+
+		if (CommonUtils.isObjectNullOrEmpty(status)) {
+			logger.info("StatusId Null Or Empty");
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.BAD_REQUEST.value(), CommonUtils.INVALID_REQUEST), HttpStatus.OK);
+		}
+		try {
+
+			logger.info("Successfully get details");
+			LamsResponse lamsResponse = new LamsResponse(HttpStatus.OK.value(), "Success",
+					applicationsService.updateStatus(appId, status));
+			return new ResponseEntity<LamsResponse>(lamsResponse, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.info("Throw Exception while Getting Matches Borrowers ---------------->");
+			e.printStackTrace();
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), CommonUtils.SOMETHING_WENT_WRONG),
+					HttpStatus.OK);
 		}
 	}
 }
