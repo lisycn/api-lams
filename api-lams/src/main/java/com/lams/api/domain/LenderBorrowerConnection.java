@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -26,7 +27,6 @@ public class LenderBorrowerConnection extends Auditor implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	
 	@Column(name = "loan_possible_amount")
 	private Double loanPossibleAmount;
 
@@ -41,13 +41,12 @@ public class LenderBorrowerConnection extends Auditor implements Serializable {
 	private String termAndCondition;
 
 	private String comments;
-	
-	@ManyToOne
+
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "application_id")
 	private Applications application;
 
-	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "lender_application_mapping_id")
 	private LenderApplicationMapping lenderApplicationMapping;
 
@@ -123,7 +122,6 @@ public class LenderBorrowerConnection extends Auditor implements Serializable {
 	public void setComments(String comments) {
 		this.comments = comments;
 	}
-	
 
 	public LenderApplicationMapping getLenderApplicationMapping() {
 		return lenderApplicationMapping;

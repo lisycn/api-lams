@@ -654,9 +654,10 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 		return new LamsResponse(HttpStatus.OK.value(), "Success", response);
 	}
 	
+	@Override
 	public Boolean updateStatus(Long applicationId, String status) {
 		Applications app = applicationsRepository.findOne(applicationId);
-		app.setStatus(CommonUtils.Status.RESPONDED);
+		app.setStatus(status);
 		applicationsRepository.save(app);
 		return Boolean.TRUE;
 	}
