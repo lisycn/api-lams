@@ -48,7 +48,7 @@ public class Applications extends Auditor implements Serializable {
 	private Double balanceTenure;
 	
 	@Column(name="close_before_disbsmnt")
-	private Integer closeBeforeDisbsmnt;
+	private Boolean closeBeforeDisbsmnt;
 	
 	private Integer tenure;
 	
@@ -63,6 +63,9 @@ public class Applications extends Auditor implements Serializable {
 	
 	@Column(name="lead_reference_no")
 	private String leadReferenceNo;
+	
+	@Column(name="is_upload_complete")
+	private Boolean isUploadComplete;
 	
 	private String status;
 	
@@ -114,11 +117,11 @@ public class Applications extends Auditor implements Serializable {
 		this.balanceTenure = balanceTenure;
 	}
 
-	public Integer getCloseBeforeDisbsmnt() {
+	public Boolean getCloseBeforeDisbsmnt() {
 		return closeBeforeDisbsmnt;
 	}
 
-	public void setCloseBeforeDisbsmnt(Integer closeBeforeDisbsmnt) {
+	public void setCloseBeforeDisbsmnt(Boolean closeBeforeDisbsmnt) {
 		this.closeBeforeDisbsmnt = closeBeforeDisbsmnt;
 	}
 
@@ -177,6 +180,14 @@ public class Applications extends Auditor implements Serializable {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public Boolean getIsUploadComplete() {
+		return isUploadComplete;
+	}
+
+	public void setIsUploadComplete(Boolean isUploadComplete) {
+		this.isUploadComplete = isUploadComplete;
 	}
 	
 	
