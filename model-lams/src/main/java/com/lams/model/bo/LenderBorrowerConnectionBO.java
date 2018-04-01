@@ -28,8 +28,10 @@ public class LenderBorrowerConnectionBO extends AuditorBO implements Serializabl
 
 	private String comments;
 
+	private String status;
+
 	private LenderApplicationMappingBO applicationMappingBO;
-	
+
 	public LenderBorrowerConnectionBO() {
 		super();
 	}
@@ -111,12 +113,19 @@ public class LenderBorrowerConnectionBO extends AuditorBO implements Serializabl
 		this.applicationMappingBO = applicationMappingBO;
 	}
 
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 	@Override
 	public String toString() {
 		return "LenderBorrowerConnectionBO [id=" + id + ", application=" + application + ", loanPossibleAmount="
 				+ loanPossibleAmount + ", tenure=" + tenure + ", roi=" + roi + ", processingFees=" + processingFees
-				+ ", termAndCondition=" + termAndCondition + ", comments=" + comments + ", applicationMappingBO="
-				+ applicationMappingBO + "]";
+				+ ", termAndCondition=" + termAndCondition + ", comments=" + comments + ", status=" + status
+				+ ", applicationMappingBO=" + applicationMappingBO + "]";
 	}
-
 }
