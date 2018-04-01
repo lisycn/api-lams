@@ -220,6 +220,7 @@ public class ApplicationController {
 		connectionBo.setCreatedBy(userId);
 
 		try {
+			connectionBo.setStatus(CommonUtils.Status.RESPONDED);
 			Long id = lenderBorrowerService.save(connectionBo);
 			if (!CommonUtils.isObjectNullOrEmpty(id)) {
 				return new ResponseEntity<LamsResponse>(
@@ -275,9 +276,8 @@ public class ApplicationController {
 		}
 	}
 
-	@RequestMapping(value = "/update_status/{appId}/{status}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<LamsResponse> updateStatus(@PathVariable("appId") Long appId,
-			@PathVariable("status") String status, HttpServletRequest httpServletRequest) {
+	@RequestMapping(value = "/update_status/{status}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<LamsResponse> updateStatus(@PathVariable("status") String status,@RequestBody LenderBorrowerConnectionBO connectionBO, HttpServletRequest httpServletRequest) {
 		logger.info("Enter in get updateStatus");
 		Long userId = (Long) httpServletRequest.getAttribute(CommonUtils.USER_ID);
 		if (CommonUtils.isObjectNullOrEmpty(userId)) {
@@ -287,7 +287,7 @@ public class ApplicationController {
 					HttpStatus.OK);
 		}
 
-		if (CommonUtils.isObjectNullOrEmpty(appId)) {
+		if (CommonUtils.isObjectNullOrEmpty(connectionBO.getApplication()) || CommonUtils.isObjectNullOrEmpty(connectionBO.getApplication().getId())) {
 			logger.info("Application Id Null Or Empty");
 			return new ResponseEntity<LamsResponse>(
 					new LamsResponse(HttpStatus.BAD_REQUEST.value(), CommonUtils.INVALID_REQUEST), HttpStatus.OK);
@@ -301,8 +301,9 @@ public class ApplicationController {
 		try {
 
 			logger.info("Successfully get details");
+			connectionBO.setStatus(status);
 			LamsResponse lamsResponse = new LamsResponse(HttpStatus.OK.value(), "Success",
-					applicationsService.updateStatus(appId, status));
+					lenderBorrowerService.save(connectionBO));
 			return new ResponseEntity<LamsResponse>(lamsResponse, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.info("Throw Exception while Getting Matches Borrowers ---------------->");

@@ -84,7 +84,6 @@ public class LenderBorrowerConnectionServiceImpl implements LenderBorrowerConnec
 				res.setApplicationMappingBO(applicationMappingBO);
 			}
 			response.add(res);
-
 		}
 		return response;
 	}
@@ -98,27 +97,32 @@ public class LenderBorrowerConnectionServiceImpl implements LenderBorrowerConnec
 	@Override
 	public Long save(LenderBorrowerConnectionBO bo) {
 
-		applicationService.updateStatus(bo.getApplication().getId(), CommonUtils.Status.RESPONDED);
+		if(CommonUtils.Status.ACCEPTED.equals(bo.getStatus())) {
+			applicationService.updateStatus(bo.getApplication().getId(), CommonUtils.Status.ACCEPTED,bo.getCreatedBy());	
+		}
+		LenderBorrowerConnection obj = repo.findOne(bo.getId());
+		if(CommonUtils.isObjectNullOrEmpty(obj)) {
+			obj = new LenderBorrowerConnection();
+			obj.setLoanPossibleAmount(bo.getLoanPossibleAmount());
+			obj.setTenure(bo.getTenure());
+			obj.setRoi(bo.getRoi());
+			obj.setProcessingFees(bo.getProcessingFees());
+			obj.setTermAndCondition(bo.getTermAndCondition());
+			obj.setCreatedBy(bo.getCreatedBy());
+			obj.setCreatedDate(new Date());
+			obj.setIsActive(Boolean.TRUE);
+			Applications app = appRepo.findOne(bo.getApplication().getId());
+			obj.setApplication(app);
 
-		LenderBorrowerConnection obj = new LenderBorrowerConnection();
-
-		obj.setLoanPossibleAmount(bo.getLoanPossibleAmount());
-		obj.setTenure(bo.getTenure());
-		obj.setRoi(bo.getRoi());
-		obj.setProcessingFees(bo.getProcessingFees());
-		obj.setTermAndCondition(bo.getTermAndCondition());
+			List<Long> mapResult = map.findByUserIdAndApplicationTypeId(bo.getCreatedBy(),
+					bo.getApplication().getApplicationTypeId());
+			obj.setLenderApplicationMapping(map.findOne(mapResult.get(0)));
+		}else {
+			obj.setModifiedBy(bo.getCreatedBy());
+			obj.setModifiedDate(new Date());
+		}
 		obj.setComments(bo.getComments());
-		obj.setCreatedBy(bo.getCreatedBy());
-		obj.setCreatedDate(new Date());
-		obj.setIsActive(Boolean.TRUE);
-
-		Applications app = appRepo.findOne(bo.getApplication().getId());
-		obj.setApplication(app);
-
-		List<Long> mapResult = map.findByUserIdAndApplicationTypeId(bo.getCreatedBy(),
-				bo.getApplication().getApplicationTypeId());
-		obj.setLenderApplicationMapping(map.findOne(mapResult.get(0)));
-
+		obj.setStatus(bo.getStatus());
 		obj = repo.save(obj);
 		return obj.getId();
 	}

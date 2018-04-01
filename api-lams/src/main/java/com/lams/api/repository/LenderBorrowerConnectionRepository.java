@@ -10,6 +10,6 @@ import com.lams.api.domain.LenderBorrowerConnection;
 
 public interface LenderBorrowerConnectionRepository extends JpaRepository<LenderBorrowerConnection, Long> {
 
-	@Query("select lb from LenderBorrowerConnection lb where lb.application.status =:status and lb.isActive = true and lb.application.id =:appId and lb.application.isActive = true")
+	@Query("select lb from LenderBorrowerConnection lb where lb.status =:status and lb.isActive = true and lb.application.id =:appId and lb.application.isActive = true")
 	public List<LenderBorrowerConnection> getListByApplication(@Param("appId")Long appId,@Param("status")String status);
 }
