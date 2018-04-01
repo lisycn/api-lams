@@ -29,7 +29,7 @@ public class ApplicationsBO extends AuditorBO implements Serializable{
 	
 	private Double balanceTenure;
 	
-	private Integer closeBeforeDisbsmnt;
+	private Boolean closeBeforeDisbsmnt;
 	
 	private Integer tenure;
 
@@ -42,6 +42,8 @@ public class ApplicationsBO extends AuditorBO implements Serializable{
 	private String leadReferenceNo;
 	
 	private Long employmentType;
+	
+	private Boolean isUploadComplete;
 	
 	private String status;
 	
@@ -109,11 +111,11 @@ public class ApplicationsBO extends AuditorBO implements Serializable{
 		this.balanceTenure = balanceTenure;
 	}
 
-	public Integer getCloseBeforeDisbsmnt() {
+	public Boolean getCloseBeforeDisbsmnt() {
 		return closeBeforeDisbsmnt;
 	}
 
-	public void setCloseBeforeDisbsmnt(Integer closeBeforeDisbsmnt) {
+	public void setCloseBeforeDisbsmnt(Boolean closeBeforeDisbsmnt) {
 		this.closeBeforeDisbsmnt = closeBeforeDisbsmnt;
 	}
 
@@ -189,4 +191,13 @@ public class ApplicationsBO extends AuditorBO implements Serializable{
 	public void setStatus(String status) {
 		this.status = status;
 	}
+
+	public Boolean getIsUploadComplete() {
+		return isUploadComplete;
+	}
+
+	public void setIsUploadComplete(Boolean isUploadComplete) {
+		this.isUploadComplete = isUploadComplete;
+	}
+	
 }

@@ -15,7 +15,7 @@ public class CommonUtils {
 	public static List<String> lamsUrls = null;
 	public static final String USER_ID = "userId";
 	public static final String USER_TYPE = "userType";
-	public static final String VSCP = "VSCP";
+	public static final String VSCP = "VS";
 	public static final String SOMETHING_WENT_WRONG = "Something Went Wrong !";
 	public static final String INVALID_REQUEST = "Invalid Request !";
 	public static final String DEFAULT_FORMATE = "MM/dd/yyyy HH:mm:ss";
