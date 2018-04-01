@@ -22,6 +22,6 @@ public interface ApplicationsService {
 	
 	public LamsResponse getApplicationsForLenderByApplicationId(Long appId);
 	
-	public Boolean updateStatus(Long applicationId, String status);
+	public Boolean updateStatus(Long applicationId, String status,Long userId);
 //	public LamsResponse getApplicationDetailsByApplicationTypeIdAndUserId(Long appId, Long userId);
 }

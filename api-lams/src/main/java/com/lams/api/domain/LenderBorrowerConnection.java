@@ -50,6 +50,8 @@ public class LenderBorrowerConnection extends Auditor implements Serializable {
 	@JoinColumn(name = "lender_application_mapping_id")
 	private LenderApplicationMapping lenderApplicationMapping;
 
+	private String status;
+	
 	public LenderBorrowerConnection() {
 		super();
 	}
@@ -130,12 +132,24 @@ public class LenderBorrowerConnection extends Auditor implements Serializable {
 	public void setLenderApplicationMapping(LenderApplicationMapping lenderApplicationMapping) {
 		this.lenderApplicationMapping = lenderApplicationMapping;
 	}
+	
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
 
 	@Override
 	public String toString() {
-		return "LenderBorrowerConnection [id=" + id + ", application=" + application + ", loanPossibleAmount="
-				+ loanPossibleAmount + ", tenure=" + tenure + ", roi=" + roi + ", processingFees=" + processingFees
-				+ ", termAndCondition=" + termAndCondition + ", comments=" + comments + "]";
+		return "LenderBorrowerConnection [id=" + id + ", loanPossibleAmount=" + loanPossibleAmount + ", tenure="
+				+ tenure + ", roi=" + roi + ", processingFees=" + processingFees + ", termAndCondition="
+				+ termAndCondition + ", comments=" + comments + ", application=" + application
+				+ ", lenderApplicationMapping=" + lenderApplicationMapping + ", status=" + status + "]";
 	}
+
+	
 
 }

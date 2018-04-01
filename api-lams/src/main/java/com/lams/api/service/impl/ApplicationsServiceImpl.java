@@ -1,13 +1,16 @@
 package com.lams.api.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.lams.api.domain.Applications;
 import com.lams.api.domain.User;
 import com.lams.api.repository.ApplicationsRepository;
@@ -55,8 +58,8 @@ import com.lams.model.loan.bo.SecuredBusinessLoanDetailsBO;
 import com.lams.model.loan.bo.TermLoanDetailsBO;
 import com.lams.model.loan.bo.WorkingCapitalLoanDetailsBO;
 import com.lams.model.utils.CommonUtils;
-import com.lams.model.utils.MultipleJSONObjectHelper;
 import com.lams.model.utils.CommonUtils.ApplicationType;
+import com.lams.model.utils.MultipleJSONObjectHelper;
 
 @Service
 @Transactional
@@ -655,7 +658,7 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 	}
 	
 	@Override
-	public Boolean updateStatus(Long applicationId, String status) {
+	public Boolean updateStatus(Long applicationId, String status,Long userId) {
 		Applications app = applicationsRepository.findOne(applicationId);
 		app.setStatus(status);
 		applicationsRepository.save(app);
