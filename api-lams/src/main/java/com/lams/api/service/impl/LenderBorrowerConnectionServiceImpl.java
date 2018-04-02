@@ -126,5 +126,17 @@ public class LenderBorrowerConnectionServiceImpl implements LenderBorrowerConnec
 		obj = repo.save(obj);
 		return obj.getId();
 	}
+	
+	@Override
+	public List<LenderBorrowerConnectionBO> getRespondedApplication(Long lrId, Long brId, Long applicationId) {
+		List<LenderBorrowerConnection> connectionList = repo.findByApplicationIdAndLenderIdAndBorrowerId(applicationId, lrId, brId);
+		List<LenderBorrowerConnectionBO> connectionBOList = new ArrayList<>(connectionList.size());
+		for (LenderBorrowerConnection connection : connectionList) {
+			LenderBorrowerConnectionBO bo = new LenderBorrowerConnectionBO();
+			BeanUtils.copyProperties(connection, bo);
+			connectionBOList.add(bo);
+		}
+		return connectionBOList;
+	}
 
 }
