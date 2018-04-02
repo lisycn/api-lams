@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.lams.api.service.master.ApplicationTypeMstrService;
 import com.lams.api.service.master.BankService;
+import com.lams.api.service.master.BusinessTypeService;
 import com.lams.api.service.master.CityService;
 import com.lams.api.service.master.CountryService;
 import com.lams.api.service.master.LoanTypeMstrService;
@@ -33,6 +34,9 @@ import com.lams.model.utils.Enums.YesNoType;
 public class MasterController {
 
 	public static final Logger logger = Logger.getLogger(MasterController.class.getName());
+
+	@Autowired
+	private BusinessTypeService businessTypeService;
 
 	@Autowired
 	private CountryService countryService;
@@ -215,6 +219,25 @@ public class MasterController {
 					new LamsResponse(HttpStatus.OK.value(), "Success", masterBaseBOList), HttpStatus.OK);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "Error while Getting Yes No Master List");
+			e.printStackTrace();
+			return new ResponseEntity<LamsResponse>(
+					new LoginResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), CommonUtils.SOMETHING_WENT_WRONG),
+					HttpStatus.OK);
+		}
+	}
+
+	@RequestMapping(value = "/get_business_types/{mode}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<LamsResponse> getBusinessTypesByMode(@PathVariable("mode") Integer mode) {
+		logger.info("Enter in getBusinessTypesByMode");
+		try {
+			if (CommonUtils.isObjectNullOrEmpty(mode)) {
+				logger.log(Level.WARNING, "No Mode Found so Returnig All BusinessType===>Mode====>{}", mode);
+				mode = Enums.Mode.BOTH.getId();
+			}
+			return new ResponseEntity<LamsResponse>(new LamsResponse(HttpStatus.OK.value(), "Success",
+					businessTypeService.getBusinessTypesByMode(mode)), HttpStatus.OK);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "Error while Getting Business Types by Mode==>{}" + mode);
 			e.printStackTrace();
 			return new ResponseEntity<LamsResponse>(
 					new LoginResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), CommonUtils.SOMETHING_WENT_WRONG),

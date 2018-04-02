@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import com.lams.api.domain.master.AddressMstr;
 import com.lams.api.domain.master.Auditor;
 import com.lams.api.domain.master.BankMstr;
+import com.lams.api.domain.master.BusinessTypeMstr;
 
 @Entity
 @Table(name = "user")
@@ -52,6 +53,7 @@ public class User extends Auditor implements Serializable {
 	@Column(name = "middle_name")
 	private String middleName;
 
+	// Being used for Channel Partner and Borrower
 	@Column(name = "communication_add")
 	private AddressMstr communicationAdd;
 
@@ -93,29 +95,48 @@ public class User extends Auditor implements Serializable {
 
 	@Column(name = "is_same_us_address")
 	private Boolean isSameUsAddress;
-	
-	@Column(name="employment_type")
+
+	@Column(name = "employment_type")
 	private Long employmentType;
-	
-	@Column(name="employer_name")
+
+	@Column(name = "employer_name")
 	private String employerName;
-	
-	@Column(name="employment_address")
+
+	@Column(name = "employment_address")
 	private String employmentAddress;
-	
-	@Column(name="gross_monthly_income")
+
+	@Column(name = "gross_monthly_income")
 	private Double grossMonthlyIncome;
-	
-	@Column(name="total_work_experience")
+
+	@Column(name = "total_work_experience")
 	private Integer totalWorkExperience;
-	
-	@Column(name="entity_name")
+
+	@Column(name = "entity_name")
 	private String entityName;
+
+	@Column(name = "contact_person_name")
+	private String contactPersonName;
+
+	@Column(name = "gst_number")
+	private String gstNumber;
+
+	@ManyToOne
+	@JoinColumn(name = "business_type_id")
+	private BusinessTypeMstr businessTypeMstr;
+
+	@ManyToOne
+	@JoinColumn(name = "channel_partner_id")
+	private User channelPartnerId;
+
+	@Column(name = "about_me")
+	private String aboutMe;
 	
-	@Column(name="entity_type")
+	private String code;
+
+	@Column(name = "entity_type")
 	private Long entityType;
-	
-	@Column(name="self_employed_type")
+
+	@Column(name = "self_employed_type")
 	private Long selfEmployedType;
 
 	public User() {
@@ -326,7 +347,6 @@ public class User extends Auditor implements Serializable {
 	public void setTempPassword(String tempPassword) {
 		this.tempPassword = tempPassword;
 	}
-	
 
 	public Long getEmploymentType() {
 		return employmentType;
@@ -392,6 +412,54 @@ public class User extends Auditor implements Serializable {
 		this.selfEmployedType = selfEmployedType;
 	}
 
+	public String getContactPersonName() {
+		return contactPersonName;
+	}
+
+	public void setContactPersonName(String contactPersonName) {
+		this.contactPersonName = contactPersonName;
+	}
+
+	public String getGstNumber() {
+		return gstNumber;
+	}
+
+	public void setGstNumber(String gstNumber) {
+		this.gstNumber = gstNumber;
+	}
+
+	public BusinessTypeMstr getBusinessTypeMstr() {
+		return businessTypeMstr;
+	}
+
+	public void setBusinessTypeMstr(BusinessTypeMstr businessTypeMstr) {
+		this.businessTypeMstr = businessTypeMstr;
+	}
+
+	public String getAboutMe() {
+		return aboutMe;
+	}
+
+	public void setAboutMe(String aboutMe) {
+		this.aboutMe = aboutMe;
+	}
+
+	public User getChannelPartnerId() {
+		return channelPartnerId;
+	}
+
+	public void setChannelPartnerId(User channelPartnerId) {
+		this.channelPartnerId = channelPartnerId;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", name=" + name + ", email=" + email + ", mobile=" + mobile + ", password="
@@ -401,7 +469,12 @@ public class User extends Auditor implements Serializable {
 				+ permanentAdd + ", birthDate=" + birthDate + ", gender=" + gender + ", isOtpVerified=" + isOtpVerified
 				+ ", isEmailVerified=" + isEmailVerified + ", userType=" + userType + ", salutation=" + salutation
 				+ ", bank=" + bank + ", panCard=" + panCard + ", aadharCardNo=" + aadharCardNo + ", eduQualification="
-				+ eduQualification + ", contactNumber=" + contactNumber + ", isSameUsAddress=" + isSameUsAddress + "]";
+				+ eduQualification + ", contactNumber=" + contactNumber + ", isSameUsAddress=" + isSameUsAddress
+				+ ", employmentType=" + employmentType + ", employerName=" + employerName + ", employmentAddress="
+				+ employmentAddress + ", grossMonthlyIncome=" + grossMonthlyIncome + ", totalWorkExperience="
+				+ totalWorkExperience + ", entityName=" + entityName + ", contactPersonName=" + contactPersonName
+				+ ", gstNumber=" + gstNumber + ", businessTypeMstr=" + businessTypeMstr + ", channelPartnerId="
+				+ channelPartnerId + ", aboutMe=" + aboutMe + ", code=" + code + ", entityType=" + entityType
+				+ ", selfEmployedType=" + selfEmployedType + "]";
 	}
-
 }

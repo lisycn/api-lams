@@ -121,7 +121,7 @@ public class UserMstrServiceImpl implements UserMstrService {
 			if (Enums.UserType.LENDER.getId() != userBO.getUserType()) {
 				if (!user.getIsActive()) {
 					logger.info("Current User is Inactive ------------------------->" + userBO.getMobile());
-					return new LamsResponse(HttpStatus.BAD_REQUEST.value(), "User is inactive");
+					return new LamsResponse(HttpStatus.BAD_REQUEST.value(), "You are not active user.");
 				}
 			}
 			// CHECK IF EMAIL IS EXIST
@@ -155,7 +155,7 @@ public class UserMstrServiceImpl implements UserMstrService {
 						&& !CommonUtils.isObjectNullOrEmpty(userBO.getBank().getId())) {
 					user.setBank(new BankMstr(userBO.getBank().getId()));
 				}
-			} else if (!CommonUtils.isObjectNullOrEmpty(userType) && userType.equals(Enums.UserType.BORROWER)) {
+			} else if (!CommonUtils.isObjectNullOrEmpty(userType) && (userType.equals(Enums.UserType.BORROWER) || userType.equals(Enums.UserType.CHANNEL_PARTNER))) {
 				user.setIsEmailVerified(false);
 				user.setIsOtpVerified(false);
 			}
@@ -174,7 +174,7 @@ public class UserMstrServiceImpl implements UserMstrService {
 
 		// Sending OTP to Registered Email
 		if (!CommonUtils.isObjectNullOrEmpty(user.getUserType())
-				&& Enums.UserType.BORROWER.getId() == user.getUserType().intValue()) {
+				&& (Enums.UserType.BORROWER.getId() == user.getUserType().intValue() || Enums.UserType.CHANNEL_PARTNER.getId() == user.getUserType().intValue())) {
 			boolean sendOtp = sendOtp(user, OTPType.REGISTRATION, NotificationAlias.SMS);
 			userBO.setIsSent(sendOtp);
 			logger.log(Level.INFO, "Is Otp Sent===>{0}", sendOtp);
