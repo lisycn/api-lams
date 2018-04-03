@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.lams.model.bo.master.BusinessTypeBO;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserBO extends AuditorBO implements Serializable {
@@ -84,6 +85,18 @@ public class UserBO extends AuditorBO implements Serializable {
 	private Long selfEmployedType;
 
 	private Long entityType;
+	
+	private BusinessTypeBO businessType;
+	
+	private String aboutMe;
+	
+	private UserBO channelPartner;
+	
+	private String code;
+	
+	private String gstNumber;
+	
+	private String contactPersonName;
 
 	public Long getId() {
 		return id;
@@ -381,6 +394,54 @@ public class UserBO extends AuditorBO implements Serializable {
 		this.isSent = isSent;
 	}
 
+	public BusinessTypeBO getBusinessType() {
+		return businessType;
+	}
+
+	public void setBusinessType(BusinessTypeBO businessType) {
+		this.businessType = businessType;
+	}
+
+	public String getAboutMe() {
+		return aboutMe;
+	}
+
+	public void setAboutMe(String aboutMe) {
+		this.aboutMe = aboutMe;
+	}
+
+	public UserBO getChannelPartner() {
+		return channelPartner;
+	}
+
+	public void setChannelPartner(UserBO channelPartner) {
+		this.channelPartner = channelPartner;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public String getGstNumber() {
+		return gstNumber;
+	}
+
+	public void setGstNumber(String gstNumber) {
+		this.gstNumber = gstNumber;
+	}
+
+	public String getContactPersonName() {
+		return contactPersonName;
+	}
+
+	public void setContactPersonName(String contactPersonName) {
+		this.contactPersonName = contactPersonName;
+	}
+
 	@Override
 	public String toString() {
 		return "UserBO [id=" + id + ", salutation=" + salutation + ", name=" + name + ", email=" + email + ", mobile="
@@ -391,10 +452,14 @@ public class UserBO extends AuditorBO implements Serializable {
 				+ ", isEmailVerified=" + isEmailVerified + ", userType=" + userType + ", bank=" + bank
 				+ ", applications=" + applications + ", password=" + password + ", tempPassword=" + tempPassword
 				+ ", panCard=" + panCard + ", aadharCardNo=" + aadharCardNo + ", eduQualification=" + eduQualification
-				+ ", contactNumber=" + contactNumber + ", otp=" + otp + ", isSent=" + isSent
-				+ ", isSameUsAddress=" + isSameUsAddress + ", employmentType=" + employmentType + ", employerName="
-				+ employerName + ", employmentAddress=" + employmentAddress + ", grossMonthlyIncome="
-				+ grossMonthlyIncome + ", totalWorkExperience=" + totalWorkExperience + ", entityName=" + entityName
-				+ ", selfEmployedType=" + selfEmployedType + ", entityType=" + entityType + "]";
+				+ ", contactNumber=" + contactNumber + ", otp=" + otp + ", isSent=" + isSent + ", isSameUsAddress="
+				+ isSameUsAddress + ", employmentType=" + employmentType + ", employerName=" + employerName
+				+ ", employmentAddress=" + employmentAddress + ", grossMonthlyIncome=" + grossMonthlyIncome
+				+ ", totalWorkExperience=" + totalWorkExperience + ", entityName=" + entityName + ", selfEmployedType="
+				+ selfEmployedType + ", entityType=" + entityType + ", businessType=" + businessType + ", aboutMe="
+				+ aboutMe + ", channelPartner=" + channelPartner + ", code=" + code + ", gstNumber=" + gstNumber
+				+ ", contactPersonName=" + contactPersonName + "]";
 	}
+
+	
 }

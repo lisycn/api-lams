@@ -3,7 +3,7 @@ package com.lams.model.utils;
 public class Enums {
 
 	public enum Mode {
-		ACTIVE(0, "Active"), INACTIVE(1, "InActive"), BOTH(2, "Both");
+		ACTIVE(0, "Active"), INACTIVE(1, "InActive"), BOTH(-1, "Both");
 
 		private Integer id;
 		private String value;
@@ -40,7 +40,7 @@ public class Enums {
 	}
 
 	public enum UserType {
-		ALL(-1, "All"), LENDER(1, "Lender"), BORROWER(2, "Borrower");
+		ALL(-1, "All"), LENDER(1, "Lender"), BORROWER(2, "Borrower"), CHANNEL_PARTNER(3, "Channel Partner");
 
 		private int id;
 		private String value;
@@ -66,6 +66,8 @@ public class Enums {
 				return LENDER;
 			case 2:
 				return BORROWER;
+			case 3:
+				return CHANNEL_PARTNER;
 			default:
 				return null;
 			}
