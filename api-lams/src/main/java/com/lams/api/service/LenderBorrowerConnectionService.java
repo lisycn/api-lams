@@ -21,4 +21,6 @@ public interface LenderBorrowerConnectionService {
 	 * @param lenderBorrowerConnectionBO
 	 */
 	public Long save(LenderBorrowerConnectionBO lenderBorrowerConnectionBO);
+	
+	public List<LenderBorrowerConnectionBO> getRespondedApplication(Long lrId, Long brId, Long applicationId);
 }
