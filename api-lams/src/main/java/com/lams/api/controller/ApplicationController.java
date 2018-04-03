@@ -313,4 +313,17 @@ public class ApplicationController {
 					HttpStatus.OK);
 		}
 	}
+	
+	@RequestMapping(value="/get_responded_application/{brId}/{applicationId}", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<LamsResponse> getRespondedApplicationsByBorrowerIdAndAppTypeId(@PathVariable("brId") Long brId, @PathVariable("applicationId") Long applicationId, HttpServletRequest httpServletRequest){
+		Long lrId = (Long) httpServletRequest.getAttribute(CommonUtils.USER_ID);
+		try {
+			return new ResponseEntity<LamsResponse>(new LamsResponse(HttpStatus.OK.value(), "Successfully get data", lenderBorrowerService.getRespondedApplication(lrId, brId, applicationId)),
+					HttpStatus.OK);
+		} catch (Exception e) {
+			logger.info("Throw Exception while Getting Application Details ---------------->");
+			e.printStackTrace();
+			return new ResponseEntity<LamsResponse>(new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), CommonUtils.SOMETHING_WENT_WRONG),HttpStatus.OK);
+		}
+	}
 }
