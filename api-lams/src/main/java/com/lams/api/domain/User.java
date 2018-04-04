@@ -138,6 +138,9 @@ public class User extends Auditor implements Serializable {
 
 	@Column(name = "self_employed_type")
 	private Long selfEmployedType;
+	
+	@Column(name = "is_profile_filled")
+	private Boolean isProfileFilled;
 
 	public User() {
 		super();
@@ -460,6 +463,14 @@ public class User extends Auditor implements Serializable {
 		this.code = code;
 	}
 
+	public Boolean getIsProfileFilled() {
+		return isProfileFilled;
+	}
+
+	public void setIsProfileFilled(Boolean isProfileFilled) {
+		this.isProfileFilled = isProfileFilled;
+	}
+
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", name=" + name + ", email=" + email + ", mobile=" + mobile + ", password="
@@ -475,6 +486,8 @@ public class User extends Auditor implements Serializable {
 				+ totalWorkExperience + ", entityName=" + entityName + ", contactPersonName=" + contactPersonName
 				+ ", gstNumber=" + gstNumber + ", businessTypeMstr=" + businessTypeMstr + ", channelPartnerId="
 				+ channelPartnerId + ", aboutMe=" + aboutMe + ", code=" + code + ", entityType=" + entityType
-				+ ", selfEmployedType=" + selfEmployedType + "]";
+				+ ", selfEmployedType=" + selfEmployedType + ", isProfileFilled=" + isProfileFilled + "]";
 	}
+
+	
 }

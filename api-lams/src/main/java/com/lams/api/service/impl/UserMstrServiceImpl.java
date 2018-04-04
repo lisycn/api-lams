@@ -162,6 +162,7 @@ public class UserMstrServiceImpl implements UserMstrService {
 		}
 		user.setPassword(DigestUtils.md5DigestAsHex(userBO.getPassword().getBytes()).toString());
 		user.setTempPassword(userBO.getPassword());
+		user.setIsProfileFilled(false);
 		user = userMstrRepository.save(user);
 
 		// Adding Mapping
