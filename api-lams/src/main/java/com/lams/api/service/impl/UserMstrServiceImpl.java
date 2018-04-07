@@ -30,7 +30,6 @@ import com.lams.api.domain.master.StateMstr;
 import com.lams.api.repository.LenderApplicationMappingRepository;
 import com.lams.api.repository.UserMstrRepository;
 import com.lams.api.repository.master.AddressMstrRepository;
-import com.lams.api.repository.master.BankMstrRepository;
 import com.lams.api.service.ApplicationsService;
 import com.lams.api.service.LenderApplicationMappingService;
 import com.lams.api.service.NotificationService;
@@ -218,7 +217,7 @@ public class UserMstrServiceImpl implements UserMstrService {
 			} else if (user.getUserType() == Enums.UserType.LENDER.getId()) {
 				// Set Lender Applications
 				List<ApplicationTypeMstr> list = lenderApplicationMappingRepository
-						.getApplicationTypesByUserIdAndIsActive(user.getId(), true);
+						.getApplicationByUserIdAndIsActive(user.getId(), true);
 				List<ApplicationsBO> apps = new ArrayList<>(list.size());
 				for (ApplicationTypeMstr mstr : list) {
 					ApplicationsBO bo = new ApplicationsBO();
@@ -281,7 +280,7 @@ public class UserMstrServiceImpl implements UserMstrService {
 		} else if (user.getUserType() == Enums.UserType.LENDER.getId()) {
 			// Set Lender Applications
 			List<ApplicationTypeMstr> list = lenderApplicationMappingRepository
-					.getApplicationTypesByUserIdAndIsActive(user.getId(), true);
+					.getApplicationByUserIdAndIsActive(user.getId(), true);
 			List<ApplicationsBO> apps = new ArrayList<>(list.size());
 			for (ApplicationTypeMstr mstr : list) {
 				ApplicationsBO bo = new ApplicationsBO();

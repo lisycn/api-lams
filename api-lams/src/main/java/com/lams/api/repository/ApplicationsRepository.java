@@ -27,4 +27,6 @@ public interface ApplicationsRepository  extends JpaRepository<Applications, Lon
 	
 	@Query(value = "SELECT app.userId from Applications app where app.id =:id and app.isActive = true")
 	public Long getUserIdByAppId(@Param("id")Long appId);
+	
+	public List<Applications> findByApplicationTypeIdIdAndIsActiveAndStatus(Long appTypeId,Boolean isActive,String status);
 }

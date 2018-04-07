@@ -100,7 +100,7 @@ public class LenderBorrowerConnectionServiceImpl implements LenderBorrowerConnec
 		if(CommonUtils.Status.ACCEPTED.equals(bo.getStatus())) {
 			applicationService.updateStatus(bo.getApplication().getId(), CommonUtils.Status.ACCEPTED,bo.getCreatedBy());	
 		}
-		LenderBorrowerConnection obj = repo.findOne(bo.getId());
+		LenderBorrowerConnection obj = repo.findByApplicationIdAndLenderApplicationMappingId(bo.getApplication().getId(), bo.getApplicationMappingBO().getId());
 		if(CommonUtils.isObjectNullOrEmpty(obj)) {
 			obj = new LenderBorrowerConnection();
 			obj.setLoanPossibleAmount(bo.getLoanPossibleAmount());
@@ -114,9 +114,7 @@ public class LenderBorrowerConnectionServiceImpl implements LenderBorrowerConnec
 			Applications app = appRepo.findOne(bo.getApplication().getId());
 			obj.setApplication(app);
 
-			List<Long> mapResult = map.findByUserIdAndApplicationTypeId(bo.getCreatedBy(),
-					bo.getApplication().getApplicationTypeId());
-			obj.setLenderApplicationMapping(map.findOne(mapResult.get(0)));
+			obj.setLenderApplicationMapping(new LenderApplicationMapping(bo.getApplicationMappingBO().getId()));
 		}else {
 			obj.setModifiedBy(bo.getCreatedBy());
 			obj.setModifiedDate(new Date());

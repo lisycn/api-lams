@@ -21,8 +21,8 @@ import com.lams.api.service.LenderBorrowerConnectionService;
 import com.lams.model.bo.ApplicationRequestBO;
 import com.lams.model.bo.ApplicationsBO;
 import com.lams.model.bo.LamsResponse;
+import com.lams.model.bo.LenderApplicationMappingBO;
 import com.lams.model.bo.LenderBorrowerConnectionBO;
-import com.lams.model.bo.master.ApplicationTypeMstrBO;
 import com.lams.model.utils.CommonUtils;
 import com.lams.model.utils.Enums;
 
@@ -53,7 +53,7 @@ public class ApplicationController {
 						new LamsResponse(HttpStatus.OK.value(), "Successfully get data", applicationsBO),
 						HttpStatus.OK);
 			} else if (Enums.UserType.LENDER.getId() == userType) {
-				List<ApplicationTypeMstrBO> list = applicationMappingService
+				List<LenderApplicationMappingBO> list = applicationMappingService
 						.getApplicationTypeByUserIdAndIsActive(userId, true);
 				return new ResponseEntity<LamsResponse>(
 						new LamsResponse(HttpStatus.OK.value(), "Successfully get data", list), HttpStatus.OK);
@@ -170,13 +170,13 @@ public class ApplicationController {
 		}
 	}
 
-	@RequestMapping(value = "/get_borrowers_for_lender_app_id/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/get_borrowers_for_lender_app_id/{id}/{status}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<LamsResponse> getBorrowerForLenderByAppId(@PathVariable("id") Long id,
-			HttpServletRequest httpServletRequest) {
+			@PathVariable("status") String status, HttpServletRequest httpServletRequest) {
 
 		try {
-			return new ResponseEntity<LamsResponse>(applicationsService.getApplicationsForLenderByApplicationId(id),
-					HttpStatus.OK);
+			return new ResponseEntity<LamsResponse>(
+					applicationsService.getApplicationsForLenderByApplicationId(id, status), HttpStatus.OK);
 		} catch (Exception e) {
 			logger.info("Throw Exception while Getting Matches Borrowers ---------------->");
 			e.printStackTrace();
@@ -277,7 +277,8 @@ public class ApplicationController {
 	}
 
 	@RequestMapping(value = "/update_status/{status}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<LamsResponse> updateStatus(@PathVariable("status") String status,@RequestBody LenderBorrowerConnectionBO connectionBO, HttpServletRequest httpServletRequest) {
+	public ResponseEntity<LamsResponse> updateStatus(@PathVariable("status") String status,
+			@RequestBody LenderBorrowerConnectionBO connectionBO, HttpServletRequest httpServletRequest) {
 		logger.info("Enter in get updateStatus");
 		Long userId = (Long) httpServletRequest.getAttribute(CommonUtils.USER_ID);
 		if (CommonUtils.isObjectNullOrEmpty(userId)) {
@@ -287,7 +288,8 @@ public class ApplicationController {
 					HttpStatus.OK);
 		}
 
-		if (CommonUtils.isObjectNullOrEmpty(connectionBO.getApplication()) || CommonUtils.isObjectNullOrEmpty(connectionBO.getApplication().getId())) {
+		if (CommonUtils.isObjectNullOrEmpty(connectionBO.getApplication())
+				|| CommonUtils.isObjectNullOrEmpty(connectionBO.getApplication().getId())) {
 			logger.info("Application Id Null Or Empty");
 			return new ResponseEntity<LamsResponse>(
 					new LamsResponse(HttpStatus.BAD_REQUEST.value(), CommonUtils.INVALID_REQUEST), HttpStatus.OK);
@@ -313,17 +315,21 @@ public class ApplicationController {
 					HttpStatus.OK);
 		}
 	}
-	
-	@RequestMapping(value="/get_responded_application/{brId}/{applicationId}", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<LamsResponse> getRespondedApplicationsByBorrowerIdAndAppTypeId(@PathVariable("brId") Long brId, @PathVariable("applicationId") Long applicationId, HttpServletRequest httpServletRequest){
+
+	@RequestMapping(value = "/get_responded_application/{brId}/{applicationId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<LamsResponse> getRespondedApplicationsByBorrowerIdAndAppTypeId(
+			@PathVariable("brId") Long brId, @PathVariable("applicationId") Long applicationId,
+			HttpServletRequest httpServletRequest) {
 		Long lrId = (Long) httpServletRequest.getAttribute(CommonUtils.USER_ID);
 		try {
-			return new ResponseEntity<LamsResponse>(new LamsResponse(HttpStatus.OK.value(), "Successfully get data", lenderBorrowerService.getRespondedApplication(lrId, brId, applicationId)),
-					HttpStatus.OK);
+			return new ResponseEntity<LamsResponse>(new LamsResponse(HttpStatus.OK.value(), "Successfully get data",
+					lenderBorrowerService.getRespondedApplication(lrId, brId, applicationId)), HttpStatus.OK);
 		} catch (Exception e) {
 			logger.info("Throw Exception while Getting Application Details ---------------->");
 			e.printStackTrace();
-			return new ResponseEntity<LamsResponse>(new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), CommonUtils.SOMETHING_WENT_WRONG),HttpStatus.OK);
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), CommonUtils.SOMETHING_WENT_WRONG),
+					HttpStatus.OK);
 		}
 	}
 }

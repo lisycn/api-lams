@@ -15,7 +15,9 @@ import com.lams.api.domain.LenderApplicationMapping;
 import com.lams.api.domain.master.ApplicationTypeMstr;
 import com.lams.api.repository.LenderApplicationMappingRepository;
 import com.lams.api.service.LenderApplicationMappingService;
+import com.lams.model.bo.LenderApplicationMappingBO;
 import com.lams.model.bo.master.ApplicationTypeMstrBO;
+import com.lams.model.utils.CommonUtils;
 
 @Service
 @Transactional
@@ -27,16 +29,21 @@ public class LenderApplicationMappingServiceImpl implements LenderApplicationMap
 	private LenderApplicationMappingRepository applicationMappingRepository;
 
 	@Override
-	public List<ApplicationTypeMstrBO> getApplicationTypeByUserIdAndIsActive(Long userId, Boolean isActive) {
+	public List<LenderApplicationMappingBO> getApplicationTypeByUserIdAndIsActive(Long userId, Boolean isActive) {
 		logger.log(Level.INFO, "Entry in getApplicationTypeByUserIdAndIsActive() Method");
-		List<ApplicationTypeMstr> list = applicationMappingRepository.getApplicationTypesByUserIdAndIsActive(userId,
+		List<LenderApplicationMapping> list = applicationMappingRepository.getApplicationTypesByUserIdAndIsActive(userId,
 				isActive);
 		logger.log(Level.INFO, "Application Type List size==={0}===of UserId==={1}",
 				new Object[] { list.size(), userId });
-		List<ApplicationTypeMstrBO> response = new ArrayList<>(list.size());
-		for (ApplicationTypeMstr app : list) {
-			ApplicationTypeMstrBO baseBO = new ApplicationTypeMstrBO();
+		List<LenderApplicationMappingBO> response = new ArrayList<>(list.size());
+		for (LenderApplicationMapping app : list) {
+			LenderApplicationMappingBO baseBO = new LenderApplicationMappingBO();
 			BeanUtils.copyProperties(app, baseBO);
+			if(!CommonUtils.isObjectNullOrEmpty(app.getApplicationTypeId())) {
+				ApplicationTypeMstrBO typeMstrBO = new ApplicationTypeMstrBO();
+				BeanUtils.copyProperties(app.getApplicationTypeId(), typeMstrBO);
+				baseBO.setApplicationTypeMstrBO(typeMstrBO);
+			}
 			response.add(baseBO);
 		}
 		logger.log(Level.INFO, "Exit From getApplicationTypeByUserIdAndIsActive() Method");

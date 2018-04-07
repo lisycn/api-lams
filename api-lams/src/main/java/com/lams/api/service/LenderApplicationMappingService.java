@@ -2,7 +2,7 @@ package com.lams.api.service;
 
 import java.util.List;
 
-import com.lams.model.bo.master.ApplicationTypeMstrBO;
+import com.lams.model.bo.LenderApplicationMappingBO;
 
 public interface LenderApplicationMappingService {
 
@@ -13,7 +13,7 @@ public interface LenderApplicationMappingService {
 	 * @param isActive
 	 * @return
 	 */
-	public List<ApplicationTypeMstrBO> getApplicationTypeByUserIdAndIsActive(Long userId, Boolean isActive);
+	public List<LenderApplicationMappingBO> getApplicationTypeByUserIdAndIsActive(Long userId, Boolean isActive);
 	
 	/**
 	 * Add new MMapping
