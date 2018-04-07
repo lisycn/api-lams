@@ -98,6 +98,8 @@ public class UserBO extends AuditorBO implements Serializable {
 	
 	private String contactPersonName;
 
+	private Boolean isProfileFilled;
+	
 	public Long getId() {
 		return id;
 	}
@@ -442,6 +444,15 @@ public class UserBO extends AuditorBO implements Serializable {
 		this.contactPersonName = contactPersonName;
 	}
 
+	
+	public Boolean getIsProfileFilled() {
+		return isProfileFilled;
+	}
+
+	public void setIsProfileFilled(Boolean isProfileFilled) {
+		this.isProfileFilled = isProfileFilled;
+	}
+
 	@Override
 	public String toString() {
 		return "UserBO [id=" + id + ", salutation=" + salutation + ", name=" + name + ", email=" + email + ", mobile="
@@ -458,7 +469,7 @@ public class UserBO extends AuditorBO implements Serializable {
 				+ ", totalWorkExperience=" + totalWorkExperience + ", entityName=" + entityName + ", selfEmployedType="
 				+ selfEmployedType + ", entityType=" + entityType + ", businessType=" + businessType + ", aboutMe="
 				+ aboutMe + ", channelPartner=" + channelPartner + ", code=" + code + ", gstNumber=" + gstNumber
-				+ ", contactPersonName=" + contactPersonName + "]";
+				+ ", contactPersonName=" + contactPersonName + ", isProfileFilled=" + isProfileFilled + "]";
 	}
 
 	
