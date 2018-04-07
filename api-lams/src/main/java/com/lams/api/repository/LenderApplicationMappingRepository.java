@@ -12,8 +12,12 @@ import com.lams.api.domain.master.ApplicationTypeMstr;
 
 public interface LenderApplicationMappingRepository extends JpaRepository<LenderApplicationMapping, Long> {
 
+	@Query("select lam from LenderApplicationMapping lam where lam.userId =:userId and lam.isActive =:isActive")
+	public List<LenderApplicationMapping> getApplicationTypesByUserIdAndIsActive(@Param("userId") Long userId,
+			@Param("isActive") Boolean isActive);
+	
 	@Query("select lam.applicationTypeId from LenderApplicationMapping lam where lam.userId =:userId and lam.isActive =:isActive")
-	public List<ApplicationTypeMstr> getApplicationTypesByUserIdAndIsActive(@Param("userId") Long userId,
+	public List<ApplicationTypeMstr> getApplicationByUserIdAndIsActive(@Param("userId") Long userId,
 			@Param("isActive") Boolean isActive);
 
 	@Modifying
