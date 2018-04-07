@@ -61,9 +61,6 @@ import com.lams.model.loan.bo.TermLoanDetailsBO;
 import com.lams.model.loan.bo.WorkingCapitalLoanDetailsBO;
 import com.lams.model.utils.CommonUtils;
 import com.lams.model.utils.CommonUtils.ApplicationType;
-
-import net.minidev.json.writer.BeansMapper.Bean;
-
 import com.lams.model.utils.MultipleJSONObjectHelper;
 
 @Service
