@@ -23,4 +23,7 @@ public interface LenderBorrowerConnectionRepository extends JpaRepository<Lender
 	public List<LenderBorrowerConnection> findApplicationByAppTypeIdAndStatus(@Param("appTypeId") Long appTypeId,@Param("status")String status);
 	
 	public LenderBorrowerConnection findByApplicationIdAndLenderApplicationMappingId(Long applicationId,Long id);
+	
+	@Query("select count(*) from LenderBorrowerConnection lb where lb.application.id =:applicationId and lb.lenderApplicationMapping.userId =:lenderId")
+	public Long isActionTakenOnApplicationByLender(@Param("applicationId")Long applicationId, @Param("lenderId")Long lenderId);
 }

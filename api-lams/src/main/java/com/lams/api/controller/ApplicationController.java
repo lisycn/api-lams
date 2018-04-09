@@ -173,10 +173,12 @@ public class ApplicationController {
 	@RequestMapping(value = "/get_borrowers_for_lender_app_id/{id}/{status}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<LamsResponse> getBorrowerForLenderByAppId(@PathVariable("id") Long id,
 			@PathVariable("status") String status, HttpServletRequest httpServletRequest) {
+		
+		Long lenderId = (Long) httpServletRequest.getAttribute(CommonUtils.USER_ID);
 
 		try {
 			return new ResponseEntity<LamsResponse>(
-					applicationsService.getApplicationsForLenderByApplicationId(id, status), HttpStatus.OK);
+					applicationsService.getApplicationsForLenderByApplicationId(id, status, lenderId), HttpStatus.OK);
 		} catch (Exception e) {
 			logger.info("Throw Exception while Getting Matches Borrowers ---------------->");
 			e.printStackTrace();

@@ -134,6 +134,9 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 
 	@Autowired
 	private LenderBorrowerConnectionRepository lenderBorrowerConnectionRepository;
+	
+//	@Autowired
+//	private LenderBorrowerConnectionRepository
 
 	/*
 	 * GET ALL APPLICATIONS BY USER ID AND IS ACTIVE TRUE
@@ -647,13 +650,16 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 	}
 
 	@Override
-	public LamsResponse getApplicationsForLenderByApplicationId(Long appId, String status) {
+	public LamsResponse getApplicationsForLenderByApplicationId(Long appId, String status, Long lenderId) {
 		List<Applications> applications = null;
 
 		if (CommonUtils.Status.OPEN.equalsIgnoreCase(status)) {
 			applications = applicationsRepository.findByApplicationTypeIdIdAndIsActiveAndStatus(appId, true, status);
 			List<ApplicationsBO> applicationsBOs = new ArrayList<>(applications.size());
 			for (Applications application : applications) {
+				
+				// Check lender has taken any action on this application, if no action taken then it is open for Lender.
+				if(lenderBorrowerConnectionRepository.isActionTakenOnApplicationByLender(application.getId(),lenderId) == 0) {
 				ApplicationsBO applicationsBO = new ApplicationsBO();
 				BeanUtils.copyProperties(application, applicationsBO);
 				if (!CommonUtils.isObjectNullOrEmpty(application.getUserId())) {
@@ -666,7 +672,9 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 					applicationsBO.setEmploymentType(user.getEmploymentType());
 					applicationsBOs.add(applicationsBO);
 				}
+				}
 			}
+				
 			return new LamsResponse(HttpStatus.OK.value(), "Success", applicationsBOs);
 		} else {
 			List<LenderBorrowerConnection> listData = lenderBorrowerConnectionRepository.findApplicationByAppTypeIdAndStatus(appId, status);

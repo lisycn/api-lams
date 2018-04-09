@@ -82,7 +82,7 @@ public class UserMstrController {
 
 	@RequestMapping(value = "/get_user_details", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<LamsResponse> getLoggedInUserDetails(HttpServletRequest request) {
-		logger.info("Enter in get users by user type");
+		logger.info("=======>> Enter in get users by user type");
 		Long userId = (Long) request.getAttribute(CommonUtils.USER_ID);
 		try {
 			if (CommonUtils.isObjectNullOrEmpty(userId)) {
