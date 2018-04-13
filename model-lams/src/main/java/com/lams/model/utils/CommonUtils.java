@@ -15,7 +15,8 @@ public class CommonUtils {
 	public static List<String> lamsUrls = null;
 	public static final String USER_ID = "userId";
 	public static final String USER_TYPE = "userType";
-	public static final String VSCP = "VS";
+	public static final String VS = "VS";
+	public static final String VSCP = "VSCP";	
 	public static final String SOMETHING_WENT_WRONG = "Something Went Wrong !";
 	public static final String INVALID_REQUEST = "Invalid Request !";
 	public static final String DEFAULT_FORMATE = "MM/dd/yyyy HH:mm:ss";
@@ -215,10 +216,14 @@ public class CommonUtils {
 		if (!CommonUtils.isObjectNullOrEmpty(code)) {
 			String[] codes = code.split("-");
 			if (codes.length > 2) {
-				return VSCP + "-" + applicationCode + "-" + String.format("%06d", Integer.valueOf(codes[2]) + 1);
+				return VS + "-" + applicationCode + "-" + String.format("%06d", Integer.valueOf(codes[2]) + 1);
 			}
 		}
-		return VSCP + "-" + applicationCode + "-" + String.format("%06d", 1);
+		return VS + "-" + applicationCode + "-" + String.format("%06d", 1);
+	}
+	
+	public static String generateCPCode(Long count) {
+			return VSCP + "-" + String.format("%03d", count + 1);
 	}
 	
 	public interface EmploymentType {

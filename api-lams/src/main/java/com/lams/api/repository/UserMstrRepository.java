@@ -34,4 +34,8 @@ public interface UserMstrRepository extends JpaRepository<User, Long>{
 	
 	@Query("select employmentType from User us where us.id =:id and us.isActive = true")
 	public Long getEmpTypeById(@Param("id") Long id);
+	
+	
+	@Query(value = "SELECT count(code) FROM lams.user where code IS NOT NULL ",nativeQuery = true)
+	public Long getCodeCount();
 }

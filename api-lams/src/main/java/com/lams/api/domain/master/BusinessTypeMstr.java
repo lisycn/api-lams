@@ -16,4 +16,8 @@ public class BusinessTypeMstr extends MasterBase implements Serializable {
 	public BusinessTypeMstr() {
 		super();
 	}
+	
+	public BusinessTypeMstr(Long id) {
+		super(id);
+	}
 }
