@@ -24,12 +24,14 @@ import com.lams.api.domain.User;
 import com.lams.api.domain.master.AddressMstr;
 import com.lams.api.domain.master.ApplicationTypeMstr;
 import com.lams.api.domain.master.BankMstr;
+import com.lams.api.domain.master.BusinessTypeMstr;
 import com.lams.api.domain.master.CityMstr;
 import com.lams.api.domain.master.CountryMstr;
 import com.lams.api.domain.master.StateMstr;
 import com.lams.api.repository.LenderApplicationMappingRepository;
 import com.lams.api.repository.UserMstrRepository;
 import com.lams.api.repository.master.AddressMstrRepository;
+import com.lams.api.repository.master.BusinessTypeMstrRepository;
 import com.lams.api.service.ApplicationsService;
 import com.lams.api.service.LenderApplicationMappingService;
 import com.lams.api.service.NotificationService;
@@ -46,6 +48,7 @@ import com.lams.model.bo.NotificationMainBO;
 import com.lams.model.bo.NotificationResponse;
 import com.lams.model.bo.OTPRequest;
 import com.lams.model.bo.UserBO;
+import com.lams.model.bo.master.BusinessTypeBO;
 import com.lams.model.bo.master.CityBO;
 import com.lams.model.bo.master.CountryBO;
 import com.lams.model.bo.master.StateBO;
@@ -55,6 +58,9 @@ import com.lams.model.utils.Enums.ContentType;
 import com.lams.model.utils.Enums.NotificationType;
 import com.lams.model.utils.Enums.OTPType;
 import com.lams.model.utils.Enums.UserType;
+
+import net.minidev.json.writer.BeansMapper.Bean;
+
 import com.lams.model.utils.NotificationAlias;
 
 @Service
@@ -86,6 +92,9 @@ public class UserMstrServiceImpl implements UserMstrService {
 
 	@Autowired
 	private OTPLoggingService oTPLoggingService;
+	
+	@Autowired
+	private BusinessTypeMstrRepository businessTypeMstrRepository;
 
 	@Value("${com.lams.login.url}")
 	private String loginUrl;
@@ -203,6 +212,19 @@ public class UserMstrServiceImpl implements UserMstrService {
 							+ user.getEmail() + ".", userBO);
 				}
 			}
+			
+			if(Enums.UserType.CHANNEL_PARTNER.getId() == user.getUserType().intValue()) {
+				Long codeCount = userMstrRepository.getCodeCount();
+				logger.log(Level.INFO, "Total Channel Partener Users Count===>{0}",
+						new Object[] { codeCount});
+				String code = null;
+				if(codeCount == null) {
+					code= CommonUtils.generateCPCode(0l);
+				}else {
+					code= CommonUtils.generateCPCode(codeCount);
+				}
+				user.setCode(code);
+			 }
 		}
 		logger.info(
 				"Successfully registration --------EMAIL---> " + userBO.getEmail() + "---------ID----" + user.getId());
@@ -263,7 +285,7 @@ public class UserMstrServiceImpl implements UserMstrService {
 		}
 		UserBO userBo = new UserBO();
 		BeanUtils.copyProperties(user, userBo, "password", "tempPassword");
-		if (user.getUserType() == Enums.UserType.BORROWER.getId()) {
+		if (user.getUserType() == Enums.UserType.BORROWER.getId() || user.getUserType() == Enums.UserType.CHANNEL_PARTNER.getId()) {
 			List<AddressMstr> addressMstrList = addressMstrRepository.findByUserIdAndIsActive(user.getId(), true);
 			for (AddressMstr addressMstr : addressMstrList) {
 				AddressBO addressBO = new AddressBO();
@@ -296,6 +318,12 @@ public class UserMstrServiceImpl implements UserMstrService {
 				} else if (addressMstr.getAddType() == CommonUtils.AddressType.COMMUNICATION) {
 					userBo.setCommunicationAdd(addressBO);
 				}
+			}
+			BusinessTypeMstr businessTypeMstr = user.getBusinessTypeMstr();
+			if(!CommonUtils.isObjectNullOrEmpty(businessTypeMstr)) {
+				BusinessTypeBO bo = new BusinessTypeBO();
+				BeanUtils.copyProperties(businessTypeMstr, bo);
+				userBo.setBusinessType(bo);
 			}
 			userBo.setApplications(applicationsService.getAll(user.getId()));
 		} else if (user.getUserType() == Enums.UserType.LENDER.getId()) {
@@ -332,8 +360,8 @@ public class UserMstrServiceImpl implements UserMstrService {
 			user.setLastName(userBO.getLastName());
 			user.setSalutation(userBO.getSalutation());
 			
-		} else if (user.getUserType() == Enums.UserType.BORROWER.getId()) {
-			BeanUtils.copyProperties(userBO, user, "password", "tempPassword");
+		} else if (user.getUserType() == Enums.UserType.BORROWER.getId() || user.getUserType() == Enums.UserType.CHANNEL_PARTNER.getId()) {
+			BeanUtils.copyProperties(userBO, user, "password", "tempPassword","email","mobile");
 			if (!CommonUtils.isObjectNullOrEmpty(userBO.getPermanentAdd())) {
 				addressService.saveAddress(userBO.getPermanentAdd(), userBO.getId(), CommonUtils.AddressType.PERMANENT);
 			}
@@ -341,6 +369,22 @@ public class UserMstrServiceImpl implements UserMstrService {
 				addressService.saveAddress(userBO.getCommunicationAdd(), userBO.getId(),
 						CommonUtils.AddressType.COMMUNICATION);
 			}
+			if(!CommonUtils.isObjectNullOrEmpty(userBO.getBusinessType()) && !CommonUtils.isObjectNullOrEmpty(userBO.getBusinessType().getId())) {
+				user.setBusinessTypeMstr(new BusinessTypeMstr(userBO.getBusinessType().getId()));
+			}
+		//Updating already Existing Applications code	
+			if(CommonUtils.isObjectNullOrEmpty(userBO.getCode()) && Enums.UserType.CHANNEL_PARTNER.getId() == user.getUserType().intValue()) {
+				Long codeCount = userMstrRepository.getCodeCount();
+				logger.log(Level.INFO, "Total Channel Partener Users Count===>{0}",
+						new Object[] { codeCount});
+				String code = null;
+				if(codeCount == null) {
+					code= CommonUtils.generateCPCode(0l);
+				}else {
+					code= CommonUtils.generateCPCode(codeCount);
+				}
+				user.setCode(code);
+			 }
 		}
 		user.setModifiedDate(new Date());
 		user.setModifiedBy(userBO.getId());
