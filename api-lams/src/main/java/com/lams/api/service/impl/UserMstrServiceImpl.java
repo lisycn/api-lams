@@ -40,6 +40,7 @@ import com.lams.model.bo.AddressBO;
 import com.lams.model.bo.ApplicationsBO;
 import com.lams.model.bo.BankBO;
 import com.lams.model.bo.LamsResponse;
+import com.lams.model.bo.LoginResponse;
 import com.lams.model.bo.NotificationBO;
 import com.lams.model.bo.NotificationMainBO;
 import com.lams.model.bo.NotificationResponse;
@@ -175,13 +176,32 @@ public class UserMstrServiceImpl implements UserMstrService {
 		// Sending OTP to Registered Email
 		if (!CommonUtils.isObjectNullOrEmpty(user.getUserType())
 				&& (Enums.UserType.BORROWER.getId() == user.getUserType().intValue() || Enums.UserType.CHANNEL_PARTNER.getId() == user.getUserType().intValue())) {
-			boolean sendOtp = sendOtp(user, OTPType.REGISTRATION, NotificationAlias.SMS);
-			userBO.setIsSent(sendOtp);
+			boolean isMailSend = false;
+			boolean sendOtp = false;
 			logger.log(Level.INFO, "Is Otp Sent===>{0}", sendOtp);
-			if (sendOtp) {
+			
+			try {
+				sendOtp = sendOtp(user, OTPType.REGISTRATION, NotificationAlias.SMS);
+				String subject = "VfinanceS – E Mail Verification";
+				isMailSend = sendLinkOnMail(user,NotificationAlias.EMAIL_VERIFY_ACCOUNT,subject,"email-verification");
+				BeanUtils.copyProperties(user, userBO, "tempPassword", "password");
+				userBO.setIsSent(isMailSend);
+			} catch (Exception e) {
+				e.printStackTrace();
+				logger.info("Error while Sending Mail");
+			}	
+			
+			if (sendOtp || isMailSend) {
 				logger.log(Level.INFO, "OTP Sent For Mobile===>{0}=====Email=={1}",
 						new Object[] { user.getMobile(), user.getEmail() });
 				userBO.setId(user.getId());
+				if(sendOtp) {
+					return new LoginResponse(HttpStatus.OK.value(), "We have sent OTP On "
+							+ user.getMobile() + ".", userBO);					
+				}else if(isMailSend) {
+					return new LoginResponse(HttpStatus.OK.value(), "We have sent Email Verification Link on "
+							+ user.getEmail() + ".", userBO);
+				}
 			}
 		}
 		logger.info(
@@ -513,6 +533,7 @@ public class UserMstrServiceImpl implements UserMstrService {
 	public LamsResponse verifyEmail(String link) {
 		logger.log(Level.INFO, "Link From Web===>{0}", new Object[] { link });
 		String[] arr = link.toString().split("\\|");
+		logger.log(Level.INFO,"arrarrarrarrarr====={0}",new Object[] {arr.length});
 		if (arr == null || arr.length < 2) {
 			return new LamsResponse(HttpStatus.BAD_REQUEST.value(), "Invalid Link. Please try Again!");
 		}
