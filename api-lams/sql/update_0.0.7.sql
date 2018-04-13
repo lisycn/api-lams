@@ -1,5 +1,3 @@
-SELECT * FROM lams.mstr_base;
-
 INSERT INTO `lams`.`mstr_base` (`id`,`name`, `code`, `is_active`, `created_by`, `created_date`, `modified_by`, `modified_date`) VALUES (30,'Chartered Accountant (CA)', 'CA', 1, 1, NOW(), 1, NOW());
 INSERT INTO `lams`.`mstr_base` (`id`,`name`, `code`, `is_active`, `created_by`, `created_date`, `modified_by`, `modified_date`) VALUES (31,'Lawyers', 'LWR', 1, 1, NOW(), 1, NOW());
 INSERT INTO `lams`.`mstr_base` (`id`,`name`, `code`, `is_active`, `created_by`, `created_date`, `modified_by`, `modified_date`) VALUES (32,'Company Secretary (CS)', 'CS', 1, 1, NOW(), 1, NOW());
