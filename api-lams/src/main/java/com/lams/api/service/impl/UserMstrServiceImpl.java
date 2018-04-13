@@ -58,9 +58,6 @@ import com.lams.model.utils.Enums.ContentType;
 import com.lams.model.utils.Enums.NotificationType;
 import com.lams.model.utils.Enums.OTPType;
 import com.lams.model.utils.Enums.UserType;
-
-import net.minidev.json.writer.BeansMapper.Bean;
-
 import com.lams.model.utils.NotificationAlias;
 
 @Service
