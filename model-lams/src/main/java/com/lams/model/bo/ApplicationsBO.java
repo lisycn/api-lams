@@ -56,6 +56,10 @@ public class ApplicationsBO extends AuditorBO implements Serializable{
 	private String email;
 
 	private String mobile;
+	
+	private Boolean isLoanDetailsLock;
+	
+	private Boolean isLoanDetailsComplete;
 
 	
 	public Long getId() {
@@ -250,5 +254,23 @@ public class ApplicationsBO extends AuditorBO implements Serializable{
 	public void setMobile(String mobile) {
 		this.mobile = mobile;
 	}
+
+	public Boolean getIsLoanDetailsLock() {
+		return isLoanDetailsLock;
+	}
+
+	public void setIsLoanDetailsLock(Boolean isLoanDetailsLock) {
+		this.isLoanDetailsLock = isLoanDetailsLock;
+	}
+
+	public Boolean getIsLoanDetailsComplete() {
+		return isLoanDetailsComplete;
+	}
+
+	public void setIsLoanDetailsComplete(Boolean isLoanDetailsComplete) {
+		this.isLoanDetailsComplete = isLoanDetailsComplete;
+	}
+	
+	
 	
 }

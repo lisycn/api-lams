@@ -67,6 +67,12 @@ public class Applications extends Auditor implements Serializable {
 	@Column(name="is_upload_complete")
 	private Boolean isUploadComplete;
 	
+	@Column(name="is_loan_details_complete")
+	private Boolean isLoanDetailsComplete;
+	
+	@Column(name="is_loan_details_lock")
+	private Boolean isLoanDetailsLock;
+	
 	private String status;
 	
 	public Long getId() {
@@ -188,6 +194,22 @@ public class Applications extends Auditor implements Serializable {
 
 	public void setIsUploadComplete(Boolean isUploadComplete) {
 		this.isUploadComplete = isUploadComplete;
+	}
+
+	public Boolean getIsLoanDetailsComplete() {
+		return isLoanDetailsComplete;
+	}
+
+	public void setIsLoanDetailsComplete(Boolean isLoanDetailsComplete) {
+		this.isLoanDetailsComplete = isLoanDetailsComplete;
+	}
+
+	public Boolean getIsLoanDetailsLock() {
+		return isLoanDetailsLock;
+	}
+
+	public void setIsLoanDetailsLock(Boolean isLoanDetailsLock) {
+		this.isLoanDetailsLock = isLoanDetailsLock;
 	}
 	
 	
