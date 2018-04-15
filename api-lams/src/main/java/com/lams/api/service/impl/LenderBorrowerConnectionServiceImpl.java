@@ -98,7 +98,10 @@ public class LenderBorrowerConnectionServiceImpl implements LenderBorrowerConnec
 	public Long save(LenderBorrowerConnectionBO bo) {
 
 		if(CommonUtils.Status.ACCEPTED.equals(bo.getStatus())) {
-			applicationService.updateStatus(bo.getApplication().getId(), CommonUtils.Status.ACCEPTED,bo.getCreatedBy());	
+			// Set by default rejected status to all same applications and then set accepted status for selected lender
+			repo.setRejectStatusAfterAcceptingLender(bo.getApplication().getId(), CommonUtils.Status.REJECTED);
+			// set Accepted after rejecting all application
+			applicationService.updateStatus(bo.getApplication().getId(), CommonUtils.Status.ACCEPTED,bo.getCreatedBy());
 		}
 		LenderBorrowerConnection obj = repo.findByApplicationIdAndLenderApplicationMappingId(bo.getApplication().getId(), bo.getApplicationMappingBO().getId());
 		if(CommonUtils.isObjectNullOrEmpty(obj)) {
