@@ -21,9 +21,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.lams.api.controller.DocumentUploadController;
 import com.lams.api.domain.DocumentMappingMstr;
-import com.lams.api.domain.DocumentMstr;
 import com.lams.api.domain.DocumentUserMappingMstr;
 import com.lams.api.repository.ApplicationsRepository;
 import com.lams.api.repository.DocumentMappingMstrRepository;
@@ -39,7 +37,7 @@ import com.lams.model.utils.CommonUtils.DocumentType;
 @Transactional
 public class DocumentUploadServiceImpl implements DocumentUploadService {
 
-	private static final Logger logger = LoggerFactory.getLogger(DocumentUploadController.class);
+	private static final Logger logger = LoggerFactory.getLogger(DocumentUploadServiceImpl.class);
 	
 	@Autowired
 	private DocumentMappingMstrRepository documentMappingMstrRepository;
