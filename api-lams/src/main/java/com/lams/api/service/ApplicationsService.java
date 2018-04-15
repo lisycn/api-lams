@@ -5,6 +5,7 @@ import java.util.List;
 import com.lams.model.bo.ApplicationRequestBO;
 import com.lams.model.bo.ApplicationsBO;
 import com.lams.model.bo.LamsResponse;
+import com.lams.model.bo.UserBO;
 
 public interface ApplicationsService {
 
@@ -21,5 +22,8 @@ public interface ApplicationsService {
 	public LamsResponse getApplicationsForLenderByApplicationId(Long appId,String status,Long lenderId);
 	
 	public Boolean updateStatus(Long applicationId, String status,Long userId);
-//	public LamsResponse getApplicationDetailsByApplicationTypeIdAndUserId(Long appId, Long userId);
+	
+	public List<ApplicationsBO> getAllByCP(Long userId,Long cpUserId);
+	
+	public Long saveFromCP(ApplicationsBO applicationRequestBO,Long brUserId,String cpUserCode);
 }

@@ -156,6 +156,49 @@ public class UserMstrController {
 					HttpStatus.OK);
 		}
 	}
+	
+	@RequestMapping(value = "/save_cp_borrower", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<LamsResponse> saveCPBorrower(@RequestBody UserBO userBO,
+			HttpServletRequest httpServletRequest) {
+		Long userId = (Long) httpServletRequest.getAttribute(CommonUtils.USER_ID);
+		if (CommonUtils.isObjectNullOrEmpty(userId)) {
+			logger.info("User Id Null Or Empty");
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.BAD_REQUEST.value(), "UnAuthorized! Please try again to ReLogin"),
+					HttpStatus.OK);
+		}
+		
+		try {
+			return new ResponseEntity<LamsResponse>(userMstrService.addCpBorrower(userBO, userId), HttpStatus.OK);
+		} catch (Exception e) {
+			logger.info("Throw Exception while Saving Borrower From Channel Partnert----------------> For UserId===" + userId);
+			e.printStackTrace();
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), CommonUtils.SOMETHING_WENT_WRONG),
+					HttpStatus.OK);
+		}
+	}
+	
+	@RequestMapping(value = "/get_cp_users/{userType}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<LamsResponse> getCPBorrower(@PathVariable("userType")Long userType ,HttpServletRequest httpServletRequest) {
+		Long userId = (Long) httpServletRequest.getAttribute(CommonUtils.USER_ID);
+		if (CommonUtils.isObjectNullOrEmpty(userId)) {
+			logger.info("User Id Null Or Empty");
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.BAD_REQUEST.value(), "UnAuthorized! Please try again to ReLogin"),
+					HttpStatus.OK);
+		}
+		
+		try {
+			return new ResponseEntity<LamsResponse>(userMstrService.getCpUsersByUserType(userId, userType), HttpStatus.OK);
+		} catch (Exception e) {
+			logger.info("Throw Exception while Saving Borrower From Channel Partnert----------------> For UserId===" + userId);
+			e.printStackTrace();
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), CommonUtils.SOMETHING_WENT_WRONG),
+					HttpStatus.OK);
+		}
+	}
 
 	@RequestMapping(value = "/invite_lender", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<LamsResponse> inviteLender(@RequestBody UserBO userBO, HttpServletRequest request) {

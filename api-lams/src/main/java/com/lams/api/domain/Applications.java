@@ -64,6 +64,9 @@ public class Applications extends Auditor implements Serializable {
 	@Column(name="lead_reference_no")
 	private String leadReferenceNo;
 	
+	@Column(name="is_from_cp")
+	private Boolean isFromCP;
+	
 	@Column(name="is_upload_complete")
 	private Boolean isUploadComplete;
 	
@@ -211,7 +214,12 @@ public class Applications extends Auditor implements Serializable {
 	public void setIsLoanDetailsLock(Boolean isLoanDetailsLock) {
 		this.isLoanDetailsLock = isLoanDetailsLock;
 	}
-	
-	
 
+	public Boolean getIsFromCP() {
+		return isFromCP;
+	}
+
+	public void setIsFromCP(Boolean isFromCP) {
+		this.isFromCP = isFromCP;
+	}
 }

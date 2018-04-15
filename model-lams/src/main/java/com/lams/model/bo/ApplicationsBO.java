@@ -60,6 +60,8 @@ public class ApplicationsBO extends AuditorBO implements Serializable{
 	private Boolean isLoanDetailsLock;
 	
 	private Boolean isLoanDetailsComplete;
+	
+	private Boolean isFromCP;
 
 	
 	public Long getId() {
@@ -250,6 +252,16 @@ public class ApplicationsBO extends AuditorBO implements Serializable{
 	public String getMobile() {
 		return mobile;
 	}
+	
+	
+
+	public Boolean getIsFromCP() {
+		return isFromCP;
+	}
+
+	public void setIsFromCP(Boolean isFromCP) {
+		this.isFromCP = isFromCP;
+	}
 
 	public void setMobile(String mobile) {
 		this.mobile = mobile;
@@ -270,7 +282,5 @@ public class ApplicationsBO extends AuditorBO implements Serializable{
 	public void setIsLoanDetailsComplete(Boolean isLoanDetailsComplete) {
 		this.isLoanDetailsComplete = isLoanDetailsComplete;
 	}
-	
-	
 	
 }

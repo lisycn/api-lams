@@ -23,6 +23,7 @@ import com.lams.model.bo.ApplicationsBO;
 import com.lams.model.bo.LamsResponse;
 import com.lams.model.bo.LenderApplicationMappingBO;
 import com.lams.model.bo.LenderBorrowerConnectionBO;
+import com.lams.model.bo.UserBO;
 import com.lams.model.utils.CommonUtils;
 import com.lams.model.utils.Enums;
 
@@ -277,7 +278,7 @@ public class ApplicationController {
 					HttpStatus.OK);
 		}
 	}
-
+	
 	@RequestMapping(value = "/update_status/{status}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<LamsResponse> updateStatus(@PathVariable("status") String status,
 			@RequestBody LenderBorrowerConnectionBO connectionBO, HttpServletRequest httpServletRequest) {
