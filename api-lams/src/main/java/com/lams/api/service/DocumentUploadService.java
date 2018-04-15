@@ -12,4 +12,6 @@ public interface DocumentUploadService {
 	public List<DocumentResponse> getDocumentList(Long applicationId,List<Long> docId);
 	
 	public boolean inactiveDocument(Long id);
+	
+	public DocumentResponse getUserDocumentByDocId(Long userId, Long documentMstrId);
 }
