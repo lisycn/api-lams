@@ -15,6 +15,9 @@ public class DocumentRequest implements Serializable {
     private Long documentMappingId;
     private String originalFileName;
     private String userType;
+    private Boolean isUserDocument;
+    
+    
 	public Long getApplicationId() {
 		return applicationId;
 	}
@@ -50,6 +53,13 @@ public class DocumentRequest implements Serializable {
 	}
 	public void setUserType(String userType) {
 		this.userType = userType;
+	}
+	
+	public Boolean getIsUserDocument() {
+		return isUserDocument;
+	}
+	public void setIsUserDocument(Boolean isUserDocument) {
+		this.isUserDocument = isUserDocument;
 	}
 	@Override
 	public String toString() {

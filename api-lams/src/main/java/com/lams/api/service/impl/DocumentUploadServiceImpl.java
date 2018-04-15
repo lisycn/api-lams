@@ -21,11 +21,11 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.lams.api.controller.DocumentUploadController;
 import com.lams.api.domain.DocumentMappingMstr;
-import com.lams.api.domain.DocumentMstr;
+import com.lams.api.domain.DocumentUserMappingMstr;
 import com.lams.api.repository.ApplicationsRepository;
 import com.lams.api.repository.DocumentMappingMstrRepository;
+import com.lams.api.repository.DocumentUserMappingMstrRepository;
 import com.lams.api.repository.UserMstrRepository;
 import com.lams.api.service.DocumentUploadService;
 import com.lams.model.bo.DocumentRequest;
@@ -37,10 +37,13 @@ import com.lams.model.utils.CommonUtils.DocumentType;
 @Transactional
 public class DocumentUploadServiceImpl implements DocumentUploadService {
 
-	private static final Logger logger = LoggerFactory.getLogger(DocumentUploadController.class);
+	private static final Logger logger = LoggerFactory.getLogger(DocumentUploadServiceImpl.class);
 	
 	@Autowired
 	private DocumentMappingMstrRepository documentMappingMstrRepository;
+	
+	@Autowired
+	private DocumentUserMappingMstrRepository documentUserMappingMstrRepository;
 	
 	@Autowired
 	private UserMstrRepository userMstrRepository;
@@ -84,7 +87,11 @@ public class DocumentUploadServiceImpl implements DocumentUploadService {
             String storedFilePath = environment.getRequiredProperty(SERVER_PATH) + "image/" + storeFileName;
             documentResponse.setFilePath(storedFilePath);
             documentResponse.setOriginalName(originalName);
-            documentResponse.setDocumentMappingId(updateDocMappingTable(documentRequest.getDocumentId(), documentRequest.getApplicationId(), documentRequest.getUserId(), storedFilePath,originalName));
+            if(!CommonUtils.isObjectNullOrEmpty(documentRequest.getIsUserDocument()) && documentRequest.getIsUserDocument()) {
+            	documentResponse.setDocumentMappingId(updateUserDocMappingTable(documentRequest.getDocumentId(), documentRequest.getUserId(), storedFilePath,originalName));
+            } else {
+            	documentResponse.setDocumentMappingId(updateDocMappingTable(documentRequest.getDocumentId(), documentRequest.getApplicationId(), documentRequest.getUserId(), storedFilePath,originalName));	
+            }
             logger.info("file saved in local! {}");
         } catch (IOException e) {
             logger.error("file not saved in local! because : ->", e);
@@ -93,6 +100,22 @@ public class DocumentUploadServiceImpl implements DocumentUploadService {
         }
         logger.info("Exit with saveFileOnLocal() {}");
 		return documentResponse;	
+	}
+	@Override
+	public DocumentResponse getUserDocumentByDocId(Long userId, Long documentMstrId) {
+		
+		DocumentResponse documentResponse = new DocumentResponse();
+		
+		DocumentUserMappingMstr documentUserMappingMstr = documentUserMappingMstrRepository.getByUserIdAndDocId(userId, documentMstrId);
+		if(!CommonUtils.isObjectNullOrEmpty(documentUserMappingMstr)) {
+			documentResponse.setDocumentMappingId(documentUserMappingMstr.getId());
+			documentResponse.setDocumentMstrId(documentUserMappingMstr.getDocumentMstrId());
+			documentResponse.setFilePath(documentUserMappingMstr.getFilePath());
+			documentResponse.setOriginalName(documentUserMappingMstr.getOriginalName());
+		}
+		
+		return documentResponse;
+		
 	}
 	
 	
@@ -104,7 +127,7 @@ public class DocumentUploadServiceImpl implements DocumentUploadService {
 		
 		if(CommonUtils.isObjectNullOrEmpty(employmentType)) {
 			logger.info("Employment Type is null or Empty !!");
-			return Collections.EMPTY_LIST;
+			return Collections.emptyList();
 		}
 		
 		List<DocumentType> all = DocumentType.getAllByEmpType(employmentType);
@@ -137,6 +160,21 @@ public class DocumentUploadServiceImpl implements DocumentUploadService {
 	public boolean inactiveDocument(Long id) {
 		int inActiveDocument = documentMappingMstrRepository.inActiveDocument(id);
 		return inActiveDocument > 0;
+	}
+	
+	public Long updateUserDocMappingTable(Long documentId, Long userId, String filePath, String originalName) {
+		Integer inactiveDoc = documentUserMappingMstrRepository.inactiveByUserId(userId, documentId);
+		logger.info("TOTAL INACTVE DOCUMENT IS ----->" + inactiveDoc);
+		DocumentUserMappingMstr documentMappingMstr = new DocumentUserMappingMstr();
+		documentMappingMstr.setDocumentMstrId(documentId);
+		documentMappingMstr.setUserId(userId);
+		documentMappingMstr.setFilePath(filePath);
+		documentMappingMstr.setCreatedBy(userId);
+		documentMappingMstr.setCreatedDate(new Date());
+		documentMappingMstr.setIsActive(true);
+		documentMappingMstr.setOriginalName(originalName);
+		documentMappingMstr = documentUserMappingMstrRepository.save(documentMappingMstr);
+		return documentMappingMstr.getId();
 	}
 	
 	public Long updateDocMappingTable(Long documentId, Long applicationId,Long userId, String filePath, String originalName) {

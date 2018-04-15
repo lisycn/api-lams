@@ -3,6 +3,7 @@ package com.lams.api.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -26,4 +27,8 @@ public interface LenderBorrowerConnectionRepository extends JpaRepository<Lender
 	
 	@Query("select count(*) from LenderBorrowerConnection lb where lb.application.id =:applicationId and lb.lenderApplicationMapping.userId =:lenderId")
 	public Long isActionTakenOnApplicationByLender(@Param("applicationId")Long applicationId, @Param("lenderId")Long lenderId);
+	
+	@Modifying
+	@Query("update LenderBorrowerConnection lb set lb.status =:status where lb.application.id =:applicationId")
+	public void setRejectStatusAfterAcceptingLender(@Param("applicationId")Long applicationId, @Param("status")String status);
 }

@@ -58,6 +58,9 @@ public class ApplicationsBO extends AuditorBO implements Serializable{
 	private String mobile;
 	
 	private Boolean isFromCP;
+	private Boolean isLoanDetailsLock;
+	
+	private Boolean isLoanDetailsComplete;
 
 	
 	public Long getId() {
@@ -66,10 +69,6 @@ public class ApplicationsBO extends AuditorBO implements Serializable{
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public Long getApplicationTypeId() {
-		return applicationTypeId;
 	}
 
 	public void setApplicationTypeId(Long applicationTypeId) {
@@ -253,11 +252,22 @@ public class ApplicationsBO extends AuditorBO implements Serializable{
 		this.mobile = mobile;
 	}
 
-	public Boolean getIsFromCP() {
-		return isFromCP;
-	}
 
 	public void setIsFromCP(Boolean isFromCP) {
 		this.isFromCP = isFromCP;
 	}
+	}
+
+	public void setIsLoanDetailsLock(Boolean isLoanDetailsLock) {
+		this.isLoanDetailsLock = isLoanDetailsLock;
+	}
+
+	public Boolean getIsLoanDetailsComplete() {
+		return isLoanDetailsComplete;
+	}
+
+	public void setIsLoanDetailsComplete(Boolean isLoanDetailsComplete) {
+		this.isLoanDetailsComplete = isLoanDetailsComplete;
+	}
+	
 }
