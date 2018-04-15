@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -89,7 +90,7 @@ public class UserMstrServiceImpl implements UserMstrService {
 
 	@Autowired
 	private OTPLoggingService oTPLoggingService;
-	
+
 	@Autowired
 	private BusinessTypeMstrRepository businessTypeMstrRepository;
 
@@ -161,7 +162,8 @@ public class UserMstrServiceImpl implements UserMstrService {
 						&& !CommonUtils.isObjectNullOrEmpty(userBO.getBank().getId())) {
 					user.setBank(new BankMstr(userBO.getBank().getId()));
 				}
-			} else if (!CommonUtils.isObjectNullOrEmpty(userType) && (userType.equals(Enums.UserType.BORROWER) || userType.equals(Enums.UserType.CHANNEL_PARTNER))) {
+			} else if (!CommonUtils.isObjectNullOrEmpty(userType)
+					&& (userType.equals(Enums.UserType.BORROWER) || userType.equals(Enums.UserType.CHANNEL_PARTNER))) {
 				user.setIsEmailVerified(false);
 				user.setIsOtpVerified(false);
 			}
@@ -181,47 +183,48 @@ public class UserMstrServiceImpl implements UserMstrService {
 
 		// Sending OTP to Registered Email
 		if (!CommonUtils.isObjectNullOrEmpty(user.getUserType())
-				&& (Enums.UserType.BORROWER.getId() == user.getUserType().intValue() || Enums.UserType.CHANNEL_PARTNER.getId() == user.getUserType().intValue())) {
+				&& (Enums.UserType.BORROWER.getId() == user.getUserType().intValue()
+						|| Enums.UserType.CHANNEL_PARTNER.getId() == user.getUserType().intValue())) {
 			boolean isMailSend = false;
 			boolean sendOtp = false;
 			logger.log(Level.INFO, "Is Otp Sent===>{0}", sendOtp);
-			
+
 			try {
 				sendOtp = sendOtp(user, OTPType.REGISTRATION, NotificationAlias.SMS);
 				String subject = "VfinanceS – E Mail Verification";
-				isMailSend = sendLinkOnMail(user,NotificationAlias.EMAIL_VERIFY_ACCOUNT,subject,"email-verification");
+				isMailSend = sendLinkOnMail(user, NotificationAlias.EMAIL_VERIFY_ACCOUNT, subject,
+						"email-verification");
 				BeanUtils.copyProperties(user, userBO, "tempPassword", "password");
 				userBO.setIsSent(isMailSend);
 			} catch (Exception e) {
 				e.printStackTrace();
 				logger.info("Error while Sending Mail");
-			}	
-			
+			}
+
 			if (sendOtp || isMailSend) {
 				logger.log(Level.INFO, "OTP Sent For Mobile===>{0}=====Email=={1}",
 						new Object[] { user.getMobile(), user.getEmail() });
 				userBO.setId(user.getId());
-				if(sendOtp) {
-					return new LoginResponse(HttpStatus.OK.value(), "We have sent OTP On "
-							+ user.getMobile() + ".", userBO);					
-				}else if(isMailSend) {
-					return new LoginResponse(HttpStatus.OK.value(), "We have sent Email Verification Link on "
-							+ user.getEmail() + ".", userBO);
+				if (sendOtp) {
+					return new LoginResponse(HttpStatus.OK.value(), "We have sent OTP On " + user.getMobile() + ".",
+							userBO);
+				} else if (isMailSend) {
+					return new LoginResponse(HttpStatus.OK.value(),
+							"We have sent Email Verification Link on " + user.getEmail() + ".", userBO);
 				}
 			}
-			
-			if(Enums.UserType.CHANNEL_PARTNER.getId() == user.getUserType().intValue()) {
+
+			if (Enums.UserType.CHANNEL_PARTNER.getId() == user.getUserType().intValue()) {
 				Long codeCount = userMstrRepository.getCodeCount();
-				logger.log(Level.INFO, "Total Channel Partener Users Count===>{0}",
-						new Object[] { codeCount});
+				logger.log(Level.INFO, "Total Channel Partener Users Count===>{0}", new Object[] { codeCount });
 				String code = null;
-				if(codeCount == null) {
-					code= CommonUtils.generateCPCode(0l);
-				}else {
-					code= CommonUtils.generateCPCode(codeCount);
+				if (codeCount == null) {
+					code = CommonUtils.generateCPCode(0l);
+				} else {
+					code = CommonUtils.generateCPCode(codeCount);
 				}
 				user.setCode(code);
-			 }
+			}
 		}
 		logger.info(
 				"Successfully registration --------EMAIL---> " + userBO.getEmail() + "---------ID----" + user.getId());
@@ -282,7 +285,8 @@ public class UserMstrServiceImpl implements UserMstrService {
 		}
 		UserBO userBo = new UserBO();
 		BeanUtils.copyProperties(user, userBo, "password", "tempPassword");
-		if (user.getUserType() == Enums.UserType.BORROWER.getId() || user.getUserType() == Enums.UserType.CHANNEL_PARTNER.getId()) {
+		if (user.getUserType() == Enums.UserType.BORROWER.getId()
+				|| user.getUserType() == Enums.UserType.CHANNEL_PARTNER.getId()) {
 			List<AddressMstr> addressMstrList = addressMstrRepository.findByUserIdAndIsActive(user.getId(), true);
 			for (AddressMstr addressMstr : addressMstrList) {
 				AddressBO addressBO = new AddressBO();
@@ -317,7 +321,7 @@ public class UserMstrServiceImpl implements UserMstrService {
 				}
 			}
 			BusinessTypeMstr businessTypeMstr = user.getBusinessTypeMstr();
-			if(!CommonUtils.isObjectNullOrEmpty(businessTypeMstr)) {
+			if (!CommonUtils.isObjectNullOrEmpty(businessTypeMstr)) {
 				BusinessTypeBO bo = new BusinessTypeBO();
 				BeanUtils.copyProperties(businessTypeMstr, bo);
 				userBo.setBusinessType(bo);
@@ -345,6 +349,101 @@ public class UserMstrServiceImpl implements UserMstrService {
 	}
 
 	@Override
+	public LamsResponse addCpBorrower(UserBO userBO, Long userId) {
+		logger.log(Level.INFO, "Enter in addCpBorrower");
+		// CHECK IF EMAIL IS EXIST
+		
+		if(CommonUtils.isObjectNullOrEmpty(userBO.getId())) {
+			if (userMstrRepository.checkEmail(userBO.getEmail()) > 0) {
+				logger.info("Email is already exist ------------------------->" + userBO.getEmail());
+				return new LamsResponse(HttpStatus.BAD_REQUEST.value(), "Email is Already Exist");
+			}
+
+			// CHECK IF MOBILE IS EXIST
+			if (userMstrRepository.checkMobile(userBO.getMobile()) > 0) {
+				logger.info("Mobile is already exist ------------------------->" + userBO.getMobile());
+				return new LamsResponse(HttpStatus.BAD_REQUEST.value(), "Mobile is Already Exist");
+			}			
+		}else {
+			if (userMstrRepository.checkEmailById(userBO.getEmail(),userBO.getId()) > 0) {
+				logger.info("Email is already exist ------------------------->" + userBO.getEmail());
+				return new LamsResponse(HttpStatus.BAD_REQUEST.value(), "Email is Already Exist");
+			}
+
+			// CHECK IF MOBILE IS EXIST
+			if (userMstrRepository.checkEmailById(userBO.getMobile(),userBO.getId()) > 0) {
+				logger.info("Mobile is already exist ------------------------->" + userBO.getMobile());
+				return new LamsResponse(HttpStatus.BAD_REQUEST.value(), "Mobile is Already Exist");
+			}
+		}
+		
+		//Saving User Profile
+		User user = null;
+		if(!CommonUtils.isObjectNullOrEmpty(userBO.getId())) {
+			user = userMstrRepository.findOne(userBO.getId());
+			if(CommonUtils.isObjectNullOrEmpty(user)) {
+				logger.log(Level.INFO, "No User Detail Found for Given User Id. Something goes Wrong===={0}", new Object[] {userId});
+				return new LamsResponse(HttpStatus.BAD_REQUEST.value(), "No User Details Found for UserId");
+			}
+		}else {
+			user = new User();
+			user.setIsOtpVerified(true);
+			user.setIsEmailVerified(true);
+			user.setIsAcceptTermCondition(true);
+			user.setIsActive(true);
+			user.setChannelPartnerId(new User(userId));
+			user.setUserType(userBO.getUserType());
+		}
+		
+		//Create or Update User (Borrower)
+		user.setEmail(userBO.getEmail());
+		user.setMobile(userBO.getMobile());
+		user.setName(userBO.getName());
+		user.setSalutation(userBO.getSalutation());
+		user = userMstrRepository.save(user);
+		
+		//Create Or Update Application
+		if(!CommonUtils.isListNullOrEmpty(userBO.getApplications())) {
+			for(ApplicationsBO applicationsBO : userBO.getApplications()) {
+				applicationsService.saveFromCP(applicationsBO,user.getId(),userMstrRepository.findOne(userId).getCode());
+			}
+		}else {
+			logger.log(Level.INFO, "No Application Selected by Channel Partner User =====>{0}", new Object[]{userId});
+		}
+		BeanUtils.copyProperties(user, userBO);
+		userBO.setApplications(applicationsService.getAllByCP(user.getId(), userId));
+		logger.log(Level.INFO, "Exit in addCpBorrower");
+		return new LamsResponse(HttpStatus.OK.value(),"Success",userBO);
+	}
+	
+	
+
+	@Override
+	public LamsResponse getCpUsersByUserType(Long cpUserId,Long userType) {
+		List<User>  list = 	null;
+		if(userType != null) {
+			if(Enums.UserType.ALL.getId() == userType) {
+				list = userMstrRepository.getUserByCpId(cpUserId);
+			}else {
+				list = userMstrRepository.getUserByCpIdAndUserType(cpUserId,userType);
+			}
+		}else {
+			list = userMstrRepository.getUserByCpId(cpUserId);
+		}
+		if(CommonUtils.isListNullOrEmpty(list)) {
+			return new LamsResponse(HttpStatus.OK.value(), "No Borrower Added Yet !",Collections.emptyList());
+		}
+		List<UserBO> userBOs = new ArrayList<>();
+		for(User usr : list) {
+			UserBO userBo  = new UserBO();
+			BeanUtils.copyProperties(usr, userBo);
+			userBo.setApplications(applicationsService.getAllByCP(usr.getId(), cpUserId));
+			userBOs.add(userBo);
+		}
+		return new LamsResponse(HttpStatus.OK.value(), "Data Found",userBOs);
+	}
+
+	@Override
 	public LamsResponse updateUserDetails(UserBO userBO) {
 		User user = userMstrRepository.findOne(userBO.getId());
 		if (CommonUtils.isObjectNullOrEmpty(user)) {
@@ -356,9 +455,10 @@ public class UserMstrServiceImpl implements UserMstrService {
 			user.setMiddleName(userBO.getMiddleName());
 			user.setLastName(userBO.getLastName());
 			user.setSalutation(userBO.getSalutation());
-			
-		} else if (user.getUserType() == Enums.UserType.BORROWER.getId() || user.getUserType() == Enums.UserType.CHANNEL_PARTNER.getId()) {
-			BeanUtils.copyProperties(userBO, user, "password", "tempPassword","email","mobile");
+
+		} else if (user.getUserType() == Enums.UserType.BORROWER.getId()
+				|| user.getUserType() == Enums.UserType.CHANNEL_PARTNER.getId()) {
+			BeanUtils.copyProperties(userBO, user, "password", "tempPassword", "email", "mobile");
 			if (!CommonUtils.isObjectNullOrEmpty(userBO.getPermanentAdd())) {
 				addressService.saveAddress(userBO.getPermanentAdd(), userBO.getId(), CommonUtils.AddressType.PERMANENT);
 			}
@@ -366,22 +466,23 @@ public class UserMstrServiceImpl implements UserMstrService {
 				addressService.saveAddress(userBO.getCommunicationAdd(), userBO.getId(),
 						CommonUtils.AddressType.COMMUNICATION);
 			}
-			if(!CommonUtils.isObjectNullOrEmpty(userBO.getBusinessType()) && !CommonUtils.isObjectNullOrEmpty(userBO.getBusinessType().getId())) {
+			if (!CommonUtils.isObjectNullOrEmpty(userBO.getBusinessType())
+					&& !CommonUtils.isObjectNullOrEmpty(userBO.getBusinessType().getId())) {
 				user.setBusinessTypeMstr(new BusinessTypeMstr(userBO.getBusinessType().getId()));
 			}
-		//Updating already Existing Applications code	
-			if(CommonUtils.isObjectNullOrEmpty(userBO.getCode()) && Enums.UserType.CHANNEL_PARTNER.getId() == user.getUserType().intValue()) {
+			// Updating already Existing Applications code
+			if (CommonUtils.isObjectNullOrEmpty(userBO.getCode())
+					&& Enums.UserType.CHANNEL_PARTNER.getId() == user.getUserType().intValue()) {
 				Long codeCount = userMstrRepository.getCodeCount();
-				logger.log(Level.INFO, "Total Channel Partener Users Count===>{0}",
-						new Object[] { codeCount});
+				logger.log(Level.INFO, "Total Channel Partener Users Count===>{0}", new Object[] { codeCount });
 				String code = null;
-				if(codeCount == null) {
-					code= CommonUtils.generateCPCode(0l);
-				}else {
-					code= CommonUtils.generateCPCode(codeCount);
+				if (codeCount == null) {
+					code = CommonUtils.generateCPCode(0l);
+				} else {
+					code = CommonUtils.generateCPCode(codeCount);
 				}
 				user.setCode(code);
-			 }
+			}
 		}
 		user.setModifiedDate(new Date());
 		user.setModifiedBy(userBO.getId());
@@ -574,7 +675,7 @@ public class UserMstrServiceImpl implements UserMstrService {
 	public LamsResponse verifyEmail(String link) {
 		logger.log(Level.INFO, "Link From Web===>{0}", new Object[] { link });
 		String[] arr = link.toString().split("\\|");
-		logger.log(Level.INFO,"arrarrarrarrarr====={0}",new Object[] {arr.length});
+		logger.log(Level.INFO, "arrarrarrarrarr====={0}", new Object[] { arr.length });
 		if (arr == null || arr.length < 2) {
 			return new LamsResponse(HttpStatus.BAD_REQUEST.value(), "Invalid Link. Please try Again!");
 		}

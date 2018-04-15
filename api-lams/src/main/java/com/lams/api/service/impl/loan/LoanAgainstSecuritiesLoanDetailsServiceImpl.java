@@ -46,8 +46,15 @@ public class LoanAgainstSecuritiesLoanDetailsServiceImpl implements LoanAgainstS
 			domainObj.setCreatedBy(requestLoanDetailsBO.getUserId());
 			domainObj.setCreatedDate(new Date());
 			domainObj.setIsActive(true);
-			String lastLeadReferenceNo = applicationsRepository.getLastLeadReferenceNo(Long.valueOf(ApplicationType.LOAN_AGAINST_SECURITIS));
-			domainObj.setLeadReferenceNo(CommonUtils.generateRefNo(ApplicationTypeCode.LOAN_AGAINST_SECURITIS, lastLeadReferenceNo));
+			
+			if(!CommonUtils.isObjectNullOrEmpty(requestLoanDetailsBO.getIsFromCP()) && requestLoanDetailsBO.getIsFromCP()) {
+				//requestLoanDetailsBO.getLeadReferenceNo() Property Contains Code of Channel Partner
+				String lastLeadReferenceNo = applicationsRepository.getLastLeadReferenceNoForCP(Long.valueOf(ApplicationType.LOAN_AGAINST_SECURITIS));
+				domainObj.setLeadReferenceNo(CommonUtils.generateRefNoFromCP(ApplicationTypeCode.LOAN_AGAINST_SECURITIS, lastLeadReferenceNo,requestLoanDetailsBO.getLeadReferenceNo()));
+			}else {
+				String lastLeadReferenceNo = applicationsRepository.getLastLeadReferenceNo(Long.valueOf(ApplicationType.LOAN_AGAINST_SECURITIS));
+				domainObj.setLeadReferenceNo(CommonUtils.generateRefNo(ApplicationTypeCode.LOAN_AGAINST_SECURITIS, lastLeadReferenceNo));				
+			}
 			domainObj.setUserId(requestLoanDetailsBO.getUserId());
 		} else {
 			domainObj.setModifiedBy(requestLoanDetailsBO.getUserId());
@@ -60,6 +67,7 @@ public class LoanAgainstSecuritiesLoanDetailsServiceImpl implements LoanAgainstS
 		if(!CommonUtils.isObjectNullOrEmpty(requestLoanDetailsBO.getLoanTypeId())) {
 			domainObj.setLoanTypeId(loanTypeMstrRepository.findOne(requestLoanDetailsBO.getLoanTypeId()));
 		}
+		domainObj.setIsFromCP(requestLoanDetailsBO.getIsFromCP());
 		domainObj = repository.save(domainObj);
 		return domainObj.getId();
 	}

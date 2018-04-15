@@ -47,9 +47,16 @@ public class GoldLoanDetailsServiceImpl implements GoldLoanDetailsService{
 			domainObj = new GoldLoanDetails();
 			domainObj.setCreatedBy(requestLoanDetailsBO.getUserId());
 			domainObj.setCreatedDate(new Date());
-			String lastLeadReferenceNo = applicationsRepository.getLastLeadReferenceNo(Long.valueOf(ApplicationType.GOLD_LOAN));
-			domainObj.setLeadReferenceNo(CommonUtils.generateRefNo(ApplicationTypeCode.GOLD_LOAN, lastLeadReferenceNo));
 			domainObj.setIsActive(true);
+			
+			if(!CommonUtils.isObjectNullOrEmpty(requestLoanDetailsBO.getIsFromCP()) && requestLoanDetailsBO.getIsFromCP()) {
+				//requestLoanDetailsBO.getLeadReferenceNo() Property Contains Code of Channel Partner
+				String lastLeadReferenceNo = applicationsRepository.getLastLeadReferenceNoForCP(Long.valueOf(ApplicationType.GOLD_LOAN));
+				domainObj.setLeadReferenceNo(CommonUtils.generateRefNoFromCP(ApplicationTypeCode.GOLD_LOAN, lastLeadReferenceNo,requestLoanDetailsBO.getLeadReferenceNo()));
+			}else {
+				String lastLeadReferenceNo = applicationsRepository.getLastLeadReferenceNo(Long.valueOf(ApplicationType.GOLD_LOAN));
+				domainObj.setLeadReferenceNo(CommonUtils.generateRefNo(ApplicationTypeCode.GOLD_LOAN, lastLeadReferenceNo));				
+			}
 			domainObj.setUserId(requestLoanDetailsBO.getUserId());
 		} else {
 			domainObj.setModifiedBy(requestLoanDetailsBO.getUserId());
@@ -62,6 +69,7 @@ public class GoldLoanDetailsServiceImpl implements GoldLoanDetailsService{
 		if(!CommonUtils.isObjectNullOrEmpty(requestLoanDetailsBO.getLoanTypeId())) {
 			domainObj.setLoanTypeId(loanTypeMstrRepository.findOne(requestLoanDetailsBO.getLoanTypeId()));
 		}
+		domainObj.setIsFromCP(requestLoanDetailsBO.getIsFromCP());
 		domainObj = repository.save(domainObj);
 		return domainObj.getId();
 	}

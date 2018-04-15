@@ -67,6 +67,9 @@ public class Applications extends Auditor implements Serializable {
 	@Column(name="is_upload_complete")
 	private Boolean isUploadComplete;
 	
+	@Column(name="is_from_cp")
+	private Boolean isFromCP;
+	
 	private String status;
 	
 	public Long getId() {
@@ -189,7 +192,12 @@ public class Applications extends Auditor implements Serializable {
 	public void setIsUploadComplete(Boolean isUploadComplete) {
 		this.isUploadComplete = isUploadComplete;
 	}
-	
-	
 
+	public Boolean getIsFromCP() {
+		return isFromCP;
+	}
+
+	public void setIsFromCP(Boolean isFromCP) {
+		this.isFromCP = isFromCP;
+	}
 }

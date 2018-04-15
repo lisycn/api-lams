@@ -56,6 +56,8 @@ public class ApplicationsBO extends AuditorBO implements Serializable{
 	private String email;
 
 	private String mobile;
+	
+	private Boolean isFromCP;
 
 	
 	public Long getId() {
@@ -250,5 +252,12 @@ public class ApplicationsBO extends AuditorBO implements Serializable{
 	public void setMobile(String mobile) {
 		this.mobile = mobile;
 	}
-	
+
+	public Boolean getIsFromCP() {
+		return isFromCP;
+	}
+
+	public void setIsFromCP(Boolean isFromCP) {
+		this.isFromCP = isFromCP;
+	}
 }

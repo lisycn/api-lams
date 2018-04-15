@@ -38,4 +38,8 @@ public interface UserMstrService {
 	public LamsResponse sendForgotPasswordLink(String email) throws Exception;
 	
 	public LamsResponse resetPassword(UserBO userBO,String link);
+	
+	public LamsResponse addCpBorrower(UserBO userBO, Long userId);
+	
+	public LamsResponse getCpUsersByUserType(Long cpUserId,Long userType);
 }

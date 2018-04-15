@@ -46,8 +46,14 @@ public class EducationLoanDetailsServiceImpl implements EducationLoanDetailsServ
 			domainObj.setCreatedBy(requestLoanDetailsBO.getUserId());
 			domainObj.setCreatedDate(new Date());
 			domainObj.setIsActive(true);
-			String lastLeadReferenceNo = applicationsRepository.getLastLeadReferenceNo(Long.valueOf(ApplicationType.EDUCATION_LOAN));
-			domainObj.setLeadReferenceNo(CommonUtils.generateRefNo(ApplicationTypeCode.EDUCATION_LOAN, lastLeadReferenceNo));
+			if(!CommonUtils.isObjectNullOrEmpty(requestLoanDetailsBO.getIsFromCP()) && requestLoanDetailsBO.getIsFromCP()) {
+				//requestLoanDetailsBO.getLeadReferenceNo() Property Contains Code of Channel Partner
+				String lastLeadReferenceNo = applicationsRepository.getLastLeadReferenceNoForCP(Long.valueOf(ApplicationType.EDUCATION_LOAN));
+				domainObj.setLeadReferenceNo(CommonUtils.generateRefNoFromCP(ApplicationTypeCode.EDUCATION_LOAN, lastLeadReferenceNo,requestLoanDetailsBO.getLeadReferenceNo()));
+			}else {
+				String lastLeadReferenceNo = applicationsRepository.getLastLeadReferenceNo(Long.valueOf(ApplicationType.EDUCATION_LOAN));
+				domainObj.setLeadReferenceNo(CommonUtils.generateRefNo(ApplicationTypeCode.EDUCATION_LOAN, lastLeadReferenceNo));				
+			}
 			domainObj.setUserId(requestLoanDetailsBO.getUserId());
 		} else {
 			domainObj.setModifiedBy(requestLoanDetailsBO.getUserId());
@@ -60,6 +66,7 @@ public class EducationLoanDetailsServiceImpl implements EducationLoanDetailsServ
 		if(!CommonUtils.isObjectNullOrEmpty(requestLoanDetailsBO.getLoanTypeId())) {
 			domainObj.setLoanTypeId(loanTypeMstrRepository.findOne(requestLoanDetailsBO.getLoanTypeId()));
 		}
+		domainObj.setIsFromCP(requestLoanDetailsBO.getIsFromCP());
 		domainObj = repository.save(domainObj);
 		return domainObj.getId();
 	}

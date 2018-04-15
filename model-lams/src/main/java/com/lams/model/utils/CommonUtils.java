@@ -222,6 +222,16 @@ public class CommonUtils {
 		return VS + "-" + applicationCode + "-" + String.format("%06d", 1);
 	}
 	
+	public static String generateRefNoFromCP(String applicationCode, String code,String cpCode) {
+		if (!CommonUtils.isObjectNullOrEmpty(code)) {
+			String[] codes = code.split("-");
+			if (codes.length > 2) {
+				return VSCP + "-" + codes[1] + "-" + applicationCode + "-" + String.format("%06d", Integer.valueOf(codes[codes.length - 1]) + 1);
+			}
+		}
+		return cpCode + "-" + applicationCode + "-" + String.format("%06d", 1);
+	}
+	
 	public static String generateCPCode(Long count) {
 			return VSCP + "-" + String.format("%03d", count + 1);
 	}
