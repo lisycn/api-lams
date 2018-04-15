@@ -245,28 +245,19 @@ public class CommonUtils {
 
 		PAN_CARD(1l, "Pan Card"), AADHAR_CARD(2l, "Aadhar Card"), 
 		LAST_3_MONTH_SALARY_SLIP(3l,"Last 3 Month Salary Slip"), 
-		LAST_6_MONTHS_BANK_ACCOUNT_STATEMENT(4l,
-						"Last 6 Months Bank Account Statement"), FORM_16_OR_APPOIMENT_LETTER(5l,
-								"Form 16 pr Appoiment Letter"), INVESTMENT_PROOFS(6l,
-										"Investment Proofs"), EXISTING_LOAN_DOCUMENT(7l,
-												"Existing Loan Document"), OTHER_DOCUMENT(8l,
-														"Others Documemnts"), PHOTO_GRAPH(9l,
-																"Photo Graph"), CORPORATE_ITR_SET_YEAR1(10l,
-																		"Corporate Income Tax Return Set Year 1 ( ITR / Computation of Income / Financials )"), CORPORATE_ITR_SET_YEAR2(
-																				11l,
-																				"Corporate Income Tax Return Set Year 2 ( ITR / Computation of Income / Financials )"), CORPORATE_ITR_SET_YEAR3(
-																						12l,
-																						"Corporate Income Tax Return Set Year 3 ( ITR / Computation of Income / Financials )"), CORPORATE_BANK_ACCOUNT_STATEMENT(
-																								13l,
-																								"Corporate Bank Account Statements"), INDIVIDUAL_ITR_SET_YEAR1(
-																										14l,
-																										"Individual Income Tax Return Set Year 1 ( ITR / Computation of Income / Financials )"), INDIVIDUAL_ITR_SET_YEAR2(
-																												15l,
-																												"Individual Income Tax Return Set Year 2 ( ITR / Computation of Income / Financials )"), INDIVIDUAL_ITR_SET_YEAR3(
-																														16l,
-																														"Individual Income Tax Return Set Year 3 ( ITR / Computation of Income / Financials )"), INDIVIDUAL_BANK_ACCOUNT_STATEMENT(
-																																17l,
-																																"Individual Bank Account Statements");
+		LAST_6_MONTHS_BANK_ACCOUNT_STATEMENT(4l, "Last 6 Months Bank Account Statement"), 
+		FORM_16_OR_APPOIMENT_LETTER(5l, "Form 16 pr Appoiment Letter"), 
+		INVESTMENT_PROOFS(6l, "Investment Proofs"), 
+		EXISTING_LOAN_DOCUMENT(7l,"Existing Loan Document"), 
+		OTHER_DOCUMENT(8l,"Others Documemnts"), 
+		CORPORATE_ITR_SET_YEAR1(10l,"Corporate Income Tax Return Set Year 1 ( ITR / Computation of Income / Financials )"), 
+		CORPORATE_ITR_SET_YEAR2(11l,"Corporate Income Tax Return Set Year 2 ( ITR / Computation of Income / Financials )"), 
+		CORPORATE_ITR_SET_YEAR3(12l,"Corporate Income Tax Return Set Year 3 ( ITR / Computation of Income / Financials )"), 
+		CORPORATE_BANK_ACCOUNT_STATEMENT(13l,"Corporate Bank Account Statements"), 
+		INDIVIDUAL_ITR_SET_YEAR1(14l,"Individual Income Tax Return Set Year 1 ( ITR / Computation of Income / Financials )"), 
+		INDIVIDUAL_ITR_SET_YEAR2(15l,"Individual Income Tax Return Set Year 2 ( ITR / Computation of Income / Financials )"), 
+		INDIVIDUAL_ITR_SET_YEAR3(16l,"Individual Income Tax Return Set Year 3 ( ITR / Computation of Income / Financials )"), 
+		INDIVIDUAL_BANK_ACCOUNT_STATEMENT(17l,"Individual Bank Account Statements");
 
 		private Long id;
 		private String name;
@@ -301,8 +292,6 @@ public class CommonUtils {
 				return DocumentType.EXISTING_LOAN_DOCUMENT;
 			} else if (id == OTHER_DOCUMENT.getId()) {
 				return DocumentType.OTHER_DOCUMENT;
-			} else if (id == PHOTO_GRAPH.getId()) {
-				return DocumentType.PHOTO_GRAPH;
 			} else if (id == CORPORATE_ITR_SET_YEAR1.getId()) {
 				return DocumentType.CORPORATE_ITR_SET_YEAR1;
 			} else if (id == CORPORATE_ITR_SET_YEAR2.getId()) {
@@ -331,7 +320,6 @@ public class CommonUtils {
 		public static List<DocumentType> getAllByEmpType(Long employmentType) {
 			List<DocumentType> docList = new ArrayList<>();
 			if(EmploymentType.SALARIED == employmentType) {
-				docList.add(PHOTO_GRAPH);
 				docList.add(PAN_CARD);
 				docList.add(AADHAR_CARD);
 				docList.add(LAST_3_MONTH_SALARY_SLIP);
@@ -341,7 +329,6 @@ public class CommonUtils {
 				docList.add(EXISTING_LOAN_DOCUMENT);
 				docList.add(OTHER_DOCUMENT);
 			} else if(EmploymentType.SELF_EMPLOYED == employmentType) {
-				docList.add(PHOTO_GRAPH);
 				docList.add(PAN_CARD);
 				docList.add(AADHAR_CARD);
 				docList.add(CORPORATE_ITR_SET_YEAR1);
