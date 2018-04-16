@@ -27,6 +27,11 @@ public class AddressBO extends AuditorBO implements Serializable {
 	private CityBO city;
 	
 	private Integer addType;
+	
+	private String premisesNumber;
+	
+	private String buildingName;
+	
 
 	public Long getId() {
 		return id;
@@ -91,12 +96,33 @@ public class AddressBO extends AuditorBO implements Serializable {
 	public void setAddType(Integer addType) {
 		this.addType = addType;
 	}
+	
+	
+
+	public String getPremisesNumber() {
+		return premisesNumber;
+	}
+
+	public void setPremisesNumber(String premisesNumber) {
+		this.premisesNumber = premisesNumber;
+	}
+
+	public String getBuildingName() {
+		return buildingName;
+	}
+
+	public void setBuildingName(String buildingName) {
+		this.buildingName = buildingName;
+	}
 
 	@Override
 	public String toString() {
 		return "AddressBO [id=" + id + ", streetName=" + streetName + ", landMark=" + landMark + ", pincode=" + pincode
-				+ ", country=" + country + ", state=" + state + ", city=" + city + ", addType=" + addType + "]";
+				+ ", country=" + country + ", state=" + state + ", city=" + city + ", addType=" + addType
+				+ ", premisesNumber=" + premisesNumber + ", buildingName=" + buildingName + "]";
 	}
+
+	
 
 
 }
