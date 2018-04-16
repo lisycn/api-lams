@@ -58,6 +58,8 @@ public class AddressServiceImpl implements AddressService {
 		addressMstr.setAddType(addType);
 		addressMstr.setLandMark(addressBO.getLandMark());
 		addressMstr.setStreetName(addressBO.getStreetName());
+		addressMstr.setBuildingName(addressBO.getBuildingName());
+		addressMstr.setPremisesNumber(addressBO.getPremisesNumber());
 		addressMstrRepository.save(addressMstr);
 		logger.log(Level.INFO, "End saveAddress()");
 	}

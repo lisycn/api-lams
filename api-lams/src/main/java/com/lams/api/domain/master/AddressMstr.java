@@ -23,6 +23,12 @@ public class AddressMstr extends Auditor implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Column(name = "premises_number")
+	private String premisesNumber;
+	
+	@Column(name = "building_name")
+	private String buildingName;
+	
 	@Column(name = "street_name")
 	private String streetName;
 
@@ -104,6 +110,24 @@ public class AddressMstr extends Auditor implements Serializable {
 
 	public void setAddType(Integer addType) {
 		this.addType = addType;
+	}
+	
+	
+
+	public String getPremisesNumber() {
+		return premisesNumber;
+	}
+
+	public void setPremisesNumber(String premisesNumber) {
+		this.premisesNumber = premisesNumber;
+	}
+
+	public String getBuildingName() {
+		return buildingName;
+	}
+
+	public void setBuildingName(String buildingName) {
+		this.buildingName = buildingName;
 	}
 
 	@Override
