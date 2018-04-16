@@ -182,11 +182,11 @@ public class UserMstrServiceImpl implements UserMstrService {
 		}
 
 		// Sending OTP to Registered Email
+		boolean isMailSend = false;
+		boolean sendOtp = false;
 		if (!CommonUtils.isObjectNullOrEmpty(user.getUserType())
 				&& (Enums.UserType.BORROWER.getId() == user.getUserType().intValue()
 						|| Enums.UserType.CHANNEL_PARTNER.getId() == user.getUserType().intValue())) {
-			boolean isMailSend = false;
-			boolean sendOtp = false;
 			logger.log(Level.INFO, "Is Otp Sent===>{0}", sendOtp);
 
 			try {
@@ -199,19 +199,6 @@ public class UserMstrServiceImpl implements UserMstrService {
 			} catch (Exception e) {
 				e.printStackTrace();
 				logger.info("Error while Sending Mail");
-			}
-
-			if (sendOtp || isMailSend) {
-				logger.log(Level.INFO, "OTP Sent For Mobile===>{0}=====Email=={1}",
-						new Object[] { user.getMobile(), user.getEmail() });
-				userBO.setId(user.getId());
-				if (sendOtp) {
-					return new LoginResponse(HttpStatus.OK.value(), "We have sent OTP On " + user.getMobile() + ".",
-							userBO);
-				} else if (isMailSend) {
-					return new LoginResponse(HttpStatus.OK.value(),
-							"We have sent Email Verification Link on " + user.getEmail() + ".", userBO);
-				}
 			}
 
 			if (Enums.UserType.CHANNEL_PARTNER.getId() == user.getUserType().intValue()) {
@@ -229,9 +216,20 @@ public class UserMstrServiceImpl implements UserMstrService {
 		logger.info(
 				"Successfully registration --------EMAIL---> " + userBO.getEmail() + "---------ID----" + user.getId());
 		String msg = "Successfully Registration";
-		if (!CommonUtils.isObjectNullOrEmpty(userBO.getId())) {
-			msg = "Successfully Updated";
+//		if (!CommonUtils.isObjectNullOrEmpty(userBO.getId())) {
+//			msg = "Successfully Updated";
+//		}
+		if (sendOtp && isMailSend) {
+			logger.log(Level.INFO, "OTP Sent For Mobile===>{0}=====Email=={1}",
+					new Object[] { user.getMobile(), user.getEmail() });
+			msg = msg + " We have sent OTP On " + user.getMobile() + " and We have sent Email Verification Link on " + user.getEmail() + ".";
+			userBO.setId(user.getId());
+		}else if (sendOtp) {
+			msg = msg + " We have sent OTP On " + user.getMobile() + ".";
+		} else if (isMailSend) {
+			msg = msg + " We have sent Email Verification Link on " + user.getEmail() + ".";
 		}
+		
 		return new LamsResponse(HttpStatus.OK.value(), msg, userBO);
 	}
 
@@ -404,7 +402,10 @@ public class UserMstrServiceImpl implements UserMstrService {
 		user.setName(userBO.getName());
 		user.setSalutation(userBO.getSalutation());
 		user = userMstrRepository.save(user);
-		
+
+		//Inactive All Previous Loans
+		int inActiveByUserId = applicationsService.inActiveByUserId(user.getId());
+		logger.info("inActiveByUserId====>" + inActiveByUserId);
 		//Create Or Update Application
 		if(!CommonUtils.isListNullOrEmpty(userBO.getApplications())) {
 			for(ApplicationsBO applicationsBO : userBO.getApplications()) {
