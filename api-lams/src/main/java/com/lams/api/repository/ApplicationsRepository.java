@@ -3,6 +3,7 @@ package com.lams.api.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -14,10 +15,10 @@ public interface ApplicationsRepository  extends JpaRepository<Applications, Lon
 	
 	public Applications findByIdAndIsActive(Long id, Boolean isActive);
 	
-	@Query(value = "SELECT lead_reference_no FROM lams.applications where application_type_id =:applicationType order by id desc limit 1",nativeQuery = true)
+	@Query(value = "SELECT lead_reference_no FROM lams.applications where application_type_id =:applicationType and is_from_cp = false order by id desc limit 1",nativeQuery = true)
 	public String getLastLeadReferenceNo(@Param("applicationType") Long applicationType);
 	
-	@Query(value = "SELECT lead_reference_no FROM lams.applications where application_type_id =:applicationType and lead_reference_no like 'VSCP%' order by id desc limit 1",nativeQuery = true)
+	@Query(value = "SELECT lead_reference_no FROM lams.applications where application_type_id =:applicationType and is_from_cp = true order by id desc limit 1",nativeQuery = true)
 	public String getLastLeadReferenceNoForCP(@Param("applicationType") Long applicationType);
 	
 	@Query(value = "SELECT distinct(app.userId) from Applications app where app.applicationTypeId.id in (:id) and app.isActive = true")
@@ -33,6 +34,10 @@ public interface ApplicationsRepository  extends JpaRepository<Applications, Lon
 	
 	public List<Applications> findByApplicationTypeIdIdAndIsActiveAndStatus(Long appTypeId,Boolean isActive,String status);
 
-	@Query(value="select app from Applications app , User usr where app.userId = usr.id and usr.channelPartnerId.id =:cpId and app.userId =:userId and usr.channelPartnerId.isActive = true and app.leadReferenceNo LIKE 'VSCP%'")
+	@Query(value="select app from Applications app , User usr where app.isActive = true and app.userId = usr.id and usr.channelPartnerId.id =:cpId and app.userId =:userId and usr.channelPartnerId.isActive = true and app.leadReferenceNo LIKE 'VSCP%'")
 	public List<Applications> getAllAppByUserIdAndCpId(@Param("userId")Long userId, @Param("cpId")Long cpId);
+	
+	@Modifying
+	@Query(value = "update Applications app set app.isActive = false where app.userId =:userId and app.isActive = true")
+	public int inActiveByUserId(@Param("userId")Long userId);
 }

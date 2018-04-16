@@ -836,8 +836,15 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 		return null;
 	}
 	
+	
+	
+	@Override
+	public int inActiveByUserId(Long userId) {
+		return applicationsRepository.inActiveByUserId(userId);
+	}
+
 	private void setCommonProperty(ApplicationsBO from,ApplicationsBO to,String cpUserCode,Long brUserId) {
-		to.setId(from.getId());
+//		to.setId(from.getId());
 		to.setApplicationTypeId(from.getApplicationTypeId());
 		to.setUserId(brUserId);
 		to.setLoanAmount(from.getLoanAmount());
