@@ -381,6 +381,8 @@ public class UserMstrServiceImpl implements UserMstrService {
 		User user = null;
 		if(!CommonUtils.isObjectNullOrEmpty(userBO.getId())) {
 			user = userMstrRepository.findOne(userBO.getId());
+			user.setModifiedBy(userId);
+			user.setModifiedDate(new Date());
 			if(CommonUtils.isObjectNullOrEmpty(user)) {
 				logger.log(Level.INFO, "No User Detail Found for Given User Id. Something goes Wrong===={0}", new Object[] {userId});
 				return new LamsResponse(HttpStatus.BAD_REQUEST.value(), "No User Details Found for UserId");
@@ -393,6 +395,7 @@ public class UserMstrServiceImpl implements UserMstrService {
 			user.setIsActive(true);
 			user.setChannelPartnerId(new User(userId));
 			user.setUserType(userBO.getUserType());
+			user.setCreatedDate(new Date());
 		}
 		
 		//Create or Update User (Borrower)

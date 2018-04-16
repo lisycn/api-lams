@@ -841,6 +841,7 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 		to.setApplicationTypeId(from.getApplicationTypeId());
 		to.setUserId(brUserId);
 		to.setLoanAmount(from.getLoanAmount());
+		to.setLoanTypeId(Long.valueOf(CommonUtils.LoanType.CURRENT_LOAN));
 		to.setIsFromCP(from.getIsFromCP());
 		to.setStatus(CommonUtils.Status.OPEN);
 		to.setLeadReferenceNo(cpUserCode);
