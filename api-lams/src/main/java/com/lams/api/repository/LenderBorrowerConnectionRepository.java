@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.lams.api.domain.Applications;
 import com.lams.api.domain.LenderBorrowerConnection;
+import com.lams.model.utils.CommonUtils;
 
 public interface LenderBorrowerConnectionRepository extends JpaRepository<LenderBorrowerConnection, Long> {
 
@@ -29,6 +30,6 @@ public interface LenderBorrowerConnectionRepository extends JpaRepository<Lender
 	public Long isActionTakenOnApplicationByLender(@Param("applicationId")Long applicationId, @Param("lenderId")Long lenderId);
 	
 	@Modifying
-	@Query("update LenderBorrowerConnection lb set lb.status =:status where lb.application.id =:applicationId")
+	@Query("update LenderBorrowerConnection lb set lb.status =:status where lb.application.id =:applicationId and lb.status =" + CommonUtils.Status.RESPONDED)
 	public void setRejectStatusAfterAcceptingLender(@Param("applicationId")Long applicationId, @Param("status")String status);
 }
