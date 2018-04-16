@@ -26,6 +26,7 @@ public class CommonUtils {
 		public static final String RESPONDED = "RESPONDED";
 		public static final String ACCEPTED = "ACCEPTED";
 		public static final String REJECTED = "REJECTED";
+		public static final String NOTINTERESTED = "NOTINTERESTED";
 	}
 
 	static {
@@ -318,7 +319,7 @@ public class CommonUtils {
 		}
 		
 		public static List<DocumentType> getAllByEmpType(Long employmentType) {
-			List<DocumentType> docList = new ArrayList<>();
+			List<DocumentType> docList = new ArrayList();
 			if(EmploymentType.SALARIED == employmentType) {
 				docList.add(PAN_CARD);
 				docList.add(AADHAR_CARD);

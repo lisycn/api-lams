@@ -240,6 +240,38 @@ public class ApplicationController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	@RequestMapping(value = "/save_not_interested_status", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<LamsResponse> setNotInterestedStatus(@RequestBody LenderBorrowerConnectionBO connectionBo,
+			HttpServletRequest httpServletRequest) {
+
+		Long userId = (Long) httpServletRequest.getAttribute(CommonUtils.USER_ID);
+		logger.info("User ID-----------> " + userId);
+		if (CommonUtils.isObjectNullOrEmpty(connectionBo.getApplication())) {
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.BAD_REQUEST.value(), "Application Type Null Or Empty"), HttpStatus.OK);
+		}
+
+		connectionBo.setCreatedBy(userId);
+
+		try {
+			connectionBo.setStatus(CommonUtils.Status.NOTINTERESTED);
+			Long id = lenderBorrowerService.save(connectionBo);
+			if (!CommonUtils.isObjectNullOrEmpty(id)) {
+				return new ResponseEntity<LamsResponse>(
+						new LamsResponse(HttpStatus.OK.value(), "Successfully save data", id), HttpStatus.OK);
+			} else {
+				return new ResponseEntity<LamsResponse>(
+						new LamsResponse(HttpStatus.BAD_REQUEST.value(), "Invalid Request"), HttpStatus.OK);
+			}
+		} catch (Exception e) {
+			logger.info("Throw Exception while save application by id ---------------->");
+			e.printStackTrace();
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Something went wrong"),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 	@RequestMapping(value = "/get_connections/{appId}/{status}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<LamsResponse> getConnections(@PathVariable("appId") Long appId,
