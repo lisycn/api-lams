@@ -33,6 +33,6 @@ public interface ApplicationsRepository  extends JpaRepository<Applications, Lon
 	
 	public List<Applications> findByApplicationTypeIdIdAndIsActiveAndStatus(Long appTypeId,Boolean isActive,String status);
 
-	@Query(value="select app from Applications app , User usr where app.userId = usr.id and usr.channelPartnerId.id =:cpId and app.userId =:userId and usr.channelPartnerId.isActive = true")
+	@Query(value="select app from Applications app , User usr where app.userId = usr.id and usr.channelPartnerId.id =:cpId and app.userId =:userId and usr.channelPartnerId.isActive = true and app.leadReferenceNo LIKE 'VSCP%'")
 	public List<Applications> getAllAppByUserIdAndCpId(@Param("userId")Long userId, @Param("cpId")Long cpId);
 }
