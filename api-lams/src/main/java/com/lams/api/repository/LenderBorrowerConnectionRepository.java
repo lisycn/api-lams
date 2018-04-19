@@ -30,6 +30,6 @@ public interface LenderBorrowerConnectionRepository extends JpaRepository<Lender
 	public Long isActionTakenOnApplicationByLender(@Param("applicationId")Long applicationId, @Param("lenderId")Long lenderId);
 	
 	@Modifying
-	@Query("update LenderBorrowerConnection lb set lb.status =:status where lb.application.id =:applicationId and lb.status =" + CommonUtils.Status.RESPONDED)
+	@Query("update LenderBorrowerConnection lb set lb.status =:status where lb.application.id =:applicationId and lb.status = 'RESPONDED'")
 	public void setRejectStatusAfterAcceptingLender(@Param("applicationId")Long applicationId, @Param("status")String status);
 }
