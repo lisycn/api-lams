@@ -273,6 +273,23 @@ public class UserMstrServiceImpl implements UserMstrService {
 		}
 		return userBOList;
 	}
+	
+	
+	@Override
+	public UserBO getUserBasicDetails(Long userId) {
+		User user = userMstrRepository.findOne(userId);
+		UserBO userBo = new UserBO();
+		if(!CommonUtils.isObjectNullOrEmpty(user)) {
+			userBo.setFirstName(user.getFirstName());
+			userBo.setMiddleName(user.getMiddleName());
+			userBo.setLastName(user.getLastName());
+			userBo.setUserType(user.getUserType());
+			userBo.setEmail(user.getEmail());
+			userBo.setMobile(user.getMobile());
+		}
+		return userBo;
+	}
+	
 
 	@Override
 	public UserBO getUserById(Long id) {

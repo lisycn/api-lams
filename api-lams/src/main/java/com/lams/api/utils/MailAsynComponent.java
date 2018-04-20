@@ -49,7 +49,7 @@ public class MailAsynComponent {
 
 		logger.info("ENTER IN SEND MAIL TO LENDER WHEN BORROWER SUBMIT FORM-----------------appID----->" + applicationId);
 		
-		setNameAndCodeById(lenderUserId, loggedInUserId, applicationId, NotificationAlias.EMAIL_LENDER_INVITATION);
+		setNameAndCodeById(lenderUserId, loggedInUserId, applicationId, NotificationAlias.EMAIL_TO_LENDER_WHEN_BR_SUBMIT_FORM);
 		
 	}
 	
@@ -62,7 +62,7 @@ public class MailAsynComponent {
 
 		logger.info("ENTER IN SEND MAIL TO BORROWER WHEN BORROWER SUBMIT FORM-----------------appID----->" + applicationId);
 		
-		setNameAndCodeById(loggedInUserId, loggedInUserId, applicationId, NotificationAlias.EMAIL_LENDER_INVITATION);
+		setNameAndCodeById(loggedInUserId, loggedInUserId, applicationId, NotificationAlias.EMAIL_TO_BR_WHEN_BR_SUBMIT_FORM);
 		
 	}
 	
@@ -76,7 +76,7 @@ public class MailAsynComponent {
 		
 		logger.info("ENTER IN SEND MAIL TO BORROWER WHEN BORROWER SUBMIT FORM-----------------appID----->" + applicationId);
 		
-		setNameAndCodeById(borrowerUserId, loggedInUserId, applicationId, NotificationAlias.EMAIL_LENDER_INVITATION);
+		setNameAndCodeById(borrowerUserId, loggedInUserId, applicationId, NotificationAlias.EMAIL_TO_LENDER_WHEN_LENDER_REVERT_BACK);
 		
 	}
 	
@@ -89,7 +89,7 @@ public class MailAsynComponent {
 		
 		logger.info("ENTER IN SEND MAIL TO BORROWER WHEN BORROWER SUBMIT FORM-----------------appID----->" + applicationId);
 		
-		setNameAndCodeById(loggedInUserId, loggedInUserId, applicationId, NotificationAlias.EMAIL_LENDER_INVITATION);
+		setNameAndCodeById(loggedInUserId, loggedInUserId, applicationId, NotificationAlias.EMAIL_TO_BR_WHEN_LENDER_REVERT_BACK);
 		
 	}
 	
@@ -103,7 +103,7 @@ public class MailAsynComponent {
 	 */
 	public void setNameAndCodeById (Long toUserId, Long loggedInUserId, Long applicationId, String template) {
 		
-		UserBO userBO = userMstrService.getUseBasicInfoById(loggedInUserId);
+		UserBO userBO = userMstrService.getUserBasicDetails(loggedInUserId);
 		if(CommonUtils.isObjectNullOrEmpty(userBO)) {
 			logger.info("END EMAIL,INVALID LEDNER USERID ");
 			return;
@@ -119,6 +119,7 @@ public class MailAsynComponent {
 		Map<String, Object> data = new HashMap<>();
 		data.put("title", "Hi," + userBO.getFirstName() + " " + userBO.getLastName());
 		data.put("applicationCode", applicationsBO.getLeadReferenceNo());
+		data.put("loginUrl",loginUrl);
 		
 		
 		sendMail(data, userBO.getEmail(), loggedInUserId, template, "VfinanceS – Loan Request – " +  applicationsBO.getLeadReferenceNo());
