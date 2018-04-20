@@ -367,4 +367,19 @@ public class ApplicationController {
 					HttpStatus.OK);
 		}
 	}
+	
+	@RequestMapping(value = "/delete/{applicationId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<LamsResponse> inactiveApplication(@PathVariable("applicationId") Long applicationId,
+			HttpServletRequest httpServletRequest) {
+		Long userId = (Long) httpServletRequest.getAttribute(CommonUtils.USER_ID);
+		try {
+			return new ResponseEntity<LamsResponse>(new LamsResponse(HttpStatus.OK.value(), "Inactivated",applicationsService.inActiveByApplicationIdAndUserId(applicationId, userId)), HttpStatus.OK);
+		} catch (Exception e) {
+			logger.info("Throw Exception while Inactivating Application Details ---------------->" + applicationId  + " and UserId============>" + userId);
+			e.printStackTrace();
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), CommonUtils.SOMETHING_WENT_WRONG),
+					HttpStatus.OK);
+		}
+	}
 }

@@ -148,7 +148,7 @@ public class CommonUtils {
 		public static final int PRIVATE_EQUITY_FINANCE_LOAN = 19;
 		public static final int GOLD_LOAN = 20;
 		public static final int OTHER_LOAN = 21;
-		public static final int PERSONAL_LOAN = 26;
+		public static final int PERSONAL_LOAN = 27;
 
 	}
 

@@ -27,4 +27,6 @@ public interface ApplicationsService {
 	public Long saveFromCP(ApplicationsBO applicationRequestBO,Long brUserId,String cpUserCode);
 	
 	public int inActiveByUserId(Long userId);
+	
+	public int inActiveByApplicationIdAndUserId(Long applicationId,Long userId);
 }
