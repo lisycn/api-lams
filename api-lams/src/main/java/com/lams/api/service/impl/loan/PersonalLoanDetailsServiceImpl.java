@@ -78,6 +78,14 @@ public class PersonalLoanDetailsServiceImpl implements PersonalLoanDetailsServic
 		PersonalLoanDetailsBO response = new PersonalLoanDetailsBO();
 		if(!CommonUtils.isObjectNullOrEmpty(loanDetails)) {
 			BeanUtils.copyProperties(loanDetails, response);
+			if(!CommonUtils.isObjectNullOrEmpty(loanDetails.getApplicationTypeId())) {
+				response.setApplicationTypeId(loanDetails.getApplicationTypeId().getId());
+				response.setApplicationTypeName(loanDetails.getApplicationTypeId().getName());	
+			}
+			if(!CommonUtils.isObjectNullOrEmpty(loanDetails.getLoanTypeId())) {
+				response.setLoanTypeId(loanDetails.getLoanTypeId().getId());
+				response.setLoanTypeName(loanDetails.getLoanTypeId().getName());	
+			}			
 		}
 		return response;
 	}

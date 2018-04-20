@@ -27,7 +27,7 @@ public class Enums {
 				return ACTIVE;
 			case 1:
 				return INACTIVE;
-			case 2:
+			case -1:
 				return BOTH;
 			default:
 				return null;

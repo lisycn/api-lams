@@ -854,4 +854,23 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 		to.setLeadReferenceNo(cpUserCode);
 	}
 
+	@Override
+	public int inActiveByApplicationIdAndUserId(Long applicationId, Long userId) {
+		logger.info("Start inActiveByApplicationIdAndUserId()");
+		logger.info("ApplicationId====>" + applicationId  + " User Id===> " + userId);
+		int count = 0;
+		if(CommonUtils.isObjectNullOrEmpty(userId)) {
+			logger.log(Level.INFO, "UserId is NUll So Inactivating only by ApplicationId ");
+			count = applicationsRepository.inActiveByApplicationId(applicationId);
+		}else {
+			count = applicationsRepository.inActiveByApplicationIdAndUserId(applicationId, userId);
+			logger.log(Level.INFO, "Inactivating Application by UserId and Application Id");
+		}
+		logger.info("Inactivated Rows=================>" + count);
+		logger.log(Level.INFO, "Start inActiveByApplicationIdAndUserId()");
+		return count;
+	}
+	
+	
+
 }

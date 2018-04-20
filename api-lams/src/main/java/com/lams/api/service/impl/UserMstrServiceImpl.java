@@ -283,8 +283,8 @@ public class UserMstrServiceImpl implements UserMstrService {
 		}
 		UserBO userBo = new UserBO();
 		BeanUtils.copyProperties(user, userBo, "password", "tempPassword");
-		if (user.getUserType() == Enums.UserType.BORROWER.getId()
-				|| user.getUserType() == Enums.UserType.CHANNEL_PARTNER.getId()) {
+		if (user.getUserType() != null && (user.getUserType() == Enums.UserType.BORROWER.getId()
+				|| user.getUserType() == Enums.UserType.CHANNEL_PARTNER.getId())) {
 			List<AddressMstr> addressMstrList = addressMstrRepository.findByUserIdAndIsActive(user.getId(), true);
 			for (AddressMstr addressMstr : addressMstrList) {
 				AddressBO addressBO = new AddressBO();
@@ -325,7 +325,7 @@ public class UserMstrServiceImpl implements UserMstrService {
 				userBo.setBusinessType(bo);
 			}
 			userBo.setApplications(applicationsService.getAll(user.getId()));
-		} else if (user.getUserType() == Enums.UserType.LENDER.getId()) {
+		} else if (user.getUserType() != null && user.getUserType() == Enums.UserType.LENDER.getId()) {
 			// Set Lender Applications
 			List<ApplicationTypeMstr> list = lenderApplicationMappingRepository
 					.getApplicationByUserIdAndIsActive(user.getId(), true);
@@ -462,7 +462,7 @@ public class UserMstrServiceImpl implements UserMstrService {
 
 		} else if (user.getUserType() == Enums.UserType.BORROWER.getId()
 				|| user.getUserType() == Enums.UserType.CHANNEL_PARTNER.getId()) {
-			BeanUtils.copyProperties(userBO, user, "password", "tempPassword", "email", "mobile");
+			BeanUtils.copyProperties(userBO, user, "password", "tempPassword", "email", "mobile","userType","isActive");
 			if (!CommonUtils.isObjectNullOrEmpty(userBO.getPermanentAdd())) {
 				addressService.saveAddress(userBO.getPermanentAdd(), userBO.getId(), CommonUtils.AddressType.PERMANENT);
 			}
