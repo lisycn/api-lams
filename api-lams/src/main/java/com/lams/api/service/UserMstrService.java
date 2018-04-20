@@ -42,4 +42,6 @@ public interface UserMstrService {
 	public LamsResponse addCpBorrower(UserBO userBO, Long userId);
 	
 	public LamsResponse getCpUsersByUserType(Long cpUserId,Long userType);
+	
+	public UserBO getUserBasicDetails(Long userId);
 }
