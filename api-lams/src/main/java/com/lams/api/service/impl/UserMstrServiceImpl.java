@@ -777,5 +777,18 @@ public class UserMstrServiceImpl implements UserMstrService {
 			return new LamsResponse(HttpStatus.BAD_REQUEST.value(), CommonUtils.SOMETHING_WENT_WRONG);
 		}
 	}
+	
+	@Override
+	public List<UserBO> getLenderUsersByApplicationType(Long applicationType){
+		List<User> userList = userMstrRepository.getLenderUsersByApplicationType(applicationType);
+		List<UserBO> userBoList = new ArrayList<>(userList.size());
+		UserBO userBo = null;
+		for(User user : userList) {
+			userBo = new UserBO();
+			BeanUtils.copyProperties(user, userBo);
+			userBoList.add(userBo);
+		}
+		return userBoList;
+	}
 
 }
