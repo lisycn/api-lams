@@ -273,6 +273,23 @@ public class UserMstrServiceImpl implements UserMstrService {
 		}
 		return userBOList;
 	}
+	
+	
+	@Override
+	public UserBO getUserBasicDetails(Long userId) {
+		User user = userMstrRepository.findOne(userId);
+		UserBO userBo = new UserBO();
+		if(!CommonUtils.isObjectNullOrEmpty(user)) {
+			userBo.setFirstName(user.getFirstName());
+			userBo.setMiddleName(user.getMiddleName());
+			userBo.setLastName(user.getLastName());
+			userBo.setUserType(user.getUserType());
+			userBo.setEmail(user.getEmail());
+			userBo.setMobile(user.getMobile());
+		}
+		return userBo;
+	}
+	
 
 	@Override
 	public UserBO getUserById(Long id) {
@@ -759,6 +776,19 @@ public class UserMstrServiceImpl implements UserMstrService {
 			logger.log(Level.SEVERE, "Error while Descrypting Email Verificaiton Link");
 			return new LamsResponse(HttpStatus.BAD_REQUEST.value(), CommonUtils.SOMETHING_WENT_WRONG);
 		}
+	}
+	
+	@Override
+	public List<UserBO> getLenderUsersByApplicationType(Long applicationType){
+		List<User> userList = userMstrRepository.getLenderUsersByApplicationType(applicationType);
+		List<UserBO> userBoList = new ArrayList<>(userList.size());
+		UserBO userBo = null;
+		for(User user : userList) {
+			userBo = new UserBO();
+			BeanUtils.copyProperties(user, userBo);
+			userBoList.add(userBo);
+		}
+		return userBoList;
 	}
 
 }
