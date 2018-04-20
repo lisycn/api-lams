@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import com.lams.api.service.ApplicationsService;
 import com.lams.api.service.NotificationService;
@@ -45,11 +46,65 @@ public class MailAsynComponent {
 	 * @param loggedInUserId
 	 * @param lenderUserId
 	 */
-	public void sendMailToLenderWhenBRSubmitForm(Long applicationId, Long loggedInUserId, Long lenderUserId) {
+	@Async
+	public void sendMailToLenderWhenBRSubmitForm(Long applicationId, Long loggedInUserId) {
 
 		logger.info("ENTER IN SEND MAIL TO LENDER WHEN BORROWER SUBMIT FORM-----------------appID----->" + applicationId);
 		
-		setNameAndCodeById(lenderUserId, loggedInUserId, applicationId, NotificationAlias.EMAIL_TO_LENDER_WHEN_BR_SUBMIT_FORM);
+		ApplicationsBO applicationsBO = applicationsService.get(applicationId);
+		if(CommonUtils.isObjectNullOrEmpty(applicationsBO)) {
+			logger.info("END EMAIL,INVALID  AAPLICATION ID ");	
+			return;
+		}
+		
+		//GET ALL LENDER LIST BY APPLICATION TYPE FROM USER REPOSITORY
+		List<UserBO> userBoList = userMstrService.getLenderUsersByApplicationType(applicationsBO.getApplicationTypeId());
+		logger.info("TOTAL LENDER FOUND ------------------------------------------>" + userBoList.size());
+		
+		if(userBoList.size() < 1) {
+			logger.info("NO LENDER FOUND IN SYSTEM");
+			return;
+		}
+		
+		//START CREATE NOTIFICATION OBJECTS
+		NotificationBO notificationBO = new NotificationBO();
+		notificationBO.setClientRefId(String.valueOf(loggedInUserId));
+		List<NotificationMainBO> mainBolist = new ArrayList<>(userBoList.size());
+		
+		Map<String, Object> data = new HashMap<>();
+		data.put("applicationCode", applicationsBO.getLeadReferenceNo());
+		data.put("loginUrl",loginUrl);
+		
+		String subject = "VfinanceS – Loan Request – " +  applicationsBO.getLeadReferenceNo();
+		NotificationMainBO mainBO = null;
+		for(UserBO userBO : userBoList) {
+		
+			if(CommonUtils.isObjectNullOrEmpty(userBO.getEmail())) {
+				logger.info("EMAIL ID IS NULL OR EMPTY ------------------------->");
+				continue;
+			}
+			
+			data.put("title", "Hi," + userBO.getFirstName() + " " + userBO.getLastName());
+			mainBO = new NotificationMainBO();
+			String to[] = { userBO.getEmail() };
+			mainBO.setTo(to);
+			mainBO.setContentType(ContentType.TEMPLATE);
+			mainBO.setType(NotificationType.EMAIL);
+			mainBO.setTemplateName(NotificationAlias.EMAIL_TO_LENDER_WHEN_BR_SUBMIT_FORM);
+			mainBO.setParameters(data);
+			mainBO.setSubject(subject);
+			mainBolist.add(mainBO);
+		}
+		
+		try {
+			if(mainBolist.size() > 0) {
+				notificationBO.setNotifications(mainBolist);
+				notificationService.sendNotification(notificationBO);	
+			}
+		} catch (Exception e) {
+			logger.info("THROW EXCEPTION WHILE SENDING EMAIL");
+			e.printStackTrace();
+		}
 		
 	}
 	
@@ -58,6 +113,7 @@ public class MailAsynComponent {
 	 * @param applicationId
 	 * @param loggedInUserId
 	 */
+	@Async
 	public void sendMailToBorrowerWhenBRSubmitForm(Long applicationId, Long loggedInUserId) {
 
 		logger.info("ENTER IN SEND MAIL TO BORROWER WHEN BORROWER SUBMIT FORM-----------------appID----->" + applicationId);
@@ -154,6 +210,7 @@ public class MailAsynComponent {
 			mainBolist.add(mainBO);
 			notificationBO.setNotifications(mainBolist);
 			notificationService.sendNotification(notificationBO);	
+			logger.info("SUCCESSFULLY SEND EMAIL TO THIS EMAIL ADDRESS _----------------------------------->" + toEmailId);
 		} catch (Exception e) {
 			logger.info("THROW EXCEPTION WHILE SENDING MAIL ---------> EMAIL---------->"+ toEmailId + "--------------TEMPLATE------------->" + templateName);
 			e.printStackTrace();

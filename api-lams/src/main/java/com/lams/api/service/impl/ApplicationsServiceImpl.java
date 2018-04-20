@@ -37,6 +37,7 @@ import com.lams.api.service.loan.ProjectFinanceLoanDetailsService;
 import com.lams.api.service.loan.SecuredBusinessLoanDetailsService;
 import com.lams.api.service.loan.TermLoanDetailsService;
 import com.lams.api.service.loan.WorkingCapitalLoanDetailsService;
+import com.lams.api.utils.MailAsynComponent;
 import com.lams.model.bo.ApplicationRequestBO;
 import com.lams.model.bo.ApplicationsBO;
 import com.lams.model.bo.LamsResponse;
@@ -136,8 +137,8 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 	@Autowired
 	private LenderBorrowerConnectionRepository lenderBorrowerConnectionRepository;
 	
-//	@Autowired
-//	private LenderBorrowerConnectionRepository
+	@Autowired
+	private MailAsynComponent mailAsynComponent; 
 
 	/*
 	 * GET ALL APPLICATIONS BY USER ID AND IS ACTIVE TRUE
@@ -184,6 +185,9 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 	public Long save(ApplicationRequestBO applicationRequestBO) {
 		logger.info("Enter in Save Application Sevice Impl--------------type----> "
 				+ applicationRequestBO.getApplicationTypeId());
+		
+		Long userId = applicationRequestBO.getUserId();
+		Long applicationId = null;
 		try {
 			switch (applicationRequestBO.getApplicationTypeId().intValue()) {
 
@@ -191,156 +195,211 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 				HomeLoanDetailsBO homeLoanDetailsBO = (HomeLoanDetailsBO) MultipleJSONObjectHelper
 						.getObjectFromString(applicationRequestBO.getData().toString(), HomeLoanDetailsBO.class);
 				homeLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
-				homeLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
+				homeLoanDetailsBO.setUserId(userId);
 				homeLoanDetailsBO.setStatus(CommonUtils.Status.OPEN);
-				return homeLoanDetailsService.save(homeLoanDetailsBO);
-
+				
+				applicationId = homeLoanDetailsService.save(homeLoanDetailsBO);
+				sentMailWhenBRLockDetails(applicationId, userId, homeLoanDetailsBO.getIsLoanDetailsLock());
+				return applicationId;
 			case ApplicationType.LOAN_AGAINST_PROPERTY:
 				LoanAgainstPropertyDetailsBO loanAgainstPropertyDetailsBO = (LoanAgainstPropertyDetailsBO) MultipleJSONObjectHelper
 						.getObjectFromString(applicationRequestBO.getData().toString(),
 								LoanAgainstPropertyDetailsBO.class);
 				loanAgainstPropertyDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
-				loanAgainstPropertyDetailsBO.setUserId(applicationRequestBO.getUserId());
+				loanAgainstPropertyDetailsBO.setUserId(userId);
 				loanAgainstPropertyDetailsBO.setStatus(CommonUtils.Status.OPEN);
-				return loanAgainstPropertyDetailsService.save(loanAgainstPropertyDetailsBO);
+				
+				applicationId = loanAgainstPropertyDetailsService.save(loanAgainstPropertyDetailsBO);
+				sentMailWhenBRLockDetails(applicationId, userId, loanAgainstPropertyDetailsBO.getIsLoanDetailsLock());
+				return applicationId;
 
 			case ApplicationType.SECURED_BUSINESS_LOAN:
 				SecuredBusinessLoanDetailsBO securedBusinessLoanDetailsBO = (SecuredBusinessLoanDetailsBO) MultipleJSONObjectHelper
 						.getObjectFromString(applicationRequestBO.getData().toString(),
 								SecuredBusinessLoanDetailsBO.class);
 				securedBusinessLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
-				securedBusinessLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
+				securedBusinessLoanDetailsBO.setUserId(userId);
 				securedBusinessLoanDetailsBO.setStatus(CommonUtils.Status.OPEN);
-				return securedBusinessLoanDetailsService.save(securedBusinessLoanDetailsBO);
+				
+				applicationId = securedBusinessLoanDetailsService.save(securedBusinessLoanDetailsBO);
+				sentMailWhenBRLockDetails(applicationId, userId, securedBusinessLoanDetailsBO.getIsLoanDetailsLock());
+				return applicationId;
 
 			case ApplicationType.WORKING_CAPITAL_LOAN:
 				WorkingCapitalLoanDetailsBO workingCapitalLoanDetailsBO = (WorkingCapitalLoanDetailsBO) MultipleJSONObjectHelper
 						.getObjectFromString(applicationRequestBO.getData().toString(),
 								WorkingCapitalLoanDetailsBO.class);
 				workingCapitalLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
-				workingCapitalLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
+				workingCapitalLoanDetailsBO.setUserId(userId);
 				workingCapitalLoanDetailsBO.setStatus(CommonUtils.Status.OPEN);
-				return workingCapitalLoanDetailsService.save(workingCapitalLoanDetailsBO);
-
+				
+				applicationId = workingCapitalLoanDetailsService.save(workingCapitalLoanDetailsBO);
+				sentMailWhenBRLockDetails(applicationId, userId, workingCapitalLoanDetailsBO.getIsLoanDetailsLock());
+				return applicationId;
+				
 			case ApplicationType.EDUCATION_LOAN:
 				EducationLoanDetailsBO educationLoanDetailsBO = (EducationLoanDetailsBO) MultipleJSONObjectHelper
 						.getObjectFromString(applicationRequestBO.getData().toString(), EducationLoanDetailsBO.class);
 				educationLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
-				educationLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
+				educationLoanDetailsBO.setUserId(userId);
 				educationLoanDetailsBO.setStatus(CommonUtils.Status.OPEN);
-				return educationLoanDetailsService.save(educationLoanDetailsBO);
+				
+				applicationId = educationLoanDetailsService.save(educationLoanDetailsBO);
+				sentMailWhenBRLockDetails(applicationId, userId, educationLoanDetailsBO.getIsLoanDetailsLock());
+				return applicationId;
 
 			case ApplicationType.CAR_LOAN:
 				CarLoanDetailsBO carLoanDetailsBO = (CarLoanDetailsBO) MultipleJSONObjectHelper
 						.getObjectFromString(applicationRequestBO.getData().toString(), CarLoanDetailsBO.class);
 				carLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
-				carLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
+				carLoanDetailsBO.setUserId(userId);
 				carLoanDetailsBO.setStatus(CommonUtils.Status.OPEN);
-				return carLoanDetailsService.save(carLoanDetailsBO);
+				
+				applicationId = carLoanDetailsService.save(carLoanDetailsBO);
+				sentMailWhenBRLockDetails(applicationId, userId, carLoanDetailsBO.getIsLoanDetailsLock());
+				return applicationId;
 
 			case ApplicationType.OVERDRAFT_FACILITIES_LOAN:
 				OverDraftFacilitiesLoanDetailsBO overDraftFacilitiesLoanDetailsBO = (OverDraftFacilitiesLoanDetailsBO) MultipleJSONObjectHelper
 						.getObjectFromString(applicationRequestBO.getData().toString(),
 								OverDraftFacilitiesLoanDetailsBO.class);
 				overDraftFacilitiesLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
-				overDraftFacilitiesLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
+				overDraftFacilitiesLoanDetailsBO.setUserId(userId);
 				overDraftFacilitiesLoanDetailsBO.setStatus(CommonUtils.Status.OPEN);
-				return overDraftFacilitiesLoanDetailsService.save(overDraftFacilitiesLoanDetailsBO);
+				
+				applicationId = overDraftFacilitiesLoanDetailsService.save(overDraftFacilitiesLoanDetailsBO);
+				sentMailWhenBRLockDetails(applicationId, userId, overDraftFacilitiesLoanDetailsBO.getIsLoanDetailsLock());
+				return applicationId;
 
 			case ApplicationType.DROPLINE_OVERDRAFT_FACILITIES_LOAN:
 				DropLineOdFacilitiesLoanDetailsBO dropLineOdFacilitiesLoanDetailsBO = (DropLineOdFacilitiesLoanDetailsBO) MultipleJSONObjectHelper
 						.getObjectFromString(applicationRequestBO.getData().toString(),
 								DropLineOdFacilitiesLoanDetailsBO.class);
 				dropLineOdFacilitiesLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
-				dropLineOdFacilitiesLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
+				dropLineOdFacilitiesLoanDetailsBO.setUserId(userId);
 				dropLineOdFacilitiesLoanDetailsBO.setStatus(CommonUtils.Status.OPEN);
-				return dropLineOdFacilitiesLoanDetailsService.save(dropLineOdFacilitiesLoanDetailsBO);
-
+				
+				applicationId = dropLineOdFacilitiesLoanDetailsService.save(dropLineOdFacilitiesLoanDetailsBO);
+				sentMailWhenBRLockDetails(applicationId, userId, dropLineOdFacilitiesLoanDetailsBO.getIsLoanDetailsLock());
+				return applicationId;
+				
 			case ApplicationType.BANK_GUARANTEE_LOAN:
 				BankGuaranteeLoanDetailsBO bankGuaranteeLoanDetailsBO = (BankGuaranteeLoanDetailsBO) MultipleJSONObjectHelper
 						.getObjectFromString(applicationRequestBO.getData().toString(),
 								BankGuaranteeLoanDetailsBO.class);
 				bankGuaranteeLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
-				bankGuaranteeLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
+				bankGuaranteeLoanDetailsBO.setUserId(userId);
 				bankGuaranteeLoanDetailsBO.setStatus(CommonUtils.Status.OPEN);
-				return bankGuaranteeLoanDetailsService.save(bankGuaranteeLoanDetailsBO);
-
+				
+				applicationId = bankGuaranteeLoanDetailsService.save(bankGuaranteeLoanDetailsBO);
+				sentMailWhenBRLockDetails(applicationId, userId, bankGuaranteeLoanDetailsBO.getIsLoanDetailsLock());
+				return applicationId;
+				
 			case ApplicationType.CC_FACILITIES_LOAN:
 				CCFacilitiesLoanDetailsBO cCFacilitiesLoanDetailsBO = (CCFacilitiesLoanDetailsBO) MultipleJSONObjectHelper
 						.getObjectFromString(applicationRequestBO.getData().toString(),
 								CCFacilitiesLoanDetailsBO.class);
 				cCFacilitiesLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
-				cCFacilitiesLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
+				cCFacilitiesLoanDetailsBO.setUserId(userId);
 				cCFacilitiesLoanDetailsBO.setStatus(CommonUtils.Status.OPEN);
-				return ccFacilitiesLoanDetailsService.save(cCFacilitiesLoanDetailsBO);
-
+				
+				applicationId = ccFacilitiesLoanDetailsService.save(cCFacilitiesLoanDetailsBO);
+				sentMailWhenBRLockDetails(applicationId, userId, cCFacilitiesLoanDetailsBO.getIsLoanDetailsLock());
+				return applicationId;
+				
 			case ApplicationType.TERM_LOAN:
 				TermLoanDetailsBO termLoanDetailsBO = (TermLoanDetailsBO) MultipleJSONObjectHelper
 						.getObjectFromString(applicationRequestBO.getData().toString(), TermLoanDetailsBO.class);
 				termLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
-				termLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
+				termLoanDetailsBO.setUserId(userId);
 				termLoanDetailsBO.setStatus(CommonUtils.Status.OPEN);
-				return termLoanDetailsService.save(termLoanDetailsBO);
-
+				
+				applicationId = termLoanDetailsService.save(termLoanDetailsBO);
+				sentMailWhenBRLockDetails(applicationId, userId, termLoanDetailsBO.getIsLoanDetailsLock());
+				return applicationId;
+				
 			case ApplicationType.LOAN_AGAINST_FDS:
 				LoanAgainstFDsDetailsBO loanAgainstFDsDetailsBO = (LoanAgainstFDsDetailsBO) MultipleJSONObjectHelper
 						.getObjectFromString(applicationRequestBO.getData().toString(), LoanAgainstFDsDetailsBO.class);
 				loanAgainstFDsDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
-				loanAgainstFDsDetailsBO.setUserId(applicationRequestBO.getUserId());
+				loanAgainstFDsDetailsBO.setUserId(userId);
 				loanAgainstFDsDetailsBO.setStatus(CommonUtils.Status.OPEN);
-				return loanAgainstFDsDetailsService.save(loanAgainstFDsDetailsBO);
-
+				
+				applicationId = loanAgainstFDsDetailsService.save(loanAgainstFDsDetailsBO);
+				sentMailWhenBRLockDetails(applicationId, userId, loanAgainstFDsDetailsBO.getIsLoanDetailsLock());
+				return applicationId;
+				
 			case ApplicationType.LOAN_AGAINST_SECURITIS:
 				LoanAgainstSecuritiesLoanDetailsBO loanAgainstSecuritiesLoanDetailsBO = (LoanAgainstSecuritiesLoanDetailsBO) MultipleJSONObjectHelper
 						.getObjectFromString(applicationRequestBO.getData().toString(),
 								LoanAgainstSecuritiesLoanDetailsBO.class);
 				loanAgainstSecuritiesLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
-				loanAgainstSecuritiesLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
+				loanAgainstSecuritiesLoanDetailsBO.setUserId(userId);
 				loanAgainstSecuritiesLoanDetailsBO.setStatus(CommonUtils.Status.OPEN);
-				return loanAgainstSecuritiesLoanDetailsService.save(loanAgainstSecuritiesLoanDetailsBO);
-
+				
+				applicationId = loanAgainstSecuritiesLoanDetailsService.save(loanAgainstSecuritiesLoanDetailsBO);
+				sentMailWhenBRLockDetails(applicationId, userId, loanAgainstSecuritiesLoanDetailsBO.getIsLoanDetailsLock());
+				return applicationId;
+				
 			case ApplicationType.PROJECT_FINANCE_LOAN:
 				ProjectFinanceLoanDetailsBO projectFinanceLoanDetailsBO = (ProjectFinanceLoanDetailsBO) MultipleJSONObjectHelper
 						.getObjectFromString(applicationRequestBO.getData().toString(),
 								ProjectFinanceLoanDetailsBO.class);
 				projectFinanceLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
-				projectFinanceLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
+				projectFinanceLoanDetailsBO.setUserId(userId);
 				projectFinanceLoanDetailsBO.setStatus(CommonUtils.Status.OPEN);
-				return projectFinanceLoanDetailsService.save(projectFinanceLoanDetailsBO);
-
+				
+				applicationId = projectFinanceLoanDetailsService.save(projectFinanceLoanDetailsBO);
+				sentMailWhenBRLockDetails(applicationId, userId, projectFinanceLoanDetailsBO.getIsLoanDetailsLock());
+				return applicationId;
+				
 			case ApplicationType.PRIVATE_EQUITY_FINANCE_LOAN:
 				PrivateEquityFinanceLoanDetailsBO privateEquityFinanceLoanDetailsBO = (PrivateEquityFinanceLoanDetailsBO) MultipleJSONObjectHelper
 						.getObjectFromString(applicationRequestBO.getData().toString(),
 								PrivateEquityFinanceLoanDetailsBO.class);
 				privateEquityFinanceLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
-				privateEquityFinanceLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
+				privateEquityFinanceLoanDetailsBO.setUserId(userId);
 				privateEquityFinanceLoanDetailsBO.setStatus(CommonUtils.Status.OPEN);
-				return privateEquityFinanceLoanDetailsService.save(privateEquityFinanceLoanDetailsBO);
-
+				
+				applicationId = privateEquityFinanceLoanDetailsService.save(privateEquityFinanceLoanDetailsBO);
+				sentMailWhenBRLockDetails(applicationId, userId, privateEquityFinanceLoanDetailsBO.getIsLoanDetailsLock());
+				return applicationId;
+				
 			case ApplicationType.GOLD_LOAN:
 				GoldLoanDetailsBO goldLoanDetailsBO = (GoldLoanDetailsBO) MultipleJSONObjectHelper
 						.getObjectFromString(applicationRequestBO.getData().toString(), GoldLoanDetailsBO.class);
 				goldLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
-				goldLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
+				goldLoanDetailsBO.setUserId(userId);
 				goldLoanDetailsBO.setStatus(CommonUtils.Status.OPEN);
-				return goldLoanDetailsService.save(goldLoanDetailsBO);
-
+				
+				
+				applicationId = goldLoanDetailsService.save(goldLoanDetailsBO);
+				sentMailWhenBRLockDetails(applicationId, userId, goldLoanDetailsBO.getIsLoanDetailsLock());
+				return applicationId;
+				
 			case ApplicationType.OTHER_LOAN:
 				OthersLoanDetailsBO othersLoanDetailsBO = (OthersLoanDetailsBO) MultipleJSONObjectHelper
 						.getObjectFromString(applicationRequestBO.getData().toString(), OthersLoanDetailsBO.class);
 				othersLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
-				othersLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
+				othersLoanDetailsBO.setUserId(userId);
 				othersLoanDetailsBO.setStatus(CommonUtils.Status.OPEN);
-				return othersLoanDetailsService.save(othersLoanDetailsBO);
-
+				
+				
+				applicationId = othersLoanDetailsService.save(othersLoanDetailsBO);
+				sentMailWhenBRLockDetails(applicationId, userId, othersLoanDetailsBO.getIsLoanDetailsLock());
+				return applicationId;
+				
 			case ApplicationType.PERSONAL_LOAN:
 				PersonalLoanDetailsBO personalLoanDetailsBO = (PersonalLoanDetailsBO) MultipleJSONObjectHelper
 						.getObjectFromString(applicationRequestBO.getData().toString(), PersonalLoanDetailsBO.class);
 				personalLoanDetailsBO.setApplicationTypeId(applicationRequestBO.getApplicationTypeId());
-				personalLoanDetailsBO.setUserId(applicationRequestBO.getUserId());
+				personalLoanDetailsBO.setUserId(userId);
 				personalLoanDetailsBO.setStatus(CommonUtils.Status.OPEN);
-				return personalLoanDetailsService.save(personalLoanDetailsBO);
-
+				
+				applicationId = personalLoanDetailsService.save(personalLoanDetailsBO);
+				sentMailWhenBRLockDetails(applicationId, userId, personalLoanDetailsBO.getIsLoanDetailsLock());
+				return applicationId;
+				
 			default:
 				return null;
 			}
@@ -351,6 +410,21 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 		return null;
 	}
 
+	
+	private void sentMailWhenBRLockDetails(Long applicationId, Long userId, Boolean isLockDetails) {
+		try {
+			if(!CommonUtils.isObjectNullOrEmpty(isLockDetails) && isLockDetails) {
+				mailAsynComponent.sendMailToBorrowerWhenBRSubmitForm(applicationId, userId);
+				mailAsynComponent.sendMailToLenderWhenBRSubmitForm(applicationId, userId);	
+			}
+		} catch (Exception e) {
+			logger.info("THROW EXCEPTION WHILE SENDING MAIL");
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
 	/**
 	 * CONVERT APPLICATIONS DOMAIN OBJ TO BO OBJ
 	 * 

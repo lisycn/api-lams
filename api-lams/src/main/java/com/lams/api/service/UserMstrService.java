@@ -44,4 +44,6 @@ public interface UserMstrService {
 	public LamsResponse getCpUsersByUserType(Long cpUserId,Long userType);
 	
 	public UserBO getUserBasicDetails(Long userId);
+	
+	public List<UserBO> getLenderUsersByApplicationType(Long applicationType);
 }
