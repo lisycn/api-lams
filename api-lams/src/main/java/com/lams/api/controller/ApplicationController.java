@@ -335,6 +335,7 @@ public class ApplicationController {
 			return new ResponseEntity<LamsResponse>(
 					new LamsResponse(HttpStatus.BAD_REQUEST.value(), CommonUtils.INVALID_REQUEST), HttpStatus.OK);
 		}
+		connectionBO.setCreatedBy(userId);
 		try {
 
 			logger.info("Successfully get details");

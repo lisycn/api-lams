@@ -1,7 +1,7 @@
 			
 <html>
 <body>
-    <p>Hi <b>${title}</b>></p>
+    <p>Hi <b>${title}</b></p>
 <p>There is a new loan request with Loan Reference Number as <b>${applicationCode}</b> from our Borrower.</p>
 <p>Please login with the link sent earlier or through the following link to access the borrowers complete details.</p>
 <p><b><a href="${loginUrl}">Login</a></b></p>

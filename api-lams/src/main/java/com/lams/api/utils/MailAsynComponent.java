@@ -84,7 +84,7 @@ public class MailAsynComponent {
 				continue;
 			}
 			
-			data.put("title", "Hi," + userBO.getFirstName() + " " + userBO.getLastName());
+			data.put("title", userBO.getFirstName() + " " + userBO.getLastName());
 			mainBO = new NotificationMainBO();
 			String to[] = { userBO.getEmail() };
 			mainBO.setTo(to);
@@ -100,6 +100,7 @@ public class MailAsynComponent {
 			if(mainBolist.size() > 0) {
 				notificationBO.setNotifications(mainBolist);
 				notificationService.sendNotification(notificationBO);	
+				logger.info("SUCCESSFULLY SENT MAILS TO LENDER");
 			}
 		} catch (Exception e) {
 			logger.info("THROW EXCEPTION WHILE SENDING EMAIL");
@@ -173,7 +174,7 @@ public class MailAsynComponent {
 		}
 		
 		Map<String, Object> data = new HashMap<>();
-		data.put("title", "Hi," + userBO.getFirstName() + " " + userBO.getLastName());
+		data.put("title", userBO.getFirstName() + " " + userBO.getLastName());
 		data.put("applicationCode", applicationsBO.getLeadReferenceNo());
 		data.put("loginUrl",loginUrl);
 		
