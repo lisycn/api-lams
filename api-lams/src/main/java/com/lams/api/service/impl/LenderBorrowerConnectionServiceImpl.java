@@ -19,6 +19,7 @@ import com.lams.api.repository.LenderBorrowerConnectionRepository;
 import com.lams.api.repository.UserMstrRepository;
 import com.lams.api.service.ApplicationsService;
 import com.lams.api.service.LenderBorrowerConnectionService;
+import com.lams.api.utils.MailAsynComponent;
 import com.lams.model.bo.ApplicationsBO;
 import com.lams.model.bo.BankBO;
 import com.lams.model.bo.LenderApplicationMappingBO;
@@ -45,6 +46,9 @@ public class LenderBorrowerConnectionServiceImpl implements LenderBorrowerConnec
 
 	@Autowired
 	private UserMstrRepository userMstrRepository;
+	
+	@Autowired
+	private MailAsynComponent asynComponent;
 
 	@Override
 	public List<LenderBorrowerConnectionBO> getConnections(Long applicationId, String status) {
@@ -103,6 +107,8 @@ public class LenderBorrowerConnectionServiceImpl implements LenderBorrowerConnec
 			// set Accepted after rejecting all application
 			applicationService.updateStatus(bo.getApplication().getId(), CommonUtils.Status.ACCEPTED,bo.getCreatedBy());
 		}
+		
+		
 		LenderBorrowerConnection obj = repo.findByApplicationIdAndLenderApplicationMappingId(bo.getApplication().getId(), bo.getApplicationMappingBO().getId());
 		if(CommonUtils.isObjectNullOrEmpty(obj)) {
 			obj = new LenderBorrowerConnection();
@@ -125,6 +131,19 @@ public class LenderBorrowerConnectionServiceImpl implements LenderBorrowerConnec
 		obj.setComments(bo.getComments());
 		obj.setStatus(bo.getStatus());
 		obj = repo.save(obj);
+		
+		//SENT MAIL TO LENDER AND BOROWER
+		if(CommonUtils.Status.RESPONDED.equals(bo.getStatus())) {
+			//APPLICATION ID
+			bo.getApplication().getId();
+			//BORROWER USER ID
+			obj.getApplication().getUserId();
+			//LENDER USER ID
+			bo.getCreatedBy();
+			asynComponent.sendMailToBorrowerWhenLenderRevertToBorrower(bo.getApplication().getId(), bo.getApplication().getId(), bo.getCreatedBy());
+			asynComponent.sendMailToLenderWhenLenderRevertToBorrower(bo.getApplication().getId(), bo.getCreatedBy());
+		}
+		
 		return obj.getId();
 	}
 	
