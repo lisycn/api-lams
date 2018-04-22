@@ -62,8 +62,8 @@ public class LoginServiceImpl implements LoginService {
 				boolean isMailSend = userMstrService.sendLinkOnMail(user,NotificationAlias.EMAIL_VERIFY_ACCOUNT,subject,"email-verification");
 				BeanUtils.copyProperties(user, userBO, "tempPassword", "password");
 				userBO.setIsSent(isMailSend);
-				return new LoginResponse(HttpStatus.OK.value(), "We have sent Email Verification Link on "
-						+ user.getEmail() + " as you Email Verification was Remain.", userBO);
+				return new LoginResponse(HttpStatus.OK.value(), "We have sent E mail Verification link on "
+						+ user.getEmail() + ". Please verity your E Mail Address through the link sent on your E Mail.", userBO);
 			} catch (Exception e) {
 				e.printStackTrace();
 				logger.info("Error while Sending Mail");
