@@ -39,6 +39,7 @@ import com.lams.api.service.NotificationService;
 import com.lams.api.service.OTPLoggingService;
 import com.lams.api.service.UserMstrService;
 import com.lams.api.service.master.AddressService;
+import com.lams.api.utils.ServiceUtils;
 import com.lams.model.bo.AddressBO;
 import com.lams.model.bo.ApplicationsBO;
 import com.lams.model.bo.BankBO;
@@ -411,6 +412,9 @@ public class UserMstrServiceImpl implements UserMstrService {
 			user.setChannelPartnerId(new User(userId));
 			user.setUserType(userBO.getUserType());
 			user.setCreatedDate(new Date());
+			String tempPassword = ServiceUtils.generateOTP(10, CommonUtils.CHAR_LIST);
+			user.setTempPassword(tempPassword);
+			user.setPassword(DigestUtils.md5DigestAsHex(tempPassword.getBytes()));
 		}
 		
 		//Create or Update User (Borrower)

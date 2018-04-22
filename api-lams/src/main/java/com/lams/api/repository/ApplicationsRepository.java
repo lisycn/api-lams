@@ -38,7 +38,7 @@ public interface ApplicationsRepository  extends JpaRepository<Applications, Lon
 	public List<Applications> getAllAppByUserIdAndCpId(@Param("userId")Long userId, @Param("cpId")Long cpId);
 	
 	@Modifying
-	@Query(value = "update Applications app set app.isActive = false where app.userId =:userId and app.isActive = true")
+	@Query(value = "update Applications app set app.isActive = false where app.userId =:userId and app.isActive = true and app.isLoanDetailsLock = false")
 	public int inActiveByUserId(@Param("userId")Long userId);
 	
 	@Modifying

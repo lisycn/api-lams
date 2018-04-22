@@ -20,6 +20,7 @@ public class CommonUtils {
 	public static final String SOMETHING_WENT_WRONG = "Something Went Wrong !";
 	public static final String INVALID_REQUEST = "Invalid Request !";
 	public static final String DEFAULT_FORMATE = "MM/dd/yyyy HH:mm:ss";
+	public static final String CHAR_LIST = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	
 	public interface Status {
 		public static final String OPEN = "OPEN";
