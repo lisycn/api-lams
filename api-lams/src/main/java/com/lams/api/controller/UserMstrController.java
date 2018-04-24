@@ -199,6 +199,27 @@ public class UserMstrController {
 					HttpStatus.OK);
 		}
 	}
+	
+	@RequestMapping(value = "/get_cp_users/{userType}/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<LamsResponse> getCPBorrowerForAdmin(@PathVariable("userType")Long userType ,@PathVariable("userId")Long userId, HttpServletRequest httpServletRequest) {
+		if (CommonUtils.isObjectNullOrEmpty(userId)) {
+			logger.info("User Id Null Or Empty");
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.BAD_REQUEST.value(), "UnAuthorized! Please try again to ReLogin"),
+					HttpStatus.OK);
+		}
+		
+		try {
+			return new ResponseEntity<LamsResponse>(userMstrService.getCpUsersByUserType(userId, userType), HttpStatus.OK);
+		} catch (Exception e) {
+			logger.info("Throw Exception while Saving Borrower From Channel Partnert----------------> For UserId===" + userId);
+			e.printStackTrace();
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), CommonUtils.SOMETHING_WENT_WRONG),
+					HttpStatus.OK);
+		}
+	}
+	
 
 	@RequestMapping(value = "/invite_lender", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<LamsResponse> inviteLender(@RequestBody UserBO userBO, HttpServletRequest request) {
@@ -220,7 +241,7 @@ public class UserMstrController {
 		try {
 			userBO = userMstrService.inviteLender(userBO, userId);
 			logger.log(Level.INFO, "Response After Invited to Lender===>{0}", userBO.toString());
-			LamsResponse lamsResponse = new LamsResponse(HttpStatus.OK.value(), "Successfully Invitation Sent", userBO);
+			LamsResponse lamsResponse = new LamsResponse(HttpStatus.OK.value(), "Invitation successfully sent.", userBO);
 			return new ResponseEntity<LamsResponse>(lamsResponse, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.info("Throw Exception while update lender details ---------------->" + userBO.getEmail());

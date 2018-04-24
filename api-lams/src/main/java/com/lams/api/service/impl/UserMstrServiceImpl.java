@@ -216,7 +216,7 @@ public class UserMstrServiceImpl implements UserMstrService {
 		}
 		logger.info(
 				"Successfully registration --------EMAIL---> " + userBO.getEmail() + "---------ID----" + user.getId());
-		String msg = "Successfully Registration";
+		String msg = "Successful Registration";
 //		if (!CommonUtils.isObjectNullOrEmpty(userBO.getId())) {
 //			msg = "Successfully Updated";
 //		}
