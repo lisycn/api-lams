@@ -15,7 +15,7 @@ public interface ApplicationsRepository  extends JpaRepository<Applications, Lon
 	
 	public Applications findByIdAndIsActive(Long id, Boolean isActive);
 	
-	@Query(value = "SELECT lead_reference_no FROM lams.applications where application_type_id =:applicationType and is_from_cp = false order by id desc limit 1",nativeQuery = true)
+	@Query(value = "SELECT lead_reference_no FROM lams.applications where application_type_id =:applicationType and is_from_cp is not true order by id desc limit 1",nativeQuery = true)
 	public String getLastLeadReferenceNo(@Param("applicationType") Long applicationType);
 	
 	@Query(value = "SELECT lead_reference_no FROM lams.applications where application_type_id =:applicationType and is_from_cp = true order by id desc limit 1",nativeQuery = true)
