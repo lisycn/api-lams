@@ -334,7 +334,9 @@ public class UserMstrServiceImpl implements UserMstrService {
 					userBo.setPermanentAdd(addressBO);
 				} else if (addressMstr.getAddType() == CommonUtils.AddressType.COMMUNICATION) {
 					userBo.setCommunicationAdd(addressBO);
-				}
+				} else if (addressMstr.getAddType() == CommonUtils.AddressType.EMPLOYMENT_ADD) {
+					userBo.setEmploymentAddress(addressBO);
+				}  
 			}
 			BusinessTypeMstr businessTypeMstr = user.getBusinessTypeMstr();
 			if (!CommonUtils.isObjectNullOrEmpty(businessTypeMstr)) {
@@ -490,6 +492,10 @@ public class UserMstrServiceImpl implements UserMstrService {
 			if (!CommonUtils.isObjectNullOrEmpty(userBO.getCommunicationAdd())) {
 				addressService.saveAddress(userBO.getCommunicationAdd(), userBO.getId(),
 						CommonUtils.AddressType.COMMUNICATION);
+			}
+			if (!CommonUtils.isObjectNullOrEmpty(userBO.getEmploymentAddress())) {
+				addressService.saveAddress(userBO.getEmploymentAddress(), userBO.getId(),
+						CommonUtils.AddressType.EMPLOYMENT_ADD);
 			}
 			if (!CommonUtils.isObjectNullOrEmpty(userBO.getBusinessType())
 					&& !CommonUtils.isObjectNullOrEmpty(userBO.getBusinessType().getId())) {

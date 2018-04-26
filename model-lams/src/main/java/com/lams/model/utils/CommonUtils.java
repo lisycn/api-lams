@@ -122,6 +122,7 @@ public class CommonUtils {
 	public interface AddressType {
 		public static final int PERMANENT = 1;
 		public static final int COMMUNICATION = 2;
+		public static final int EMPLOYMENT_ADD = 3;
 	}
 
 	public interface LoanType {

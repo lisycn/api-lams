@@ -74,7 +74,7 @@ public class UserBO extends AuditorBO implements Serializable {
 
 	private String employerName;
 
-	private String employmentAddress;
+	private AddressBO employmentAddress;
 
 	private Double grossMonthlyIncome;
 
@@ -332,11 +332,11 @@ public class UserBO extends AuditorBO implements Serializable {
 		this.employerName = employerName;
 	}
 
-	public String getEmploymentAddress() {
+	public AddressBO getEmploymentAddress() {
 		return employmentAddress;
 	}
 
-	public void setEmploymentAddress(String employmentAddress) {
+	public void setEmploymentAddress(AddressBO employmentAddress) {
 		this.employmentAddress = employmentAddress;
 	}
 
