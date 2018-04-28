@@ -102,6 +102,28 @@ public class UserMstrController {
 					HttpStatus.OK);
 		}
 	}
+	
+	@RequestMapping(value = "/get_user_details/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<LamsResponse> getLoggedInUserDetailsById(@PathVariable("userId")Long userId,HttpServletRequest request) {
+		logger.info("=======>> Enter in get users by user type");
+		try {
+			if (CommonUtils.isObjectNullOrEmpty(userId)) {
+				logger.log(Level.WARNING, "UserId must not be null while getting User Details By IDs------------>{}",
+						userId);
+			}
+			UserBO userData = userMstrService.getUserById(userId);
+			logger.log(Level.INFO, "Successfully get Logged in User Details ------------>{}", userData.toString());
+
+			return new ResponseEntity<LamsResponse>(new LamsResponse(HttpStatus.OK.value(), "Success", userData),
+					HttpStatus.OK);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "Error while Getting user Details based on UserId===>{}", userId);
+			e.printStackTrace();
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), CommonUtils.SOMETHING_WENT_WRONG),
+					HttpStatus.OK);
+		}
+	}
 
 	@RequestMapping(value = "/update_user_details", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<LamsResponse> updateUserDetails(@RequestBody UserBO userBO, HttpServletRequest request) {
