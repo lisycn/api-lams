@@ -23,4 +23,6 @@ public interface LenderBorrowerConnectionService {
 	public Long save(LenderBorrowerConnectionBO lenderBorrowerConnectionBO);
 	
 	public List<LenderBorrowerConnectionBO> getRespondedApplication(Long lrId, Long brId, Long applicationId);
+	
+	public List<LenderBorrowerConnectionBO> getConnectionByLenderId(Long lrId);
 }

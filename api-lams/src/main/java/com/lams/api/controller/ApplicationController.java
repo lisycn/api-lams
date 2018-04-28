@@ -369,6 +369,22 @@ public class ApplicationController {
 		}
 	}
 	
+	@RequestMapping(value = "/get_connection_by/{ldId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<LamsResponse> getConnectionsByLenderId(
+			@PathVariable("ldId") Long ldId, 
+			HttpServletRequest httpServletRequest) {
+		try {
+			return new ResponseEntity<LamsResponse>(new LamsResponse(HttpStatus.OK.value(), "Successfully get data",
+					lenderBorrowerService.getConnectionByLenderId(ldId)), HttpStatus.OK);
+		} catch (Exception e) {
+			logger.info("Throw Exception while Getting Application Details ---------------->");
+			e.printStackTrace();
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), CommonUtils.SOMETHING_WENT_WRONG),
+					HttpStatus.OK);
+		}
+	}
+	
 	@RequestMapping(value = "/delete/{applicationId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<LamsResponse> inactiveApplication(@PathVariable("applicationId") Long applicationId,
 			HttpServletRequest httpServletRequest) {
