@@ -249,7 +249,7 @@ public class CommonUtils {
 		PAN_CARD(1l, "Pan Card"), AADHAR_CARD(2l, "Aadhaar Card"), 
 		LAST_3_MONTH_SALARY_SLIP(3l,"Last 3 Month Salary Slip"), 
 		LAST_6_MONTHS_BANK_ACCOUNT_STATEMENT(4l, "Last 6 Months Bank Account Statement"), 
-		FORM_16_OR_APPOIMENT_LETTER(5l, "Form 16 pr Appointment Letter"), 
+		FORM_16_OR_APPOIMENT_LETTER(5l, "Form 16 or Appointment Letter"), 
 		INVESTMENT_PROOFS(6l, "Investment Proofs"), 
 		EXISTING_LOAN_DOCUMENT(7l,"Existing Loan Document"), 
 		OTHER_DOCUMENT(8l,"Others Documemnts"), 
