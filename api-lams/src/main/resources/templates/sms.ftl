@@ -1,1 +1,3 @@
- Dear user ${emailAddress}, Welcome to VFinance! To verify your Account please enter this OTP: ${otp} Do not share this OTP to anyone for security reasons
+ Hi. Please use the following OPT : ${otp} for registering on VfinanceS. Do not share your OPT for security reasons.
+ 
+ Regards VfinanceS.	
