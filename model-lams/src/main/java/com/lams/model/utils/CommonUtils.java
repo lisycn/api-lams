@@ -341,7 +341,9 @@ public class CommonUtils {
 				docList.add(INDIVIDUAL_ITR_SET_YEAR1);
 				docList.add(INDIVIDUAL_ITR_SET_YEAR2);
 				docList.add(INDIVIDUAL_ITR_SET_YEAR3);
-				docList.add(INDIVIDUAL_BANK_ACCOUNT_STATEMENT);
+				docList.add(INVESTMENT_PROOFS);
+				docList.add(EXISTING_LOAN_DOCUMENT);
+				docList.add(OTHER_DOCUMENT);
 			}
 			return docList;
 		}
