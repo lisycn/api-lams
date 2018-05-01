@@ -34,11 +34,11 @@ public interface ApplicationsRepository  extends JpaRepository<Applications, Lon
 	
 	public List<Applications> findByApplicationTypeIdIdAndIsActiveAndStatus(Long appTypeId,Boolean isActive,String status);
 
-	@Query(value="select app from Applications app , User usr where app.isActive = true and app.userId = usr.id and usr.channelPartnerId.id =:cpId and app.userId =:userId and usr.channelPartnerId.isActive = true and app.leadReferenceNo LIKE 'VSCP%'")
+	@Query(value="select app from Applications app , User usr where app.isActive = true and app.userId = usr.id and usr.channelPartnerId.id =:cpId and app.userId =:userId and usr.channelPartnerId.isActive = true and app.isFromCP = true")
 	public List<Applications> getAllAppByUserIdAndCpId(@Param("userId")Long userId, @Param("cpId")Long cpId);
 	
 	@Modifying
-	@Query(value = "update Applications app set app.isActive = false where app.userId =:userId and app.isActive = true and app.isLoanDetailsLock = false")
+	@Query(value = "update Applications app set app.isActive = false where app.userId =:userId and app.isActive = true and (app.isLoanDetailsLock = false or app.isLoanDetailsLock IS NULL)")
 	public int inActiveByUserId(@Param("userId")Long userId);
 	
 	@Modifying
