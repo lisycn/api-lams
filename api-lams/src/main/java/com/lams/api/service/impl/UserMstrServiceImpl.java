@@ -541,7 +541,7 @@ public class UserMstrServiceImpl implements UserMstrService {
 		data.put("password", userBO.getTempPassword());
 		data.put("loginUrl", loginUrl);
 		mainBO.setParameters(data);
-		mainBO.setSubject("Invitation From VFinance");
+		mainBO.setSubject("VfinanceS Registrations");
 		mainBolist.add(mainBO);
 		notificationBO.setNotifications(mainBolist);
 		notificationService.sendNotification(notificationBO);
