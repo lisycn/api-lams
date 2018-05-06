@@ -141,7 +141,9 @@ public class LenderBorrowerConnectionServiceImpl implements LenderBorrowerConnec
 			//LENDER USER ID
 			bo.getCreatedBy();
 			asynComponent.sendMailToBorrowerWhenLenderRevertToBorrower(bo.getApplication().getId(), bo.getApplication().getId(), bo.getCreatedBy());
-			asynComponent.sendMailToLenderWhenLenderRevertToBorrower(bo.getApplication().getId(), bo.getCreatedBy());
+			
+			Applications app = appRepo.findOne(bo.getApplication().getId());
+			asynComponent.sendMailToLenderWhenLenderRevertToBorrower(bo.getApplication().getId(), app.getCreatedBy());
 		}
 		
 		return obj.getId();

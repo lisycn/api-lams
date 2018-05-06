@@ -21,12 +21,12 @@ public interface LenderBorrowerConnectionRepository extends JpaRepository<Lender
 	public List<LenderBorrowerConnection> findByApplicationIdAndLenderIdAndBorrowerId(@Param("applicationId")Long applicationId, @Param("lrId")Long lrId, @Param("brId")Long brId);
 	
 	
-	@Query("select lb from LenderBorrowerConnection lb where lb.status =:status and lb.isActive = true and lb.application.applicationTypeId.id =:appTypeId and lb.application.isActive = true")
-	public List<LenderBorrowerConnection> findApplicationByAppTypeIdAndStatus(@Param("appTypeId") Long appTypeId,@Param("status")String status);
+	@Query("select lb from LenderBorrowerConnection lb where lb.status =:status and lb.isActive = true and lb.application.applicationTypeId.id =:appTypeId and lb.application.isActive = true and lb.createdBy =:lenderId")
+	public List<LenderBorrowerConnection> findApplicationsByAppTypeIdAndStatusAndByCreatedId(@Param("appTypeId") Long appTypeId,@Param("status")String status, @Param("lenderId") Long lenderId);
 	
 	public LenderBorrowerConnection findByApplicationIdAndLenderApplicationMappingId(Long applicationId,Long id);
 	
-	@Query("select count(*) from LenderBorrowerConnection lb where lb.application.id =:applicationId and lb.lenderApplicationMapping.userId =:lenderId")
+	@Query("select count(*) from LenderBorrowerConnection lb where lb.application.id =:applicationId and lb.lenderApplicationMapping.userId =:lenderId and lb.createdBy =:lenderId")
 	public Long isActionTakenOnApplicationByLender(@Param("applicationId")Long applicationId, @Param("lenderId")Long lenderId);
 	
 	@Query("select lb from LenderBorrowerConnection lb where lb.lenderApplicationMapping.userId =:lenderId")
