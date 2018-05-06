@@ -768,7 +768,7 @@ public class ApplicationsServiceImpl implements ApplicationsService {
 				
 			return new LamsResponse(HttpStatus.OK.value(), "Success", applicationsBOs);
 		} else {
-			List<LenderBorrowerConnection> listData = lenderBorrowerConnectionRepository.findApplicationByAppTypeIdAndStatus(appId, status);
+			List<LenderBorrowerConnection> listData = lenderBorrowerConnectionRepository.findApplicationsByAppTypeIdAndStatusAndByCreatedId(appId, status, lenderId);
 			List<LenderBorrowerConnectionBO> applicationsBOs = new ArrayList<>(listData.size());
 			for (LenderBorrowerConnection borrowerConnection : listData) {
 				LenderBorrowerConnectionBO  applicationsBO = new LenderBorrowerConnectionBO();
