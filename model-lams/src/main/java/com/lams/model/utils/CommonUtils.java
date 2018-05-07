@@ -334,13 +334,13 @@ public class CommonUtils {
 			} else if(EmploymentType.SELF_EMPLOYED == employmentType) {
 				docList.add(PAN_CARD);
 				docList.add(AADHAR_CARD);
-				docList.add(CORPORATE_ITR_SET_YEAR1);
-				docList.add(CORPORATE_ITR_SET_YEAR2);
-				docList.add(CORPORATE_ITR_SET_YEAR3);
-				docList.add(CORPORATE_BANK_ACCOUNT_STATEMENT);
 				docList.add(INDIVIDUAL_ITR_SET_YEAR1);
 				docList.add(INDIVIDUAL_ITR_SET_YEAR2);
 				docList.add(INDIVIDUAL_ITR_SET_YEAR3);
+				docList.add(CORPORATE_BANK_ACCOUNT_STATEMENT);
+				docList.add(CORPORATE_ITR_SET_YEAR1);
+				docList.add(CORPORATE_ITR_SET_YEAR2);
+				docList.add(CORPORATE_ITR_SET_YEAR3);
 				docList.add(INVESTMENT_PROOFS);
 				docList.add(EXISTING_LOAN_DOCUMENT);
 				docList.add(OTHER_DOCUMENT);
