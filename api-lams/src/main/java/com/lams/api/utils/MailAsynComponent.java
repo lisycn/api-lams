@@ -142,13 +142,65 @@ public class MailAsynComponent {
 	 * @param applicationId
 	 * @param loggedInUserId
 	 */
-	public void sendMailToLenderWhenLenderRevertToBorrower(Long applicationId, Long loggedInUserId) {
+	public void sendMailToLenderWhenLenderRevertToBorrower(Long applicationId,Long lenderId, Long loggedInUserId) {
 		
 		logger.info("ENTER IN SEND MAIL TO BORROWER WHEN BORROWER SUBMIT FORM-----------------appID----->" + applicationId);
 		
-		setNameAndCodeById(loggedInUserId, loggedInUserId, applicationId, NotificationAlias.EMAIL_TO_BR_WHEN_LENDER_REVERT_BACK);
+		setNameAndCodeById(lenderId, loggedInUserId, applicationId, NotificationAlias.EMAIL_TO_BR_WHEN_LENDER_REVERT_BACK);
 		
 	}
+	
+	
+	/**
+	 * SEND MAIL TO BORROWER WHEN BORROWER ACCEPT THE LENDER
+	 * @param borrowerUserId
+	 * @param applicationId
+	 * @param lenderId
+	 */
+	public void sendMailToBorrowerWhenBorrowerAcceptTheLender(Long borrowerUserId, Long applicationId,Long loggedInUserId) {
+		
+		logger.info("ENTER IN sendMailToBorrowerWhenBorrowerAcceptTheLender-----------------appID----->" + applicationId);
+		
+		setNameAndCodeById(borrowerUserId,loggedInUserId,applicationId,NotificationAlias.EMAIL_TO_BR_WHEN_BR_ACCEPT);
+	}
+	
+	
+	/**
+	 * SEND MAIL TO LENDER WHEN BORROWER ACCEPT THE LENDER
+	 * @param applicationId
+	 * @param lenderId
+	 */
+	public void sendMailToLenderWhenBorrowerAcceptTheLender(Long lenderId,Long applicationId,Long loggedInUserId) {
+		
+		logger.info("ENTER IN sendMailToLenderWhenBorrowerAcceptTheLender-----------------appID----->" + applicationId);
+		setNameAndCodeById(lenderId,loggedInUserId,applicationId,NotificationAlias.EMAIL_TO_LENDER_WHEN_BR_ACCEPT);
+		
+	}
+	
+//	public void setDataAndSendMail(Long toUserId, Long applicationId, String template,Long loggedInUserId) {
+//		
+//		UserBO userBO = userMstrService.getUserBasicDetails(toUserId);
+//		if(CommonUtils.isObjectNullOrEmpty(userBO)) {
+//			logger.info("END EMAIL,INVALID LEDNER USERID ");
+//			return;
+//		}
+//		
+//		
+//		ApplicationsBO applicationsBO = applicationsService.get(applicationId);
+//		if(CommonUtils.isObjectNullOrEmpty(applicationsBO)) {
+//			logger.info("END EMAIL,INVALID  AAPLICATION ID ");	
+//			return;
+//		}
+//		
+//		Map<String, Object> data = new HashMap<>();
+//		data.put("title", userBO.getFirstName() + " " + userBO.getLastName());
+//		data.put("applicationCode", applicationsBO.getLeadReferenceNo());
+//		data.put("loginUrl",loginUrl);
+//		
+//		
+//		sendMail(data, userBO.getEmail(), loggedInUserId, template, "VfinanceS – Loan Request – " +  applicationsBO.getLeadReferenceNo());
+//		
+//	}
 	
 	
 	/**
@@ -160,7 +212,7 @@ public class MailAsynComponent {
 	 */
 	public void setNameAndCodeById (Long toUserId, Long loggedInUserId, Long applicationId, String template) {
 		
-		UserBO userBO = userMstrService.getUserBasicDetails(loggedInUserId);
+		UserBO userBO = userMstrService.getUserBasicDetails(toUserId);
 		if(CommonUtils.isObjectNullOrEmpty(userBO)) {
 			logger.info("END EMAIL,INVALID LEDNER USERID ");
 			return;
