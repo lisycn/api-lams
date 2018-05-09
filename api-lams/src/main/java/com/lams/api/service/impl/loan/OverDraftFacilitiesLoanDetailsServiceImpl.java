@@ -49,7 +49,7 @@ public class OverDraftFacilitiesLoanDetailsServiceImpl implements OverDraftFacil
 			
 			if(!CommonUtils.isObjectNullOrEmpty(requestLoanDetailsBO.getIsFromCP()) && requestLoanDetailsBO.getIsFromCP()) {
 				//requestLoanDetailsBO.getLeadReferenceNo() Property Contains Code of Channel Partner
-				String lastLeadReferenceNo = applicationsRepository.getLastLeadReferenceNoForCP(Long.valueOf(ApplicationType.OVERDRAFT_FACILITIES_LOAN));
+				String lastLeadReferenceNo = applicationsRepository.getLastLeadReferenceNoForCP(Long.valueOf(ApplicationType.OVERDRAFT_FACILITIES_LOAN),requestLoanDetailsBO.getLeadReferenceNo());
 				domainObj.setLeadReferenceNo(CommonUtils.generateRefNoFromCP(ApplicationTypeCode.OVERDRAFT_FACILITIES_LOAN, lastLeadReferenceNo,requestLoanDetailsBO.getLeadReferenceNo()));
 			}else {
 				String lastLeadReferenceNo = applicationsRepository.getLastLeadReferenceNo(Long.valueOf(ApplicationType.OVERDRAFT_FACILITIES_LOAN));

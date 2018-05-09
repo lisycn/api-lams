@@ -49,7 +49,7 @@ public class LoanAgainstSecuritiesLoanDetailsServiceImpl implements LoanAgainstS
 			
 			if(!CommonUtils.isObjectNullOrEmpty(requestLoanDetailsBO.getIsFromCP()) && requestLoanDetailsBO.getIsFromCP()) {
 				//requestLoanDetailsBO.getLeadReferenceNo() Property Contains Code of Channel Partner
-				String lastLeadReferenceNo = applicationsRepository.getLastLeadReferenceNoForCP(Long.valueOf(ApplicationType.LOAN_AGAINST_SECURITIS));
+				String lastLeadReferenceNo = applicationsRepository.getLastLeadReferenceNoForCP(Long.valueOf(ApplicationType.LOAN_AGAINST_SECURITIS),requestLoanDetailsBO.getLeadReferenceNo());
 				domainObj.setLeadReferenceNo(CommonUtils.generateRefNoFromCP(ApplicationTypeCode.LOAN_AGAINST_SECURITIS, lastLeadReferenceNo,requestLoanDetailsBO.getLeadReferenceNo()));
 			}else {
 				String lastLeadReferenceNo = applicationsRepository.getLastLeadReferenceNo(Long.valueOf(ApplicationType.LOAN_AGAINST_SECURITIS));

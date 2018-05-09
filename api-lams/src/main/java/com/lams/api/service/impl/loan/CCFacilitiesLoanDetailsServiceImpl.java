@@ -50,7 +50,7 @@ public class CCFacilitiesLoanDetailsServiceImpl implements CCFacilitiesLoanDetai
 			
 			if(!CommonUtils.isObjectNullOrEmpty(requestLoanDetailsBO.getIsFromCP()) && requestLoanDetailsBO.getIsFromCP()) {
 				//requestLoanDetailsBO.getLeadReferenceNo() Property Contains Code of Channel Partner
-				String lastLeadReferenceNo = applicationsRepository.getLastLeadReferenceNoForCP(Long.valueOf(ApplicationType.CC_FACILITIES_LOAN));
+				String lastLeadReferenceNo = applicationsRepository.getLastLeadReferenceNoForCP(Long.valueOf(ApplicationType.CC_FACILITIES_LOAN),requestLoanDetailsBO.getLeadReferenceNo());
 				domainObj.setLeadReferenceNo(CommonUtils.generateRefNoFromCP(ApplicationTypeCode.CC_FACILITIES_LOAN, lastLeadReferenceNo,requestLoanDetailsBO.getLeadReferenceNo()));
 			}else {
 				String lastLeadReferenceNo = applicationsRepository.getLastLeadReferenceNo(Long.valueOf(ApplicationType.CC_FACILITIES_LOAN));

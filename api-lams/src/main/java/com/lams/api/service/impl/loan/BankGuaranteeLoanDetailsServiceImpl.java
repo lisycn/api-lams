@@ -51,7 +51,7 @@ public class BankGuaranteeLoanDetailsServiceImpl implements BankGuaranteeLoanDet
 			
 			if(!CommonUtils.isObjectNullOrEmpty(requestLoanDetailsBO.getIsFromCP()) && requestLoanDetailsBO.getIsFromCP()) {
 				//requestLoanDetailsBO.getLeadReferenceNo() Property Contains Code of Channel Partner
-				String lastLeadReferenceNo = applicationsRepository.getLastLeadReferenceNoForCP(Long.valueOf(ApplicationType.BANK_GUARANTEE_LOAN));
+				String lastLeadReferenceNo = applicationsRepository.getLastLeadReferenceNoForCP(Long.valueOf(ApplicationType.BANK_GUARANTEE_LOAN),requestLoanDetailsBO.getLeadReferenceNo());
 				domainObj.setLeadReferenceNo(CommonUtils.generateRefNoFromCP(ApplicationTypeCode.BANK_GUARANTEE_LOAN, lastLeadReferenceNo,requestLoanDetailsBO.getLeadReferenceNo()));
 			}else {
 				String lastLeadReferenceNo = applicationsRepository.getLastLeadReferenceNo(Long.valueOf(ApplicationType.BANK_GUARANTEE_LOAN));

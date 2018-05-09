@@ -51,7 +51,7 @@ public class GoldLoanDetailsServiceImpl implements GoldLoanDetailsService{
 			
 			if(!CommonUtils.isObjectNullOrEmpty(requestLoanDetailsBO.getIsFromCP()) && requestLoanDetailsBO.getIsFromCP()) {
 				//requestLoanDetailsBO.getLeadReferenceNo() Property Contains Code of Channel Partner
-				String lastLeadReferenceNo = applicationsRepository.getLastLeadReferenceNoForCP(Long.valueOf(ApplicationType.GOLD_LOAN));
+				String lastLeadReferenceNo = applicationsRepository.getLastLeadReferenceNoForCP(Long.valueOf(ApplicationType.GOLD_LOAN),requestLoanDetailsBO.getLeadReferenceNo());
 				domainObj.setLeadReferenceNo(CommonUtils.generateRefNoFromCP(ApplicationTypeCode.GOLD_LOAN, lastLeadReferenceNo,requestLoanDetailsBO.getLeadReferenceNo()));
 			}else {
 				String lastLeadReferenceNo = applicationsRepository.getLastLeadReferenceNo(Long.valueOf(ApplicationType.GOLD_LOAN));

@@ -106,10 +106,13 @@ public class LenderBorrowerConnectionServiceImpl implements LenderBorrowerConnec
 			repo.setRejectStatusAfterAcceptingLender(bo.getApplication().getId(), CommonUtils.Status.REJECTED);
 			// set Accepted after rejecting all application
 			applicationService.updateStatus(bo.getApplication().getId(), CommonUtils.Status.ACCEPTED,bo.getCreatedBy());
+			//Send Mail to Borrower
+			asynComponent.sendMailToBorrowerWhenBorrowerAcceptTheLender(bo.getApplication().getUserId(), bo.getApplication().getId(), bo.getCreatedBy());
 		}
 		
 		
 		LenderBorrowerConnection obj = repo.findByApplicationIdAndLenderApplicationMappingId(bo.getApplication().getId(), bo.getApplicationMappingBO().getId());
+		LenderApplicationMapping lenderApplicationMapping = map.findOne(bo.getApplicationMappingBO().getId());
 		if(CommonUtils.isObjectNullOrEmpty(obj)) {
 			obj = new LenderBorrowerConnection();
 			obj.setLoanPossibleAmount(bo.getLoanPossibleAmount());
@@ -123,7 +126,7 @@ public class LenderBorrowerConnectionServiceImpl implements LenderBorrowerConnec
 			Applications app = appRepo.findOne(bo.getApplication().getId());
 			obj.setApplication(app);
 
-			obj.setLenderApplicationMapping(new LenderApplicationMapping(bo.getApplicationMappingBO().getId()));
+			obj.setLenderApplicationMapping(lenderApplicationMapping);
 		}else {
 			obj.setModifiedBy(bo.getCreatedBy());
 			obj.setModifiedDate(new Date());
@@ -134,16 +137,10 @@ public class LenderBorrowerConnectionServiceImpl implements LenderBorrowerConnec
 		
 		//SENT MAIL TO LENDER AND BOROWER
 		if(CommonUtils.Status.RESPONDED.equals(bo.getStatus())) {
-			//APPLICATION ID
-			bo.getApplication().getId();
-			//BORROWER USER ID
-			obj.getApplication().getUserId();
-			//LENDER USER ID
-			bo.getCreatedBy();
-			asynComponent.sendMailToBorrowerWhenLenderRevertToBorrower(bo.getApplication().getId(), bo.getApplication().getId(), bo.getCreatedBy());
-			
-			Applications app = appRepo.findOne(bo.getApplication().getId());
-			asynComponent.sendMailToLenderWhenLenderRevertToBorrower(bo.getApplication().getId(), app.getCreatedBy());
+			asynComponent.sendMailToBorrowerWhenLenderRevertToBorrower(bo.getApplication().getUserId(), bo.getApplication().getId(), bo.getCreatedBy());
+			asynComponent.sendMailToLenderWhenLenderRevertToBorrower(bo.getApplication().getId(),lenderApplicationMapping.getUserId(), bo.getCreatedBy());
+		}else if(CommonUtils.Status.ACCEPTED.equals(bo.getStatus())) {
+			asynComponent.sendMailToLenderWhenBorrowerAcceptTheLender(lenderApplicationMapping.getUserId(), bo.getApplication().getId(), bo.getCreatedBy());
 		}
 		
 		return obj.getId();
