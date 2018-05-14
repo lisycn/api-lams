@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lams.api.service.UserMstrService;
+import com.lams.model.bo.EmailBo;
 import com.lams.model.bo.LamsResponse;
 import com.lams.model.bo.UserBO;
 import com.lams.model.utils.CommonUtils;
@@ -480,6 +481,22 @@ public class UserMstrController {
 					HttpStatus.OK);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "Error while Getting user Details based on UserId===>{}", userId);
+			e.printStackTrace();
+			return new ResponseEntity<LamsResponse>(
+					new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), CommonUtils.SOMETHING_WENT_WRONG),
+					HttpStatus.OK);
+		}
+	}
+	
+	@RequestMapping(value = "/sendMailRequestFromSite", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<LamsResponse> sendMailRequestFromSite(@RequestBody EmailBo emailBO, HttpServletRequest request) {
+		logger.info("In Sending mail from wesite");
+		try {
+			return new ResponseEntity<LamsResponse>(new LamsResponse(HttpStatus.OK.value(), "Success", 
+					userMstrService.sendMailRequestFromSite(emailBO.getEmail(), emailBO.getName(), emailBO.getMsg(), emailBO.getContact())),
+					HttpStatus.OK);
+			
+		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<LamsResponse>(
 					new LamsResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), CommonUtils.SOMETHING_WENT_WRONG),

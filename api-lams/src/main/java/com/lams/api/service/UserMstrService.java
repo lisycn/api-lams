@@ -46,4 +46,6 @@ public interface UserMstrService {
 	public UserBO getUserBasicDetails(Long userId);
 	
 	public List<UserBO> getLenderUsersByApplicationType(Long applicationType);
+	
+	public Boolean sendMailRequestFromSite(String email, String name, String msg, String contact) throws Exception;
 }

@@ -19,6 +19,7 @@ public class NotificationAlias {
 	
 	public static final String EMAIL_TO_BR_WHEN_BR_ACCEPT = "email_to_br_when_br_accept.ftl";
 	public static final String EMAIL_TO_LENDER_WHEN_BR_ACCEPT = "email_to_lender_when_br_accept.ftl";
+	public static final String QUERY_EMAIL_FROM_WEBSITE = "query_mail_from_website.ftl";
 	
 	
 	public enum DurationType {
