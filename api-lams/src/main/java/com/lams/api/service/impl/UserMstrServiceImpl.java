@@ -800,5 +800,41 @@ public class UserMstrServiceImpl implements UserMstrService {
 		}
 		return userBoList;
 	}
+	
+	@Override
+	public Boolean sendMailRequestFromSite(String email, String name, String msg, String contact) throws Exception {
+		NotificationBO notificationBO = new NotificationBO();
+		notificationBO.setClientRefId(String.valueOf(1l));
+		List<NotificationMainBO> mainBolist = new ArrayList<>();
+		NotificationMainBO mainBO = new NotificationMainBO();
+		String to[] = { "info@vfinances.in" };
+		mainBO.setTo(to);
+		mainBO.setContentType(ContentType.TEMPLATE);
+		mainBO.setType(NotificationType.EMAIL);
+		mainBO.setTemplateName(NotificationAlias.QUERY_EMAIL_FROM_WEBSITE);
+		Map<String, Object> data = new HashMap<>();
+		data.put("name", name);
+		data.put("email", email);
+		data.put("msg", msg);
+		data.put("contact", contact);
+		mainBO.setParameters(data);
+		mainBO.setSubject("New query from " + email);
+		mainBolist.add(mainBO);
+		notificationBO.setNotifications(mainBolist);
+		NotificationResponse response = notificationService.sendNotification(notificationBO);
+		if (CommonUtils.isObjectNullOrEmpty(response)) {
+			logger.log(Level.SEVERE, "Something went wrong while Sending Email from Website on === >", email);
+			return false;
+		}
+		logger.log(Level.INFO, "Response while Sending Email from Website Mail===>{0}",
+				new Object[] { response.toString() });
+
+		if (CommonUtils.NotificationProperty.STATUS_SUCCESSFULL.equals(response.getStatus())) {
+			return true;
+		}
+		return false;
+	}
+	
+	
 
 }
