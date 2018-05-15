@@ -153,6 +153,7 @@ public class UserMstrServiceImpl implements UserMstrService {
 			if (!CommonUtils.isObjectNullOrEmpty(userType) && userType.equals(Enums.UserType.LENDER)) {
 				user.setIsEmailVerified(true);
 				user.setIsOtpVerified(true);
+				user.setIsProfileFilled(true);
 				if (CommonUtils.isObjectNullOrEmpty(userBO.getIsActive())) {
 					user.setIsActive(false);
 				} else {
@@ -482,6 +483,7 @@ public class UserMstrServiceImpl implements UserMstrService {
 			user.setMiddleName(userBO.getMiddleName());
 			user.setLastName(userBO.getLastName());
 			user.setSalutation(userBO.getSalutation());
+			user.setIsProfileFilled(true);
 
 		} else if (user.getUserType() == Enums.UserType.BORROWER.getId()
 				|| user.getUserType() == Enums.UserType.CHANNEL_PARTNER.getId()) {

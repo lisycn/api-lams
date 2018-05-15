@@ -45,7 +45,7 @@ public interface UserMstrRepository extends JpaRepository<User, Long>{
 	@Query("select us from User us where us.channelPartnerId.id =:userId and us.isActive = true")
 	public List<User> getUserByCpId(@Param("userId")Long cpId);
 	
-	@Query("select us from User us,LenderApplicationMapping lap where us.id = lap.userId and us.isProfileFilled = true and lap.applicationTypeId.id =:applicationType and us.isActive = true")
+	@Query("select us from User us,LenderApplicationMapping lap where us.id = lap.userId and us.isProfileFilled = true and lap.applicationTypeId.id =:applicationType and us.isActive = true and lap.isActive = true")
 	public List<User> getLenderUsersByApplicationType(@Param("applicationType") Long applicationType);
 	
 }
