@@ -40,6 +40,7 @@ public class CommonUtils {
 		lamsUrls.add("/verify_email/{link}");
 		lamsUrls.add("/send_link");
 		lamsUrls.add("/reset_password/{link}");
+		lamsUrls.add("/sendMailRequestFromSite");
 	}
 
 	private CommonUtils() {
