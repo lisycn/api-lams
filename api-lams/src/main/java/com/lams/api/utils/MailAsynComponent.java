@@ -133,7 +133,7 @@ public class MailAsynComponent {
 		
 		logger.info("ENTER IN SEND MAIL TO BORROWER WHEN BORROWER SUBMIT FORM-----------------appID----->" + applicationId);
 		
-		setNameAndCodeById(borrowerUserId, loggedInUserId, applicationId, NotificationAlias.EMAIL_TO_LENDER_WHEN_LENDER_REVERT_BACK);
+		setNameAndCodeById(borrowerUserId, loggedInUserId, applicationId, NotificationAlias.EMAIL_TO_BR_WHEN_LENDER_REVERT_BACK);
 		
 	}
 	
@@ -146,7 +146,7 @@ public class MailAsynComponent {
 		
 		logger.info("ENTER IN SEND MAIL TO BORROWER WHEN BORROWER SUBMIT FORM-----------------appID----->" + applicationId);
 		
-		setNameAndCodeById(lenderId, loggedInUserId, applicationId, NotificationAlias.EMAIL_TO_BR_WHEN_LENDER_REVERT_BACK);
+		setNameAndCodeById(lenderId, loggedInUserId, applicationId, NotificationAlias.EMAIL_TO_LENDER_WHEN_LENDER_REVERT_BACK);
 		
 	}
 	
