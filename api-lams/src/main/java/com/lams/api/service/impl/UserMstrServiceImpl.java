@@ -168,11 +168,11 @@ public class UserMstrServiceImpl implements UserMstrService {
 					&& (userType.equals(Enums.UserType.BORROWER) || userType.equals(Enums.UserType.CHANNEL_PARTNER))) {
 				user.setIsEmailVerified(false);
 				user.setIsOtpVerified(false);
+				user.setIsProfileFilled(false);
 			}
 		}
 		user.setPassword(DigestUtils.md5DigestAsHex(userBO.getPassword().getBytes()).toString());
 		user.setTempPassword(userBO.getPassword());
-		user.setIsProfileFilled(false);
 		user = userMstrRepository.save(user);
 
 		// Adding Mapping

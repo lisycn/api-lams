@@ -129,6 +129,7 @@ public class MailAsynComponent {
 	 * @param applicationId
 	 * @param loggedInUserId
 	 */
+	@Async
 	public void sendMailToBorrowerWhenLenderRevertToBorrower(Long borrowerUserId, Long applicationId, Long loggedInUserId) {
 		
 		logger.info("ENTER IN SEND MAIL TO BORROWER WHEN BORROWER SUBMIT FORM-----------------appID----->" + applicationId);
@@ -142,6 +143,7 @@ public class MailAsynComponent {
 	 * @param applicationId
 	 * @param loggedInUserId
 	 */
+	@Async
 	public void sendMailToLenderWhenLenderRevertToBorrower(Long applicationId,Long lenderId, Long loggedInUserId) {
 		
 		logger.info("ENTER IN SEND MAIL TO BORROWER WHEN BORROWER SUBMIT FORM-----------------appID----->" + applicationId);
@@ -157,6 +159,7 @@ public class MailAsynComponent {
 	 * @param applicationId
 	 * @param lenderId
 	 */
+	@Async
 	public void sendMailToBorrowerWhenBorrowerAcceptTheLender(Long borrowerUserId, Long applicationId,Long loggedInUserId) {
 		
 		logger.info("ENTER IN sendMailToBorrowerWhenBorrowerAcceptTheLender-----------------appID----->" + applicationId);
@@ -170,6 +173,7 @@ public class MailAsynComponent {
 	 * @param applicationId
 	 * @param lenderId
 	 */
+	@Async
 	public void sendMailToLenderWhenBorrowerAcceptTheLender(Long lenderId,Long applicationId,Long loggedInUserId) {
 		
 		logger.info("ENTER IN sendMailToLenderWhenBorrowerAcceptTheLender-----------------appID----->" + applicationId);
@@ -210,6 +214,7 @@ public class MailAsynComponent {
 	 * @param applicationId  BORROWER APPLCIATION ID
 	 * @param template  TEMPLATE NAME
 	 */
+	@Async
 	public void setNameAndCodeById (Long toUserId, Long loggedInUserId, Long applicationId, String template) {
 		
 		UserBO userBO = userMstrService.getUserBasicDetails(toUserId);
@@ -245,6 +250,7 @@ public class MailAsynComponent {
 	 * @param templateName
 	 * @param subject
 	 */
+	@Async
 	public void sendMail(Map<String, Object> data, String toEmailId, Long loggedInUserId, String templateName,String subject) {
 		
 		try {
